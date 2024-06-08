@@ -3,8 +3,8 @@ import CarbonConnectModal from "./components/CarbonConnectModal";
 // import IntegrationModal from "@components/IntegrationModal";
 // import { ToastContainer } from "react-toastify";
 // import { injectStyle as injectToastifyStyle } from "react-toastify/dist/inject-style";
-// import "./style.css";
-import "./test.css";
+import "./styles.css";
+// import "./test.css";
 
 const CarbonConnect: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
