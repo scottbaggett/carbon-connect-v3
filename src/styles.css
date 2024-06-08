@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply cc-font-manrope;
+}
+
+:root {
+  /*font-family: 'Manrope', sans-serif; /*Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
+  line-height: 1.5;
+  font-weight: 400;
+  color: #000;
+  color-scheme: light dark;
+  background-color: #fff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* Custom radio button styles */
+.cc-custom-radio {
+  @apply cc-flex cc-items-center cc-justify-center cc-px-4 cc-py-2 cc-border cc-rounded cc-cursor-pointer cc-mr-2;
+  position: relative;
+}
+
+.cc-custom-radio::before {
+  content: "";
+  @apply cc-w-5 cc-h-5 cc-border cc-border-gray-400 cc-rounded-full cc-mr-2;
+  display: inline-block;
+}
+
+.cc-custom-radio.cc-custom-radio-checked::before {
+  @apply cc-border-transparent cc-bg-blue-500;
+  display: inline-block;
+}
+
+.cc-custom-radio.cc-custom-radio-checked::after {
+  content: "";
+  @apply cc-w-2.5 cc-h-2.5 cc-bg-white cc-rounded-full;
+  position: absolute;
+  left: 0.625rem; /* Adjust the position as needed */
+}
+
+input[type="radio"]:not(:checked) + .cc-custom-radio::before {
+  @apply cc-border-gray-400;
+}
+
+input[type="radio"]:checked + .cc-custom-radio {
+  @apply cc-bg-gray-300;
+}
+
+input[type="radio"]:not(:checked) + .cc-custom-radio {
+  @apply cc-bg-gray-100;
+}
