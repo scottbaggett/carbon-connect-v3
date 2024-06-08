@@ -20,8 +20,6 @@ declare module "*.gif" {
 }
 
 declare module "*.svg" {
-  const content:
-    | string
-    | React.FunctionComponent<React.SVGAttributes<SVGElement>>;
+  const content: string;
   export default content;
 }
