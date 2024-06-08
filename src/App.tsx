@@ -4,9 +4,8 @@ import CarbonConnectModal from "./components/CarbonConnectModal";
 // import { ToastContainer } from "react-toastify";
 // import { injectStyle as injectToastifyStyle } from "react-toastify/dist/inject-style";
 import "./styles.css";
-// import "./test.css";
 
-const CarbonConnect: React.FC = () => {
+const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const entryPoint: string = "WEB_SCRAPER";
@@ -16,7 +15,6 @@ const CarbonConnect: React.FC = () => {
 
   return (
     <>
-      <div className="cc-px-4 cc-mb-8 cc-mt-4 cc-ml-4 cc-mr-4 cc-bg-black cc-text-500 cc-bg-surface-surface_1" />
       <CarbonConnectModal
         isOpen={openCarbonConnect}
         title=""
@@ -53,4 +51,4 @@ const CarbonConnect: React.FC = () => {
   );
 };
 
-export default CarbonConnect;
+export default App;
