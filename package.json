@@ -1,7 +1,7 @@
 {
   "name": "carbon-connect-3.x",
   "version": "1.0.0",
-  "source": "src/index.tsx",
+  "source": "src/App.tsx",
   "main": "dist/main.js",
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
