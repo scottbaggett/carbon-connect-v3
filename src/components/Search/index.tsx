@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { images } from "../../assets/index";
-import { emptyFunction } from "../../utils/helper-functions";
+import { images } from "@assets/index";
+import { emptyFunction } from "@utils/helper-functions";
 
 interface SearchProps {
   label?: string;

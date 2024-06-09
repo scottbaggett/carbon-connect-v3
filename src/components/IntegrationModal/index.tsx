@@ -1,15 +1,15 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import ReactPortal from "../../utils/ReactPortal";
-import { emptyFunction, isEmpty } from "../../utils/helper-functions";
+import ReactPortal from "@utils/ReactPortal";
+import { emptyFunction, isEmpty } from "@utils/helper-functions";
 // import { toast } from "react-toastify";
-import { images } from "../../assets/index";
-import { Search } from "../../components/Search";
+import { images } from "@assets/index";
+import { Search } from "@components/Search";
 import {
   integationItem,
   integrationsList,
-} from "../../utils/integrationModalconstants";
-import IntegrationList from "../../components/IntegrationList";
-import WebScraper from "../../components/WebScraper";
+} from "@utils/integrationModalconstants";
+import IntegrationList from "@components/IntegrationList";
+import WebScraper from "@components/WebScraper";
 
 export interface ModalProps {
   isOpen: boolean;

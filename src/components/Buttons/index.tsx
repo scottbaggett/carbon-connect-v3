@@ -1,5 +1,5 @@
 import React from "react";
-import { debounce, emptyFunction } from "../../utils/helper-functions";
+import { debounce, emptyFunction } from "@utils/helper-functions";
 
 interface ButtonProps {
   onClick?: () => void;

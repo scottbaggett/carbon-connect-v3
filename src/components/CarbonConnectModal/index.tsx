@@ -1,13 +1,13 @@
 import React, { ReactNode, useEffect } from "react";
-import ReactPortal from "../../utils/ReactPortal";
-import { emptyFunction } from "../../utils/helper-functions";
-import { Button } from "../Buttons/index";
+import ReactPortal from "@utils/ReactPortal";
+import { emptyFunction } from "@utils/helper-functions";
+import { Button } from "@components/Buttons/index";
 const carbonLogo = new URL(
-  "../../assets/logo-carbon.png",
+  "@assets/logo-carbon.png",
   import.meta.url
 ).toString();
-import LockIcon from "../../assets/svgIcons/lock.svg";
-import Shield from "../../assets/svgIcons/shield.svg";
+import LockIcon from "@assets/svgIcons/lock.svg";
+import Shield from "@assets/svgIcons/shield.svg";
 
 export interface ModalProps {
   isOpen: boolean;

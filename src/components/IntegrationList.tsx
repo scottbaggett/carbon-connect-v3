@@ -1,12 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { emptyFunction, isEmpty } from "../utils/helper-functions";
+import { emptyFunction, isEmpty } from "@utils/helper-functions";
 // import { toast } from "react-toastify";
 // import { images } from "@assets/index";
-import { Search } from "../components/Search";
+import { Search } from "@components/Search";
 import {
   integationItem,
   integrationsList,
-} from "../utils/integrationModalconstants";
+} from "@utils/integrationModalconstants";
 
 export interface IntegrationListProps {
   activeStep?: string;

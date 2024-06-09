@@ -1,15 +1,15 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { emptyFunction, isEmpty } from "../utils/helper-functions";
+import { emptyFunction, isEmpty } from "@utils/helper-functions";
 // import { toast } from "react-toastify";
-import { images } from "../assets/index";
-import { Search } from "../components/Search";
+import { images } from "@assets/index";
+import { Search } from "@components/Search";
 import {
   integationItem,
   integrationsList,
-} from "../utils/integrationModalconstants";
+} from "@utils/integrationModalconstants";
 
-import { Button } from "./Buttons";
-import FilterDropdown from "./FilterDropdown";
+import { Button } from "@components/Buttons";
+import FilterDropdown from "@components/FilterDropdown";
 
 export interface WebScraperProps {
   activeStep?: string;
