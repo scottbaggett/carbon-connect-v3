@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
-// import { ToastContainer } from "react-toastify";
-// import { injectStyle as injectToastifyStyle } from "react-toastify/dist/inject-style";
 import "./styles.css";
+import GithubIntegrationModal from "./components/GithubFlow/GithubIntegrationModal";
 
 const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
@@ -15,7 +14,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <CarbonConnectModal
+      {/* <CarbonConnectModal
         isOpen={openCarbonConnect}
         title=""
         onCloseModal={() => setOpenCarbonConnect(false)}
@@ -23,8 +22,8 @@ const App: React.FC = () => {
           setOpenCarbonConnect(false);
           setOpenIntegration(true);
         }}
-      />
-      <IntegrationModal
+      /> */}
+      {/* <IntegrationModal
         title="Integrations"
         isOpen={openIntegration}
         activeStep={activeStep}
@@ -33,7 +32,7 @@ const App: React.FC = () => {
         backArrowClick={() => {
           setActiveStep("INTEGRATION_LIST");
         }}
-      />
+      /> */}
 
       {/* <ToastContainer
         position="bottom-right"
@@ -47,6 +46,7 @@ const App: React.FC = () => {
         pauseOnHover
         theme="light"
       /> */}
+      <GithubIntegrationModal />
     </>
   );
 };
