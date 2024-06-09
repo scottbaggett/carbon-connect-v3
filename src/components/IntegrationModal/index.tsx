@@ -15,8 +15,8 @@ export interface ModalProps {
   isOpen: boolean;
   title: string;
   description?: string;
-  activeStep?: string;
-  setActiveStep?: () => void;
+  activeStep: string | number;
+  setActiveStep: (val: string | number) => void;
   onPrimaryButtonClick?: () => void;
   onSecondaryButtonClick?: () => void;
   onCloseModal?: () => void;

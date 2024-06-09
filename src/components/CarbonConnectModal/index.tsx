@@ -1,9 +1,13 @@
-import React, { ReactNode, useEffect, useState } from "react";
-import { images } from "../../assets/index";
+import React, { ReactNode, useEffect } from "react";
 import ReactPortal from "../../utils/ReactPortal";
 import { emptyFunction } from "../../utils/helper-functions";
-import { Button } from "../Buttons";
-// import { toast } from "react-toastify";
+import { Button } from "../Buttons/index";
+const carbonLogo = new URL(
+  "../../assets/logo-carbon.png",
+  import.meta.url
+).toString();
+import LockIcon from "../../assets/svgIcons/lock.svg";
+import Shield from "../../assets/svgIcons/shield.svg";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -70,7 +74,7 @@ function CarbonConnectModal({
           <div className="cc-px-8 cc-pb-8 cc-border-b cc-border-color-black-7">
             <div className="cc-mb-6">
               <img
-                src={images.logoCarbon}
+                src={carbonLogo}
                 alt="Rubber logo"
                 className="cc-h-12 cc-w-21"
               />
@@ -82,7 +86,7 @@ function CarbonConnectModal({
             <div className="cc-flex cc-flex-col cc-gap-y-5 cc-py-2">
               <div className="cc-flex cc-items-start">
                 <span className="cc-h-10 cc-w-10 cc-mr-4 cc-flex cc-shrink-0 cc-items-center cc-justify-center cc-bg-gray-50 cc-rounded-lg">
-                  <img src={images.lock} alt="Lock" className="cc-h-6 cc-w-6" />
+                  <img src={LockIcon} alt="Lock" className="cc-h-6 cc-w-6" />
                 </span>
                 <div>
                   <p className="cc-font-semibold cc-text-lg ">Private</p>
@@ -93,11 +97,7 @@ function CarbonConnectModal({
               </div>
               <div className="cc-flex cc-items-start">
                 <span className="cc-h-10 cc-w-10 cc-mr-4 cc-flex cc-shrink-0 cc-items-center cc-justify-center cc-bg-gray-50 cc-rounded-lg">
-                  <img
-                    src={images.shield}
-                    alt="Shield"
-                    className="cc-h-6 cc-w-6"
-                  />
+                  <img src={Shield} alt="Shield" className="cc-h-6 cc-w-6" />
                 </span>
                 <div>
                   <p className="cc-font-semibold cc-text-lg">Secure</p>
@@ -109,7 +109,7 @@ function CarbonConnectModal({
               </div>
             </div>
           </div>
-          <div className="cc-px-8 cc-pt-6 cc-flex cc-flex-col cc-gap-y-5">
+          <div className="cc-px-8 cc-pt-6 cc-pb-8 cc-flex cc-flex-col cc-gap-y-5">
             <div className="">
               <label className="cc-flex">
                 <span className="cc-ml-2 cc-text-sm cc-font-semibold cc-text-high_em">
