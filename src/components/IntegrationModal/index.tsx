@@ -1,7 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@components/common/Dialog";
-import { emptyFunction, isEmpty } from "@utils/helper-functions";
-// import { toast } from "react-toastify";
+import { emptyFunction } from "@utils/helper-functions";
 import { images } from "@assets/index";
 import {
   integationItem,
@@ -15,12 +14,10 @@ export interface ModalProps {
   isOpen: boolean;
   title: string;
   description?: string;
-  activeStep: string | number;
-  setActiveStep: (val: string | number) => void;
   onPrimaryButtonClick?: () => void;
   onSecondaryButtonClick?: () => void;
   onCloseModal?: () => void;
-  backArrowClick?: () => void;
+  goToConnectModal?: () => void;
   children?: ReactNode;
   customClassName?: string;
   wrapperId?: string;
@@ -35,12 +32,11 @@ function IntegrationModal({
   onPrimaryButtonClick = emptyFunction,
   onSecondaryButtonClick = emptyFunction,
   onCloseModal = emptyFunction,
-  backArrowClick = emptyFunction,
-  activeStep,
-  setActiveStep = emptyFunction,
+  goToConnectModal = emptyFunction,
   customClassName = "",
-  wrapperId = "react-portal-carbonconnect-modal-container",
 }: ModalProps) {
+  const entryPoint: string = "INTEGRATION_LIST";
+  const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
   const [listData, setListData] = useState<integationItem[]>(integrationsList);
   const [searchText, setSearchText] = useState<string>("");
 
@@ -99,7 +95,7 @@ function IntegrationModal({
                 <div className="cc-flex">
                   <div
                     className="cc-mr-3 cc-flex cc-items-center cc-justify-center cc-h-8 cc-w-8 cc-cursor-pointer"
-                    onClick={backArrowClick}
+                    onClick={goToConnectModal}
                   >
                     <img
                       src={images.backIcon}

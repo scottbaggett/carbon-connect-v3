@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
-import GithubIntegrationModal from "./components/GithubFlow/GithubIntegrationModal";
 
 const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
-  const entryPoint: string = "INTEGRATION_LIST";
-  const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
 
   // injectToastifyStyle();
 
@@ -26,11 +23,9 @@ const App: React.FC = () => {
       <IntegrationModal
         title="Integrations"
         isOpen={openIntegration}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
         onCloseModal={() => setOpenIntegration(false)}
-        backArrowClick={() => {
-          setActiveStep("INTEGRATION_LIST");
+        goToConnectModal={() => {
+          setOpenCarbonConnect(true);
         }}
       />
 
@@ -46,7 +41,6 @@ const App: React.FC = () => {
         pauseOnHover
         theme="light"
       /> */}
-      {/* <GithubIntegrationModal /> */}
     </>
   );
 };
