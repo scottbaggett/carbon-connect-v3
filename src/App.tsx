@@ -14,7 +14,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {/* <CarbonConnectModal
+      <CarbonConnectModal
         isOpen={openCarbonConnect}
         title=""
         onCloseModal={() => setOpenCarbonConnect(false)}
@@ -22,8 +22,8 @@ const App: React.FC = () => {
           setOpenCarbonConnect(false);
           setOpenIntegration(true);
         }}
-      /> */}
-      {/* <IntegrationModal
+      />
+      <IntegrationModal
         title="Integrations"
         isOpen={openIntegration}
         activeStep={activeStep}
@@ -32,7 +32,7 @@ const App: React.FC = () => {
         backArrowClick={() => {
           setActiveStep("INTEGRATION_LIST");
         }}
-      /> */}
+      />
 
       {/* <ToastContainer
         position="bottom-right"
@@ -46,7 +46,7 @@ const App: React.FC = () => {
         pauseOnHover
         theme="light"
       /> */}
-      <GithubIntegrationModal />
+      {/* <GithubIntegrationModal /> */}
     </>
   );
 };
