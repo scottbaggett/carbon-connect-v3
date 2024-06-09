@@ -7,7 +7,7 @@ import GithubIntegrationModal from "./components/GithubFlow/GithubIntegrationMod
 const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
-  const entryPoint: string = "WEB_SCRAPER";
+  const entryPoint: string = "INTEGRATION_LIST";
   const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
 
   // injectToastifyStyle();
