@@ -10,15 +10,19 @@ import {
 
 import { Button } from "@components/Buttons";
 import FilterDropdown from "@components/FilterDropdown";
+import BackIcon from "@assets/svgIcons/back-icon.svg";
+import { DialogHeader, DialogTitle } from "@components/common/Dialog";
 
 export interface WebScraperProps {
   activeStep?: string;
   setActiveStep?: (stepId: string) => void;
+  onCloseModal?: () => void;
 }
 
 function WebScraper({
   activeStep = "",
   setActiveStep = emptyFunction,
+  onCloseModal,
 }: WebScraperProps) {
   const [activeTab, setActiveTab] = useState<"website" | "sitemap">("website");
   const [singleTabValue, setSinglTabValue] = useState<
@@ -138,74 +142,96 @@ function WebScraper({
   const filteredUrls = urls.filter((url) => url.includes(filter));
 
   return (
-    <div className="cc-mx-auto cc-text-center cc-pb-4">
-      <div className="cc-flex cc-w-full cc-mb-6">
-        {singleTabValue === null && (
-          <div className="cc-flex cc-w-full cc-mb-4 cc-gap-x-4">
-            <div className="cc-flex cc-w-1/2">
-              <label className="cc-flex cc-mr-4 cc-items-center cc-cursor-pointer cc-border cc-border-outline-low_em cc-rounded-xl cc-px-3 cc-py-3">
-                <input
-                  type="radio"
-                  name="tab"
-                  checked={activeTab === "website"}
-                  onChange={() => setActiveTab("website")}
-                  className="cc-hidden"
+    <>
+      <DialogHeader
+        className="cc-bg-white cc-border-b cc-border-outline-low_em"
+        closeButtonClass="cc-hidden sm:cc-flex"
+        onCloseModal={onCloseModal}
+      >
+        <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
+          <button
+            className="cc-pr-1 cc-h-10 cc-w-auto"
+            onClick={() => setActiveStep("INTEGRATION_LIST")}
+          >
+            <img
+              src={BackIcon}
+              alt="Lock"
+              className="cc-h-[18px] cc-w-[18px]"
+            />
+          </button>
+          <DialogTitle className="cc-flex-grow cc-text-left">
+            Web Scraper
+          </DialogTitle>
+        </div>
+      </DialogHeader>
+      <div className="cc-text-center cc-p-4 cc-w-full">
+        <div className="cc-flex cc-w-full cc-mb-6">
+          {singleTabValue === null && (
+            <div className="cc-flex cc-w-full cc-mb-4 cc-gap-x-4">
+              <div className="cc-flex cc-w-1/2">
+                <label className="cc-flex cc-mr-4 cc-items-center cc-cursor-pointer cc-border cc-border-outline-low_em cc-rounded-xl cc-px-3 cc-py-3">
+                  <input
+                    type="radio"
+                    name="tab"
+                    checked={activeTab === "website"}
+                    onChange={() => setActiveTab("website")}
+                    className="cc-hidden"
+                  />
+                  <span
+                    className={`cc-custom-radio ${
+                      activeTab === "website" ? "cc-custom-radio-checked" : ""
+                    }`}
+                  >
+                    Website
+                  </span>
+                </label>
+              </div>
+              <div className="cc-flex cc-w-1/2">
+                <label className="cc-flex cc-w-1/2 cc-items-center cc-cursor-pointer cc-border cc-border-outline-low_em cc-rounded-xl cc-px-3 cc-py-3">
+                  <input
+                    type="radio"
+                    name="tab"
+                    checked={activeTab === "sitemap"}
+                    onChange={() => setActiveTab("sitemap")}
+                    className="cc-hidden"
+                  />
+                  <span
+                    className={`cc-custom-radio ${
+                      activeTab === "sitemap" ? "cc-custom-radio-checked" : ""
+                    }`}
+                  >
+                    Sitemap
+                  </span>
+                </label>
+              </div>
+            </div>
+          )}
+          {singleTabValue === "website" && (
+            <div className="cc-flex cc-justify-start cc-items-center">
+              <div className="cc-mr-2">
+                <img
+                  src={images.monitor}
+                  alt="monitor"
+                  className="cc-h-6 cc-w-6"
                 />
-                <span
-                  className={`cc-custom-radio ${
-                    activeTab === "website" ? "cc-custom-radio-checked" : ""
-                  }`}
-                >
-                  Website
-                </span>
-              </label>
+              </div>
+              <div className="cc-text-xl cc-font-medium cc-ml-2">Website</div>
             </div>
-            <div className="cc-flex cc-w-1/2">
-              <label className="cc-flex cc-w-1/2 cc-items-center cc-cursor-pointer cc-border cc-border-outline-low_em cc-rounded-xl cc-px-3 cc-py-3">
-                <input
-                  type="radio"
-                  name="tab"
-                  checked={activeTab === "sitemap"}
-                  onChange={() => setActiveTab("sitemap")}
-                  className="cc-hidden"
+          )}
+          {singleTabValue === "sitemap" && (
+            <div className="cc-flex cc-justify-start cc-items-center">
+              <div className="cc-mr-2">
+                <img
+                  src={images.tabler_sitemap}
+                  alt="monitor"
+                  className="cc-h-6 cc-w-6"
                 />
-                <span
-                  className={`cc-custom-radio ${
-                    activeTab === "sitemap" ? "cc-custom-radio-checked" : ""
-                  }`}
-                >
-                  Sitemap
-                </span>
-              </label>
+              </div>
+              <div className="cc-text-xl cc-font-medium cc-ml-2">Sitemap</div>
             </div>
-          </div>
-        )}
-        {singleTabValue === "website" && (
-          <div className="cc-flex cc-justify-start cc-items-center">
-            <div className="cc-mr-2">
-              <img
-                src={images.monitor}
-                alt="monitor"
-                className="cc-h-6 cc-w-6"
-              />
-            </div>
-            <div className="cc-text-xl cc-font-medium cc-ml-2">Website</div>
-          </div>
-        )}
-        {singleTabValue === "sitemap" && (
-          <div className="cc-flex cc-justify-start cc-items-center">
-            <div className="cc-mr-2">
-              <img
-                src={images.tabler_sitemap}
-                alt="monitor"
-                className="cc-h-6 cc-w-6"
-              />
-            </div>
-            <div className="cc-text-xl cc-font-medium cc-ml-2">Sitemap</div>
-          </div>
-        )}
-      </div>
-      {/* <div className="cc-flex cc-justify-center cc-mb-4">
+          )}
+        </div>
+        {/* <div className="cc-flex cc-justify-center cc-mb-4">
         <input
           type="text"
           placeholder="https://"
@@ -268,138 +294,138 @@ function WebScraper({
           </div>
         ))}
       </div> */}
-      <div className="py-4 cc-flex cc-grow cc-w-full">
-        {activeTab === "website" && (
-          <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
-            {urls.map((url, idx) => (
-              <div
-                key={idx}
-                className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10"
-              >
-                <input
-                  type="text"
-                  className=" cc-w-25 cc-py-2 cc-px-3 cc-flex cc-text-disabledtext cc-rounded-md cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm"
-                  placeholder="Enter URL"
-                  disabled={true}
-                  value={"https://"}
-                />
-                <input
-                  type="text"
-                  className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm cc-w-[200px] focus:cc-outline-none focus:cc-bg-surface-white cc-mr-4"
-                  // style={{ borderRadius: "0.375rem" }}
-                  placeholder="Enter URL"
-                  value={url}
-                  onChange={(e) => handleUrlChange(idx, e.target.value)}
-                />
-                <div className="cc-mr-4">
-                  <div className="cc-relative cc-p-4">
-                    <div
-                      className="cc-relative cc-inline-block"
-                      ref={dropdownRef}
-                    >
-                      <button
-                        type="button"
-                        className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-border cc-border-gray-300 cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50 focus:cc-outline-none focus:cc-ring-2 focus:cc-ring-offset-2 focus:cc-ring-offset-gray-100 focus:cc-ring-indigo-500"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        style={{ width: "140px" }}
+        <div className="py-4 cc-flex cc-grow cc-w-full">
+          {activeTab === "website" && (
+            <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
+              {urls.map((url, idx) => (
+                <div
+                  key={idx}
+                  className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10"
+                >
+                  <input
+                    type="text"
+                    className=" cc-w-25 cc-py-2 cc-px-3 cc-flex cc-text-disabledtext cc-rounded-md cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm"
+                    placeholder="Enter URL"
+                    disabled={true}
+                    value={"https://"}
+                  />
+                  <input
+                    type="text"
+                    className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm cc-w-[200px] focus:cc-outline-none focus:cc-bg-surface-white cc-mr-4"
+                    // style={{ borderRadius: "0.375rem" }}
+                    placeholder="Enter URL"
+                    value={url}
+                    onChange={(e) => handleUrlChange(idx, e.target.value)}
+                  />
+                  <div className="cc-mr-4">
+                    <div className="cc-relative cc-p-4">
+                      <div
+                        className="cc-relative cc-inline-block"
+                        ref={dropdownRef}
                       >
-                        <img src={images.filter} alt="" className="cc-mr-3" />
-                        Filter by
-                        <svg
-                          className="cc-ml-2 cc-h-5 cc-w-5"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          aria-hidden="true"
+                        <button
+                          type="button"
+                          className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-border cc-border-gray-300 cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50 focus:cc-outline-none focus:cc-ring-2 focus:cc-ring-offset-2 focus:cc-ring-offset-gray-100 focus:cc-ring-indigo-500"
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                          style={{ width: "140px" }}
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </button>
-                      {isDropdownOpen && (
-                        <div className="cc-absolute cc-right-0 cc-mt-2 cc-w-296">
-                          <div className="cc-px-2 cc-py-2 cc-shadow-dropdown cc-border cc-rounded-xl cc-bg-white  cc-border-color-black-7">
-                            <div className="cc-mb-4 cc-flex cc-items-center">
-                              <label className="cc-mr-4 cc-flex cc-items-center">
-                                <input
-                                  type="radio"
-                                  name="option"
-                                  className="cc-mr-3"
-                                  checked
-                                />
-                                Recursion depth
-                              </label>
-                              <FilterDropdown
-                                options={[
-                                  { label: "03", value: 3 },
-                                  { label: "04", value: 4 },
-                                  { label: "05", value: 5 },
-                                ]}
-                                selectedOption={recursionDepth}
-                                onSelect={(value: string | number) =>
-                                  setRecursionDepth(value as number)
-                                }
-                                width={"60px"}
-                              />
-                            </div>
-                            <div className="cc-mb-4 cc-flex cc-items-center">
-                              <label className="cc-mr-4 cc-flex cc-items-center">
-                                <input
-                                  type="radio"
-                                  name="option"
-                                  className="cc-mr-3"
-                                />
-                                Max pages to scrape
-                              </label>
-                              <div className="cc-w-60">
+                          <img src={images.filter} alt="" className="cc-mr-3" />
+                          Filter by
+                          <svg
+                            className="cc-ml-2 cc-h-5 cc-w-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                        {isDropdownOpen && (
+                          <div className="cc-absolute cc-right-0 cc-mt-2 cc-w-296">
+                            <div className="cc-px-2 cc-py-2 cc-shadow-dropdown cc-border cc-rounded-xl cc-bg-white  cc-border-color-black-7">
+                              <div className="cc-mb-4 cc-flex cc-items-center">
+                                <label className="cc-mr-4 cc-flex cc-items-center">
+                                  <input
+                                    type="radio"
+                                    name="option"
+                                    className="cc-mr-3"
+                                    checked
+                                  />
+                                  Recursion depth
+                                </label>
                                 <FilterDropdown
                                   options={[
-                                    { label: "40", value: 40 },
-                                    { label: "50", value: 50 },
-                                    { label: "60", value: 60 },
+                                    { label: "03", value: 3 },
+                                    { label: "04", value: 4 },
+                                    { label: "05", value: 5 },
                                   ]}
-                                  selectedOption={maxPages}
+                                  selectedOption={recursionDepth}
                                   onSelect={(value: string | number) =>
-                                    setMaxPages(value as number)
+                                    setRecursionDepth(value as number)
                                   }
+                                  width={"60px"}
                                 />
                               </div>
+                              <div className="cc-mb-4 cc-flex cc-items-center">
+                                <label className="cc-mr-4 cc-flex cc-items-center">
+                                  <input
+                                    type="radio"
+                                    name="option"
+                                    className="cc-mr-3"
+                                  />
+                                  Max pages to scrape
+                                </label>
+                                <div className="cc-w-60">
+                                  <FilterDropdown
+                                    options={[
+                                      { label: "40", value: 40 },
+                                      { label: "50", value: 50 },
+                                      { label: "60", value: 60 },
+                                    ]}
+                                    selectedOption={maxPages}
+                                    onSelect={(value: string | number) =>
+                                      setMaxPages(value as number)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <button className="cc-px-4 cc-py-2 cc-bg-blue-500 cc-text-white cc-rounded-md">
+                                Apply
+                              </button>
                             </div>
-                            <button className="cc-px-4 cc-py-2 cc-bg-blue-500 cc-text-white cc-rounded-md">
-                              Apply
-                            </button>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <img src={images.trash_2} alt="" className="" />
-                </div>
+                  <div>
+                    <img src={images.trash_2} alt="" className="" />
+                  </div>
 
-                {/* <HiX
+                  {/* <HiX
                   className=" cc-text-red-400 cc-text-sm cc-border cc-border-gray-400 cc-w-10 cc-h-10 cc-p-2 cc-cursor-pointer hover:cc-bg-gray-200 hover:cc-border-0"
                   style={{ borderRadius: "0.375rem" }}
                   onClick={() => handleRemoveUrl(idx)}
                 /> */}
-              </div>
-            ))}
-            {urls.length < 50 && (
-              <button
-                className={`cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4 cc-mb-4`}
-                onClick={handleAddUrl}
-              >
-                <img src={images.addIcon} className="cc-mr-2" />
-                Add
-              </button>
-            )}
-          </div>
-        )}
-        {/* {activeTab === 'sitemap' && (
+                </div>
+              ))}
+              {urls.length < 50 && (
+                <button
+                  className={`cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4 cc-mb-4`}
+                  onClick={handleAddUrl}
+                >
+                  <img src={images.addIcon} className="cc-mr-2" />
+                  Add
+                </button>
+              )}
+            </div>
+          )}
+          {/* {activeTab === 'sitemap' && (
               <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
                 <div className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10">
                   <input
@@ -512,19 +538,20 @@ function WebScraper({
                 </div>
               </div>
             )} */}
-      </div>
-      <div className="cc-border-t cc-border-color-black-7 cc-shadow-modal">
-        <div className="cc-mt-4 cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
-          <img
-            src={images.info_fill}
-            alt="info_fill"
-            className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
-          />
-          The first 50 links per website are synced.
         </div>
-        <Button onClick={handleSubmit} label="Submit" />
+        <div className="cc-border-t cc-border-color-black-7 cc-shadow-modal">
+          <div className="cc-mt-4 cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+            <img
+              src={images.info_fill}
+              alt="info_fill"
+              className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
+            />
+            The first 50 links per website are synced.
+          </div>
+          <Button onClick={handleSubmit} label="Submit" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

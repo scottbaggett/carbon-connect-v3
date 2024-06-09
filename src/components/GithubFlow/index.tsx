@@ -14,8 +14,10 @@ import { Button } from "@components/common/Button";
 
 export default function GithubFlow({
   setActiveStep,
+  onCloseModal,
 }: {
   setActiveStep: (val: string) => void;
+  onCloseModal: () => void;
 }) {
   const [step, setStep] = useState<number>(1);
 

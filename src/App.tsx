@@ -21,10 +21,10 @@ const App: React.FC = () => {
         }}
       />
       <IntegrationModal
-        title="Integrations"
         isOpen={openIntegration}
         onCloseModal={() => setOpenIntegration(false)}
         goToConnectModal={() => {
+          setOpenIntegration(false);
           setOpenCarbonConnect(true);
         }}
       />
