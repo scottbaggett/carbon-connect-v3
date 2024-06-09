@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "strict": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true, // Generate .d.ts files
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declarationMap": true, // Generate source map for .d.ts files
+    "declarationDir": "dist/types",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": ["src/assets/*"],
+      "@theme/*": ["src/theme/*"],
+      "@constants/*": ["src/assets/constants/*"],
+      "@images/*": ["src/assets/images/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

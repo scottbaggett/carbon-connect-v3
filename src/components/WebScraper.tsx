@@ -83,7 +83,7 @@ function WebScraper({
     setUrls((prevList) => [...prevList, ""]);
   };
 
-  const handleUrlChange = (url_index, url) => {
+  const handleUrlChange = (url_index: number, url: string) => {
     setUrls((prevvList) => {
       let newUrls = [...prevvList];
       newUrls[url_index] = url;
@@ -127,7 +127,7 @@ function WebScraper({
   //   }
   // };
 
-  const handleRemoveUrl = (url_index) => {
+  const handleRemoveUrl = (url_index: number) => {
     setUrls((prevList) => {
       let newUrls = [...prevList];
       newUrls.splice(url_index, 1);
@@ -339,7 +339,9 @@ function WebScraper({
                                   { label: "05", value: 5 },
                                 ]}
                                 selectedOption={recursionDepth}
-                                onSelect={setRecursionDepth}
+                                onSelect={(value: string | number) =>
+                                  setRecursionDepth(value as number)
+                                }
                                 width={"60px"}
                               />
                             </div>
@@ -360,7 +362,9 @@ function WebScraper({
                                     { label: "60", value: 60 },
                                   ]}
                                   selectedOption={maxPages}
-                                  onSelect={setMaxPages}
+                                  onSelect={(value: string | number) =>
+                                    setMaxPages(value as number)
+                                  }
                                 />
                               </div>
                             </div>
