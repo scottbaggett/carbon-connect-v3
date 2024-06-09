@@ -2,10 +2,10 @@ import React, { ReactNode, useEffect } from "react";
 import ReactPortal from "@utils/ReactPortal";
 import { emptyFunction } from "@utils/helper-functions";
 import { Button } from "@components/Buttons/index";
-const carbonLogo = new URL(
-  "@assets/logo-carbon.png",
+import carbonLogo from "@assets/logo-carbon.svg"; /*new URL(
+  "@assets/logo-carbon.svg",
   import.meta.url
-).toString();
+).toString();*/
 import LockIcon from "@assets/svgIcons/lock.svg";
 import Shield from "@assets/svgIcons/shield.svg";
 
