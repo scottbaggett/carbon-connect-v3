@@ -49,14 +49,16 @@ const FilterDropdown: React.FC<DropdownProps> = ({
         >
           {options.find((option) => option.value === selectedOption)?.label}
           <svg
-            className="cc-ml-1 cc-w-4 cc-y-4"
+            className="cc-ml-1"
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
+            viewBox="0 0 16 10"
             aria-hidden="true"
+            width="12"
+            height="8"
           >
             <path
               fillRule="evenodd"
-              d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
+              d="M5.293 3.293a1 1 0 011.414 0L10 7.586l3.293-4.293a1 1 0 011.414 1.414l-4 5a1 1 0 01-1.414 0l-4-5a1 1 0 010-1.414z"
               clipRule="evenodd"
             />
           </svg>
@@ -65,7 +67,7 @@ const FilterDropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
-          className="cc-z-20 cc-origin-top-right cc-absolute cc-right-0 cc-mt-2 cc-w-11 cc-rounded-md cc-shadow-lg cc-bg-white cc-ring-1 cc-ring-black cc-ring-opacity-5 focus:cc-outline-none"
+          className="cc-z-20 cc-origin-top-right cc-absolute cc-right-0 cc-mt-2 cc-w-24 cc-rounded-md cc-shadow-lg cc-bg-white cc-ring-1 cc-ring-black cc-ring-opacity-5 focus:cc-outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
