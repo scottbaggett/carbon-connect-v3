@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface DropdownProps {
   options: { label: string; value: string | number }[];
@@ -15,12 +15,31 @@ const FilterDropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      optionsRef.current &&
+      !optionsRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="cc-relative cc-inline-block cc-text-left">
       <div>
+        {/* ref={optionsRef} */}
         <button
           type="button"
-          className={`cc-inline-flex cc-justify-center cc-rounded-md cc-border cc-border-gray-300 cc-bg-white cc-px-4 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50 focus:cc-outline-none focus:cc-ring-2 focus:cc-ring-offset-2 focus:cc-ring-offset-gray-100 focus:cc-ring-indigo-500 ${
+          className={`cc-flex cc-items-center cc-rounded-md cc-border cc-border-outline-base_em cc-bg-outline-base_em cc-px-1 cc-py-1 cc-text-xss cc-font-semibold cc-w-11 cc-text-med_em hover:cc-bg-gray-50 ${
             width ? "cc-w-" + width : ""
           }`}
           id="options-menu"
@@ -30,10 +49,9 @@ const FilterDropdown: React.FC<DropdownProps> = ({
         >
           {options.find((option) => option.value === selectedOption)?.label}
           <svg
-            className="cc-ml-2 cc-h-5 cc-w-5"
+            className="cc-ml-1 cc-w-4 cc-y-4"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
-            fill="currentColor"
             aria-hidden="true"
           >
             <path
@@ -47,7 +65,7 @@ const FilterDropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div
-          className="cc-origin-top-right cc-absolute cc-right-0 cc-mt-2 cc-w-56 cc-rounded-md cc-shadow-lg cc-bg-white cc-ring-1 cc-ring-black cc-ring-opacity-5 focus:cc-outline-none"
+          className="cc-z-20 cc-origin-top-right cc-absolute cc-right-0 cc-mt-2 cc-w-11 cc-rounded-md cc-shadow-lg cc-bg-white cc-ring-1 cc-ring-black cc-ring-opacity-5 focus:cc-outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="options-menu"
