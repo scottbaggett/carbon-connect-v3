@@ -1,15 +1,15 @@
 import React from "react";
-import { DialogFooter } from "@components/common/Dialog";
+import { DialogFooter } from "@components/common/design-system/Dialog";
 import InfoFill from "@assets/svgIcons/info_fill.svg";
 import UserPlus from "@assets/svgIcons/user-plus.svg";
-import { Input } from "@components/common/Input";
-import { Button } from "@components/common/Button";
+import { Input } from "@components/common/design-system/Input";
+import { Button } from "@components/common/design-system/Button";
 
-interface GithubFormProps {
+interface AuthFormProps {
   onSubmit: () => void;
 }
 
-export default function GithubForm({ onSubmit }: GithubFormProps) {
+export default function AuthForm({ onSubmit }: AuthFormProps) {
   return (
     <>
       <div className="cc-p-4 cc-flex-grow">

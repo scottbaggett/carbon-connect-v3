@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@components/common/Dialog";
+} from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import GithubForm from "./GithubForm";
-import GithubFileSelector from "./GithubFileSelector";
+import GithubForm from "./AuthForm";
+import GithubFileSelector from "./FileSelector";
 import GithubLogo from "@assets/logos/github.svg";
 import SettingsIcon from "@assets/svgIcons/settings-icon.svg";
-import { Button } from "@components/common/Button";
+import { Button } from "@components/common/design-system/Button";
 
-export default function GithubFlow({
+export default function CarbonFilePicker({
   setActiveStep,
   onCloseModal,
 }: {

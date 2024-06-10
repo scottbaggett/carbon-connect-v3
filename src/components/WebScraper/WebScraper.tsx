@@ -1,11 +1,13 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { emptyFunction, isEmpty } from "@utils/helper-functions";
-// import { toast } from "react-toastify";
+import React, { useEffect, useRef, useState } from "react";
+import { emptyFunction } from "@utils/helper-functions";
 import { images } from "@assets/index";
 import FilterDropdown from "@components/FilterDropdown";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import { DialogHeader, DialogTitle } from "@components/common/Dialog";
-import { Button } from "@components/common/Button";
+import {
+  DialogHeader,
+  DialogTitle,
+} from "@components/common/design-system/Dialog";
+import { Button } from "@components/common/design-system/Button";
 
 export interface WebScraperProps {
   activeStep?: string;

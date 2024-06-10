@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
-import { Input } from "@components/common/Input";
-import { Button } from "@components/common/Button";
-import { DialogFooter } from "@components/common/Dialog";
+import { Input } from "@components/common/design-system/Input";
+import { Button } from "@components/common/design-system/Button";
+import { DialogFooter } from "@components/common/design-system/Dialog";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import FIleIcon from "@assets/svgIcons/file.svg";
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
@@ -90,7 +90,7 @@ const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
   },
 ];
 
-export default function GithubFileSelector() {
+export default function FileSelector() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
   const [isUploading, setIsUploading] = useState<{

@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { emptyFunction, isEmpty } from "@utils/helper-functions";
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
 import { integrationsList } from "@utils/integrationModalconstants";
-import { DialogHeader, DialogTitle } from "@components/common/Dialog";
+import {
+  DialogHeader,
+  DialogTitle,
+} from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import { Input } from "./common/Input";
-import { Button } from "./common/Button";
+import { Input } from "@components/common/design-system/Input";
+import { Button } from "@components/common/design-system/Button";
 
 export interface IntegrationListProps {
   activeStep?: string;

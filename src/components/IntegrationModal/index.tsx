@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@components/common/Dialog";
+import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
 import { emptyFunction } from "@utils/helper-functions";
-import IntegrationList from "@components/IntegrationList";
-import WebScraper from "@components/WebScraper";
-import GithubFlow from "@components/GithubFlow";
+import IntegrationList from "@components/IntegrationModal/IntegrationList";
+import WebScraper from "@components/WebScraper/WebScraper";
+import CarbonFilePicker from "@components/CarbonFilePicker/CarbonFilePicker";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -50,15 +50,13 @@ function IntegrationModal({
           <WebScraper activeStep={activeStep} setActiveStep={setActiveStep} />
         );
         break;
-      case "GITHUB":
+      default:
         return (
-          <GithubFlow
+          <CarbonFilePicker
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}
           />
         );
-        break;
-      default:
         break;
     }
   };

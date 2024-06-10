@@ -3,8 +3,8 @@ import { emptyFunction } from "@utils/helper-functions";
 import carbonLogo from "@assets/logo-carbon.svg";
 import LockIcon from "@assets/svgIcons/lock.svg";
 import Shield from "@assets/svgIcons/shield.svg";
-import { Dialog, DialogContent } from "@components/common/Dialog";
-import { Button } from "@components/common/Button";
+import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
+import { Button } from "@components/common/design-system/Button";
 
 export interface ModalProps {
   isOpen: boolean;
