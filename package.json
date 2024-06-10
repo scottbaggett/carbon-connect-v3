@@ -7,7 +7,7 @@
   "types": "dist/types.d.ts",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build --no-cache",
+    "build": "parcel build --public-url ./ ./src/App.tsx --dist-dir dist --no-cache",
     "dev": "parcel serve src/index.html --port 8080 --no-cache"
   },
   "author": "",
