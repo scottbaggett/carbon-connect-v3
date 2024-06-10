@@ -19,6 +19,11 @@ type FilterData = {
   [key: string]: number | string;
 };
 
+type UrlType = {
+  id: string;
+  url: string;
+};
+
 function WebScraper({
   activeStep = "",
   setActiveStep = emptyFunction,
@@ -30,6 +35,9 @@ function WebScraper({
   >(null);
   const [urls, setUrls] = useState([""]); // List of URLs to be scraped.
   const [filterData, setFilterData] = useState<FilterData[]>([]);
+  const [internalSteps, setInternalSteps] = useState<number>(1);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+
   const [sitemapUrls, setSitemapUrls] = useState([]); // List of URLs to be scraped selected from the sitemap.
 
   const [areUrlsProvided, setAreUrlsProvided] = useState(false); // Flag to check if the user has provided any URLs to be scraped.
@@ -56,6 +64,7 @@ function WebScraper({
 
   useEffect(() => {
     setUrls([""]);
+    setInternalSteps(1);
   }, [activeTab]);
 
   useEffect(() => {
@@ -159,6 +168,71 @@ function WebScraper({
 
   const filteredUrls = urls.filter((url) => url.includes(filter));
 
+  const fileList: UrlType[] = [
+    {
+      id: "italic.com1",
+      url: "https://italic.com/sitemap-main.xml",
+    },
+    {
+      id: "italic.com2",
+      url: "https://italic.com/sitemap-images.xml",
+    },
+    {
+      id: "italic.com3",
+      url: "https://italic.com/guides/sitemap.xml",
+    },
+    {
+      id: "italic.com4",
+      url: "https://italic.com",
+    },
+    {
+      id: "italic.com5",
+      url: "https://italic.com/careers",
+    },
+    {
+      id: "italic.com6",
+      url: "https://italic.com/how-it-works",
+    },
+    {
+      id: "italic.com7",
+      url: "https://italic.com/membership",
+    },
+    {
+      id: "italic.com8",
+      url: "https://italic.com/sitemap-main.xml",
+    },
+    {
+      id: "italic.com9",
+      url: "https://italic.com/sitemap-images.xml",
+    },
+  ];
+
+  type SitemapItemProps = {
+    isChecked: boolean;
+    onSelect: () => void;
+    item: UrlType;
+  };
+
+  const SitemapItem = ({ item, isChecked, onSelect }: SitemapItemProps) => {
+    return (
+      <li
+        key={item.id}
+        className="cc-flex cc-transition-all cc-py-3 cc-font-semibold cc-text-high_em cc-text-sm cc-border-b cc-border-outline-base_em hover:cc-bg-gray-25 cc-cursor-pointer"
+      >
+        <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">
+          <input
+            type="checkbox"
+            className="cc-my-1"
+            checked={isChecked}
+            onChange={onSelect}
+          />
+          <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
+            <p className="cc-flex cc-flex-grow cc-flex-start">{item.url}</p>
+          </div>
+        </div>
+      </li>
+    );
+  };
   return (
     <>
       <DialogHeader
@@ -538,37 +612,103 @@ function WebScraper({
             )}
             {activeTab === "sitemap" && (
               <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
-                <div
-                  key={0}
-                  className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10 cc-mb-6"
-                >
-                  <div className="cc-flex cc-flex-1 cc-relative">
-                    <div className="cc-absolute cc-top-3 cc-left-2">
-                      <img src={images.left_icon} alt="tabler_sitemap" />
+                {
+                  <div
+                    key={0}
+                    className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10 cc-mb-2"
+                  >
+                    <div className="cc-flex cc-flex-1 cc-relative">
+                      <div className="cc-absolute cc-top-3 cc-left-2">
+                        <img src={images.left_icon} alt="tabler_sitemap" />
+                      </div>
+                      <input
+                        type="text"
+                        className=" cc-w-100 cc-py-2 cc-pl-8 cc-pr-3 cc-flex cc-text-disabledtext cc-leading-24 cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm cc-font-semibold"
+                        placeholder="Enter URL"
+                        disabled={true}
+                        value={"https://"}
+                      />
+                      <input
+                        type="text"
+                        className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm focus:cc-outline-focus-primary  focus:cc-bg-surface-white cc-font-semibold"
+                        placeholder="Enter URL"
+                        value={urls?.[0]}
+                        onChange={(e) => handleUrlChange(0, e.target.value)}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      className=" cc-w-100 cc-py-2 cc-pl-8 cc-pr-3 cc-flex cc-text-disabledtext cc-leading-24 cc-rounded-tl-xl cc-rounded-bl-xl  cc-bg-color-black-7 cc-text-sm cc-font-semibold"
-                      placeholder="Enter URL"
-                      disabled={true}
-                      value={"https://"}
-                    />
-                    <input
-                      type="text"
-                      className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm focus:cc-outline-focus-primary  focus:cc-bg-surface-white cc-font-semibold"
-                      placeholder="Enter URL"
-                      value={urls?.[0]}
-                      onChange={(e) => handleUrlChange(0, e.target.value)}
-                    />
-                  </div>
-                  <div className="cc-mr-4 cc-w-20">
-                    <div className="">
-                      <button className="cc-flex cc-flex-row cc-text-smxt cc-items-center cc-justify-center cc-rounded-xl cc-border cc-border-color-black-7 cc-cursor-pointer cc-px-4 cc-py-2 cc-font-bold cc-bg-surface-white  cc-text-high_em">
-                        Fetch
-                      </button>
+                    <div className="cc-mr-4 cc-w-20">
+                      <div className="">
+                        <button
+                          className="cc-flex cc-flex-row cc-text-smxt cc-items-center cc-justify-center cc-rounded-xl cc-border cc-border-color-black-7 cc-cursor-pointer cc-px-4 cc-py-2 cc-font-bold cc-bg-surface-white  cc-text-high_em"
+                          onClick={() => setInternalSteps(2)}
+                        >
+                          Fetch
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                }
+                {internalSteps === 2 && (
+                  <div className="cc-border-t cc-border-outline-low_em cc-overflow-auto sm:cc-max-h-80 sm:cc-border sm:cc-rounded-xl cc-w-full">
+                    <div className="cc-flex cc-justify-between cc-items-center cc-bg-surface-surface_1 sm:cc-flex">
+                      <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold">
+                        Fetched URLs
+                      </div>
+                      <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-text-right cc-mr-4">
+                        {selectedFiles.length > 0 ? (
+                          <button
+                            onClick={() => setSelectedFiles([])}
+                            className="cc-text-sm cc-font-semibold cc-text-outline-danger_high_em cc-items-start cc-text-left"
+                          >
+                            Clear selection
+                          </button>
+                        ) : (
+                          <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedFiles.length === fileList.length}
+                              onChange={() => {
+                                const allFilesId = fileList.map(
+                                  (item) => item.id
+                                );
+                                setSelectedFiles(allFilesId);
+                              }}
+                            />
+                            Select all
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                    {fileList.length > 0 ? (
+                      <ul className="cc-pb-10 sm:cc-px-4">
+                        {fileList.map((item) => {
+                          const isChecked = selectedFiles.indexOf(item.id) >= 0;
+
+                          return (
+                            <SitemapItem
+                              key={item.id}
+                              isChecked={isChecked}
+                              item={item}
+                              onSelect={() => {
+                                setSelectedFiles((prev) => {
+                                  if (isChecked) {
+                                    return prev.filter((id) => id !== item.id);
+                                  } else {
+                                    return [...prev, item.id];
+                                  }
+                                });
+                              }}
+                            />
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <div className="cc-py-4 cc-text-center cc-text-disabledtext cc-font-medium cc-text-sm">
+                        No item found
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
             {/* {activeTab === 'sitemap' && (
