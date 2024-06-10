@@ -27,9 +27,11 @@ function IntegrationList({
 
   const listData = integrationsList?.filter(
     (ai) =>
-      ai.name.includes(searchText) ||
-      ai?.integrationsListViewTitle?.includes(searchText) ||
-      ai.description.includes(searchText)
+      ai.name?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
+      ai?.integrationsListViewTitle
+        ?.toLowerCase()
+        ?.includes(searchText?.toLowerCase()) ||
+      ai.description?.toLowerCase()?.includes(searchText?.toLowerCase())
   );
 
   return (
