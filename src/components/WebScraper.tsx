@@ -2,16 +2,10 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { emptyFunction, isEmpty } from "@utils/helper-functions";
 // import { toast } from "react-toastify";
 import { images } from "@assets/index";
-import { Search } from "@components/Search";
-import {
-  integationItem,
-  integrationsList,
-} from "@utils/integrationModalconstants";
-
-import { Button } from "@components/Buttons";
 import FilterDropdown from "@components/FilterDropdown";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import { DialogHeader, DialogTitle } from "@components/common/Dialog";
+import { Button } from "@components/common/Button";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -548,7 +542,9 @@ function WebScraper({
             />
             The first 50 links per website are synced.
           </div>
-          <Button onClick={handleSubmit} label="Submit" />
+          <Button size="md" className="cc-w-full" onClick={handleSubmit}>
+            Submit
+          </Button>
         </div>
       </div>
     </>
