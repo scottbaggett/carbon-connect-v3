@@ -47,36 +47,36 @@ h1 {
 
 /* Custom radio button styles */
 .cc-custom-radio {
-  @apply cc-flex cc-items-center cc-justify-center cc-px-4 cc-py-2 cc-border cc-rounded cc-cursor-pointer cc-mr-2;
+  @apply cc-flex cc-items-center cc-justify-center cc-cursor-pointer cc-mr-2;
   position: relative;
 }
 
 .cc-custom-radio::before {
   content: "";
-  @apply cc-w-5 cc-h-5 cc-border cc-border-gray-400 cc-rounded-full cc-mr-2;
+  @apply cc-w-[18px] cc-h-[18px] cc-border-2 cc-border-low_em cc-rounded-full cc-mr-3;
   display: inline-block;
 }
 
 .cc-custom-radio.cc-custom-radio-checked::before {
-  @apply cc-border-transparent cc-bg-blue-500;
+  @apply cc-border-surface-info_main cc-bg-surface-info_main;
   display: inline-block;
 }
 
 .cc-custom-radio.cc-custom-radio-checked::after {
   content: "";
-  @apply cc-w-2.5 cc-h-2.5 cc-bg-white cc-rounded-full;
+  @apply cc-w-[8px] cc-h-[8px] cc-bg-white cc-rounded-full;
   position: absolute;
-  left: 0.625rem; /* Adjust the position as needed */
+  left: 5px; /* Adjust the position as needed */
 }
 
 input[type="radio"]:not(:checked) + .cc-custom-radio::before {
-  @apply cc-border-gray-400;
+  /* @apply cc-border-gray-400; */
 }
 
 input[type="radio"]:checked + .cc-custom-radio {
-  @apply cc-bg-gray-300;
+  /* @apply cc-bg-gray-300; */
 }
 
 input[type="radio"]:not(:checked) + .cc-custom-radio {
-  @apply cc-bg-gray-100;
+  /* @apply cc-bg-gray-100; */
 }
