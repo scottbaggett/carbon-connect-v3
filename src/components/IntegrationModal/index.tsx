@@ -4,6 +4,7 @@ import { emptyFunction } from "@utils/helper-functions";
 import IntegrationList from "@components/IntegrationModal/IntegrationList";
 import WebScraper from "@components/WebScraper/WebScraper";
 import CarbonFilePicker from "@components/CarbonFilePicker/CarbonFilePicker";
+import { integrationsList } from "@utils/integrationModalconstants";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -53,6 +54,9 @@ function IntegrationModal({
       default:
         return (
           <CarbonFilePicker
+            activeStepData={integrationsList.find(
+              (item) => item.id === activeStep
+            )}
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}
           />

@@ -21,7 +21,7 @@ import GitbookLogo from "../assets/logos/gitbook.svg";
 import GithubLogo from "../assets/logos/github.svg";
 import SalesforceLogo from "../assets/logos/salesforce.svg";
 
-export interface integationItem {
+export interface IntegrationItemType {
   id: string;
   subpath: string;
   name: string;
@@ -38,7 +38,7 @@ export interface integationItem {
   additionalInfo?: string;
 }
 
-export const integrationsList: integationItem[] = [
+export const integrationsList: IntegrationItemType[] = [
   {
     id: "CONFLUENCE",
     subpath: "confluence",

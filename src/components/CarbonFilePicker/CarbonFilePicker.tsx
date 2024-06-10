@@ -6,14 +6,17 @@ import {
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import GithubForm from "./AuthForm";
 import GithubFileSelector from "./FileSelector";
-import GithubLogo from "@assets/logos/github.svg";
+// import GithubLogo from "@assets/logos/github.svg";
 import SettingsIcon from "@assets/svgIcons/settings-icon.svg";
 import { Button } from "@components/common/design-system/Button";
+import { IntegrationItemType } from "@utils/integrationModalconstants";
 
 export default function CarbonFilePicker({
+  activeStepData,
   setActiveStep,
   onCloseModal,
 }: {
+  activeStepData?: IntegrationItemType;
   setActiveStep: (val: string) => void;
   onCloseModal: () => void;
 }) {
@@ -42,14 +45,14 @@ export default function CarbonFilePicker({
           <div className="cc-h-14 cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
             <div className="cc-h-full cc-w-full cc-bg-gray-50 cc-flex cc-items-center cc-justify-center cc-rounded-lg">
               <img
-                src={GithubLogo}
+                src={activeStepData?.logo}
                 alt="Github logo"
                 className="cc-h-8 cc-w-8"
               />
             </div>
           </div>
           <DialogTitle className="cc-flex-grow cc-text-left">
-            Github
+            {activeStepData?.name}
           </DialogTitle>
           {step > 1 && (
             <>
