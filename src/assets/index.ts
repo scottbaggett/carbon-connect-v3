@@ -8,7 +8,7 @@ import searchIcon from "./svgIcons/search-icon.svg";
 import monitor from "./svgIcons/monitor.svg";
 import info_fill from "./svgIcons/info_fill.svg";
 import left_icon from "./svgIcons/left_icon.svg";
-import trash_2 from "./svgIcons/trash-2.svg";
+import trash_2 from "./svgIcons/trash-2icon.svg";
 import tabler_sitemap from "./svgIcons/tabler_sitemap.svg";
 import filter from "./svgIcons/filter.svg";
 import addIcon from "./svgIcons/add.svg";
