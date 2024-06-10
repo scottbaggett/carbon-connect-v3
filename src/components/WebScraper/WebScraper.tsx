@@ -54,6 +54,17 @@ function WebScraper({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setUrls([""]);
+  }, [activeTab]);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -62,13 +73,6 @@ function WebScraper({
       setIsDropdownOpen({});
     }
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const handleAddUrl = () => {
     setUrls((prevList) => [...prevList, ""]);
