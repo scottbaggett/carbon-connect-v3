@@ -18,6 +18,7 @@ import WebScraperIcon from "../assets/logos/web_scraper.svg";
 import ZendeskLogo from "../assets/logos/zendesk.svg";
 import ZoteroLogo from "../assets/logos/zotero.svg";
 import GitbookLogo from "../assets/logos/gitbook.svg";
+import GithubLogo from "../assets/logos/github.svg";
 import SalesforceLogo from "../assets/logos/salesforce.svg";
 
 export interface integationItem {
@@ -34,6 +35,7 @@ export interface integationItem {
   requiresOAuth: boolean;
   multiStep?: boolean;
   integrationsListViewTitle?: string;
+  additionalInfo?: string;
 }
 
 export const integrationsList: integationItem[] = [
@@ -63,6 +65,7 @@ export const integrationsList: integationItem[] = [
     active: true,
     data_source_type: "LOCAL_FILES",
     requiresOAuth: false,
+    additionalInfo: "max 20MB per file",
   },
   {
     id: "WEB_SCRAPER",
@@ -76,6 +79,7 @@ export const integrationsList: integationItem[] = [
     active: true,
     data_source_type: "WEB_SCRAPER",
     requiresOAuth: false,
+    additionalInfo: "max 50 links to sync",
   },
   {
     id: "GITHUB",
@@ -83,9 +87,9 @@ export const integrationsList: integationItem[] = [
     name: "Github",
     description: "Lets your users connect their Gitbook accounts to Carbon.",
     announcementName: "to connect Gitbook",
-    icon: <img src={GitbookLogo} className="cc-w-7 cc-h-7" />,
+    icon: <img src={GithubLogo} className="cc-w-7 cc-h-7" />,
     iconBgColor: "gray-50",
-    logo: GitbookLogo,
+    logo: GithubLogo,
     active: true,
     data_source_type: "GITHUB",
     requiresOAuth: false,
