@@ -30,7 +30,7 @@ module.exports = {
         "gray-50": "#F3F3F4",
         "gradient-blue":
           "linear-gradient(0deg, rgba(31, 123, 245, 0.10) 0%, rgba(31, 123, 245, 0.10) 100%), var(--color-white-20, rgba(255, 255, 255, 0.20)",
-          "focus-primary": "#D9D6FE",
+        "focus-primary": "#D9D6FE",
       },
       fontFamily: {
         manrope: ["Manrope", "sans-serif"],
@@ -41,18 +41,21 @@ module.exports = {
         dropdown: "0px 8px 24px -4px rgba(0, 0, 0, 0.12)",
         "modal-footer-top": "0px -3px 8px -2px #0000001F",
         e2: "0px 3px 4px -2px #00000029",
-      }, 
+      },
       fontSize: {
-        xss: ['10px', '16px'],
-        smxt: ['14px', '24px']
+        xss: ["10px", "16px"],
+        smxt: ["14px", "24px"],
       },
       lineHeight: {
-        24: '1.5rem'
+        24: "1.5rem",
       },
       width: {
-        100: '6.25rem',
-        296: '18.5rem'
-      }
+        100: "6.25rem",
+        296: "18.5rem",
+      },
+      fontSize: {
+        xxs: ["10px", "16px"],
+      },
     },
   },
   plugins: [],
