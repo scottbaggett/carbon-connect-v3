@@ -43,7 +43,7 @@ module.exports = {
         e2: "0px 3px 4px -2px #00000029",
       },
       fontSize: {
-        xss: ["10px", "16px"],
+        xxs: ["10px", "16px"],
         smxt: ["14px", "24px"],
       },
       lineHeight: {
@@ -52,9 +52,6 @@ module.exports = {
       width: {
         100: "6.25rem",
         296: "18.5rem",
-      },
-      fontSize: {
-        xxs: ["10px", "16px"],
       },
     },
   },
