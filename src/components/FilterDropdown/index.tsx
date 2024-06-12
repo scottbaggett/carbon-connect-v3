@@ -39,7 +39,7 @@ const FilterDropdown: React.FC<DropdownProps> = ({
         {/* ref={optionsRef} */}
         <button
           type="button"
-          className={`cc-flex cc-items-center cc-rounded-md cc-border cc-border-outline-base_em cc-bg-outline-base_em cc-px-1 cc-py-1 cc-text-xss cc-font-semibold cc-w-11 cc-text-med_em hover:cc-bg-gray-50 ${
+          className={`cc-flex cc-items-center cc-rounded-md cc-border cc-border-outline-base_em cc-bg-outline-base_em cc-px-1 cc-py-1 cc-text-xxs cc-font-semibold cc-w-11 cc-text-med_em hover:cc-bg-gray-50 ${
             width ? "cc-w-" + width : ""
           }`}
           id="options-menu"

@@ -4,10 +4,12 @@ import { images } from "@assets/index";
 import FilterDropdown from "@components/FilterDropdown";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import {
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import { Button } from "@components/common/design-system/Button";
+import * as Dialog from "@radix-ui/react-dialog";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -37,6 +39,16 @@ function WebScraper({
   const [filterData, setFilterData] = useState<FilterData[]>([]);
   const [internalSteps, setInternalSteps] = useState<number>(1);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState<{
+    state: boolean;
+    percentage: number;
+  }>({ state: false, percentage: 0 });
+  const [showSitemapSubmitCTA, setShowSitemapSubmitCTA] =
+    useState<boolean>(false);
+  const [showSitemapFetchCTA, setShowSitemapFetchCTA] = useState<boolean>(true);
+  const [openDialogId, setOpenDialogId] = useState<string | number | null>(
+    null
+  );
 
   const [sitemapUrls, setSitemapUrls] = useState([]); // List of URLs to be scraped selected from the sitemap.
 
@@ -96,6 +108,10 @@ function WebScraper({
   };
 
   const handleUrlChange = (url_index: number, url: string) => {
+    if ((activeStep = "sitemap")) {
+      setShowSitemapFetchCTA(true);
+      setShowSitemapSubmitCTA(false);
+    }
     setUrls((prevList) => {
       let newUrls = [...prevList];
       newUrls[url_index] = url;
@@ -118,8 +134,12 @@ function WebScraper({
     });
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted URLs:", urls);
+  const handleWebiteSubmit = () => {
+    console.log("Submitted Website URLs:", urls);
+  };
+
+  const handleSitemapSubmit = () => {
+    console.log("Submitted Sitemap URLs:", urls);
   };
 
   // const handleSitemapUrlChange = (url) => {
@@ -233,6 +253,7 @@ function WebScraper({
       </li>
     );
   };
+
   return (
     <>
       <DialogHeader
@@ -256,8 +277,8 @@ function WebScraper({
           </DialogTitle>
         </div>
       </DialogHeader>
-      <div className="cc-text-center cc-w-full">
-        <div className="cc-min-h-96  cc-p-4">
+      <div className="cc-text-center cc-w-full cc-flex cc-flex-col cc-h-full">
+        <div className="cc-min-h-96 cc-p-4 cc-flex-grow cc-overflow-auto">
           <div className="cc-flex cc-w-full cc-mb-6">
             {singleTabValue === null && (
               <div className="cc-flex cc-w-full cc-gap-x-4">
@@ -268,6 +289,7 @@ function WebScraper({
                         ? "cc-border-surface-info_main"
                         : "cc-border-surface-surface_3"
                     }`}
+                    onClick={() => setActiveTab("website")}
                   >
                     <div className="cc-flex">
                       <label>
@@ -305,6 +327,7 @@ function WebScraper({
                         ? "cc-border-surface-info_main"
                         : "cc-border-surface-surface_3"
                     }`}
+                    onClick={() => setActiveTab("sitemap")}
                   >
                     <div className="cc-flex">
                       <label>
@@ -452,150 +475,199 @@ function WebScraper({
                         onChange={(e) => handleUrlChange(idx, e.target.value)}
                       />
                     </div>
-                    <div className="cc-mr-4">
-                      <div className="cc-relative cc-p-4">
-                        <div
-                          className="cc-relative cc-inline-block"
-                          ref={dropdownRef}
-                        >
-                          <button
-                            type="button"
-                            className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
-                            onClick={() => handleFilterClick(idx)}
-                            style={{ width: "140px" }}
-                          >
+                    <div className="cc-flex sm:cc-hidden cc-relative">
+                      <Dialog.Root
+                        open={openDialogId === idx}
+                        onOpenChange={(isOpen) =>
+                          setOpenDialogId(isOpen ? idx : null)
+                        }
+                      >
+                        <Dialog.Trigger asChild>
+                          <button className="icon-button cc-cursor-pointer">
                             <img
-                              src={images.filter}
+                              src={images.menuIcon}
                               alt=""
                               className="cc-mr-3"
                             />
-                            Filter by
-                            <svg
-                              className="cc-ml-2 cc-h-5 cc-w-5"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
                           </button>
-                          {isDropdownOpen[idx] && (
-                            <div className="cc-absolute cc-right-0 cc-mt-2 cc-w-296 cc-z-10">
-                              <div className="cc-px-2 cc-py-2 cc-shadow-dropdown cc-border cc-rounded-xl cc-bg-white cc-border-color-black-7">
-                                <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
-                                  <div className="cc-flex">
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="tab"
-                                        checked={
-                                          filterData[idx]?.filterType ===
-                                          "Recursion depth"
-                                        }
-                                        onChange={() =>
-                                          handleFilterData(
-                                            idx,
-                                            "filterType",
-                                            "Recursion depth"
-                                          )
-                                        }
-                                        className="cc-hidden"
-                                      />
-                                      <span
-                                        className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em ${
-                                          filterData[idx]?.filterType ===
-                                          "Recursion depth"
-                                            ? "cc-custom-radio-checked"
-                                            : ""
-                                        }`}
-                                      >
-                                        Recursion depth
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <FilterDropdown
-                                    options={[
-                                      { label: "03", value: 3 },
-                                      { label: "04", value: 4 },
-                                      { label: "05", value: 5 },
-                                    ]}
-                                    selectedOption={filterData[idx]?.depthValue}
-                                    onSelect={(value) =>
-                                      handleFilterData(idx, "depthValue", value)
-                                    }
-                                    width={"11"}
-                                  />
-                                </div>
-                                <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
-                                  <div className="cc-flex">
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="tab"
-                                        checked={
-                                          filterData[idx]?.filterType ===
-                                          "Max pages to scrape"
-                                        }
-                                        onChange={() =>
-                                          handleFilterData(
-                                            idx,
-                                            "filterType",
-                                            "Max pages to scrape"
-                                          )
-                                        }
-                                        className="cc-hidden"
-                                      />
-                                      <span
-                                        className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em ${
-                                          filterData[idx]?.filterType ===
-                                          "Max pages to scrape"
-                                            ? "cc-custom-radio-checked"
-                                            : ""
-                                        }`}
-                                      >
-                                        Max pages to scrape
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <FilterDropdown
-                                    options={[
-                                      { label: "40", value: 40 },
-                                      { label: "50", value: 50 },
-                                      { label: "60", value: 60 },
-                                    ]}
-                                    selectedOption={filterData[idx]?.maxPages}
-                                    onSelect={(value) =>
-                                      handleFilterData(idx, "maxPages", value)
-                                    }
-                                    width={"11"}
-                                  />
-                                </div>
-                                <button
-                                  className="cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4"
-                                  onClick={() => {
-                                    setIsDropdownOpen({});
-                                  }}
-                                >
-                                  Apply
-                                </button>
+                        </Dialog.Trigger>
+                        <Dialog.Portal>
+                          <Dialog.Content className="dialog-content cc-absolute cc-right-0 cc-top-full cc-flex  cc-z-50 cc-w-full">
+                            <div className="dialog-body">
+                              <div className="dialog-item cc-border-b cc-border-b-color-black-7 cc-p-2 cc-flex">
+                                <span>Filter by</span>
+                                <img
+                                  src={images.filter}
+                                  alt=""
+                                  className="cc-mr-3"
+                                />
+                              </div>
+                              <div className="dialog-item cc-border-b cc-border-b-color-black-7 cc-p-2 cc-flex">
+                                <span>Delete</span>
+                                <img
+                                  src={images.trash_2}
+                                  alt=""
+                                  className="cc-cursor-pointer"
+                                  onClick={() => handleDeleteUrl(idx)}
+                                />
                               </div>
                             </div>
-                          )}
+                          </Dialog.Content>
+                        </Dialog.Portal>
+                      </Dialog.Root>
+                    </div>
+                    <div className="cc-hidden sm:cc-flex cc-items-center">
+                      <div className="cc-mr-4">
+                        <div className="cc-relative cc-p-4">
+                          <div
+                            className="cc-relative cc-inline-block"
+                            ref={dropdownRef}
+                          >
+                            <button
+                              type="button"
+                              className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
+                              onClick={() => handleFilterClick(idx)}
+                              style={{ width: "140px" }}
+                            >
+                              <img
+                                src={images.filter}
+                                alt=""
+                                className="cc-mr-3"
+                              />
+                              Filter by
+                              <svg
+                                className="cc-ml-2 cc-h-5 cc-w-5"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                            {isDropdownOpen[idx] && (
+                              <div className="cc-absolute cc-right-0 cc-mt-2 cc-w-296 cc-z-10">
+                                <div className="cc-px-2 cc-py-2 cc-shadow-dropdown cc-border cc-rounded-xl cc-bg-white cc-border-color-black-7">
+                                  <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
+                                    <div className="cc-flex">
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="tab"
+                                          checked={
+                                            filterData[idx]?.filterType ===
+                                            "Recursion depth"
+                                          }
+                                          onChange={() =>
+                                            handleFilterData(
+                                              idx,
+                                              "filterType",
+                                              "Recursion depth"
+                                            )
+                                          }
+                                          className="cc-hidden"
+                                        />
+                                        <span
+                                          className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em ${
+                                            filterData[idx]?.filterType ===
+                                            "Recursion depth"
+                                              ? "cc-custom-radio-checked"
+                                              : ""
+                                          }`}
+                                        >
+                                          Recursion depth
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <FilterDropdown
+                                      options={[
+                                        { label: "03", value: 3 },
+                                        { label: "04", value: 4 },
+                                        { label: "05", value: 5 },
+                                      ]}
+                                      selectedOption={
+                                        filterData[idx]?.depthValue
+                                      }
+                                      onSelect={(value) =>
+                                        handleFilterData(
+                                          idx,
+                                          "depthValue",
+                                          value
+                                        )
+                                      }
+                                      width={"11"}
+                                    />
+                                  </div>
+                                  <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
+                                    <div className="cc-flex">
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="tab"
+                                          checked={
+                                            filterData[idx]?.filterType ===
+                                            "Max pages to scrape"
+                                          }
+                                          onChange={() =>
+                                            handleFilterData(
+                                              idx,
+                                              "filterType",
+                                              "Max pages to scrape"
+                                            )
+                                          }
+                                          className="cc-hidden"
+                                        />
+                                        <span
+                                          className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em ${
+                                            filterData[idx]?.filterType ===
+                                            "Max pages to scrape"
+                                              ? "cc-custom-radio-checked"
+                                              : ""
+                                          }`}
+                                        >
+                                          Max pages to scrape
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <FilterDropdown
+                                      options={[
+                                        { label: "40", value: 40 },
+                                        { label: "50", value: 50 },
+                                        { label: "60", value: 60 },
+                                      ]}
+                                      selectedOption={filterData[idx]?.maxPages}
+                                      onSelect={(value) =>
+                                        handleFilterData(idx, "maxPages", value)
+                                      }
+                                      width={"11"}
+                                    />
+                                  </div>
+                                  <button
+                                    className="cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4"
+                                    onClick={() => {
+                                      setIsDropdownOpen({});
+                                    }}
+                                  >
+                                    Apply
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <img
-                        src={images.trash_2}
-                        alt=""
-                        className="cc-cursor-pointer"
-                        onClick={() => handleDeleteUrl(idx)}
-                      />
+                      <div>
+                        <img
+                          src={images.trash_2}
+                          alt=""
+                          className="cc-cursor-pointer"
+                          onClick={() => handleDeleteUrl(idx)}
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -636,7 +708,7 @@ function WebScraper({
                         onChange={(e) => handleUrlChange(0, e.target.value)}
                       />
                     </div>
-                    <div className="cc-mr-4 cc-w-20">
+                    <div className="cc-hidden sm:cc-flex sm:cc-mr-4 sm:cc-w-20">
                       <div className="">
                         <button
                           className="cc-flex cc-flex-row cc-text-smxt cc-items-center cc-justify-center cc-rounded-xl cc-border cc-border-color-black-7 cc-cursor-pointer cc-px-4 cc-py-2 cc-font-bold cc-bg-surface-white  cc-text-high_em"
@@ -826,19 +898,66 @@ function WebScraper({
             )} */}
           </div>
         </div>
-        <div className="cc-border-t cc-border-color-black-7 cc-shadow-modal-footer-top cc-mt-6 cc-px-4 cc-pb-4">
-          <div className="cc-mt-4 cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
-            <img
-              src={images.info_fill}
-              alt="info_fill"
-              className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
-            />
-            The first 50 links per website are synced.
+        {activeTab === "website" && (
+          <div className="cc-border-t cc-border-color-black-7 cc-shadow-modal-footer-top cc-mt-6 cc-px-4 cc-pb-4">
+            <div className="cc-mt-4 cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+              <img
+                src={images.info_fill}
+                alt="info_fill"
+                className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
+              />
+              The first 50 links per website are synced.
+            </div>
+            <Button
+              size="md"
+              className="cc-w-full"
+              onClick={handleWebiteSubmit}
+            >
+              Submit
+            </Button>
           </div>
-          <Button size="md" className="cc-w-full" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </div>
+        )}
+        {activeTab === "sitemap" && (
+          <>
+            {urls?.[0].length > 0 && showSitemapFetchCTA && (
+              <DialogFooter className="cc-flex sm:cc-hidden">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="cc-w-full"
+                  onClick={() => {
+                    setInternalSteps(2);
+                    setShowSitemapSubmitCTA(true);
+                    setShowSitemapFetchCTA(false);
+                  }}
+                >
+                  Fetch
+                </Button>
+              </DialogFooter>
+            )}
+            <div
+              className={`${
+                showSitemapSubmitCTA ? "" : "cc-hidden"
+              }  cc-flex-col sm:cc-flex cc-border-t cc-border-color-black-7 cc-shadow-modal-footer-top cc-mt-2 sm:cc-mt-6 cc-px-4 cc-pb-4`}
+            >
+              <div className="cc-mt-4 cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+                <img
+                  src={images.info_fill}
+                  alt="info_fill"
+                  className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
+                />
+                Select a max of 50 links to sync.
+              </div>
+              <Button
+                size="md"
+                className="cc-w-full"
+                onClick={handleSitemapSubmit}
+              >
+                Submit
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
