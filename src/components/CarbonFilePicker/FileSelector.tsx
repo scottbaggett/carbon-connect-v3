@@ -6,6 +6,7 @@ import { DialogFooter } from "@components/common/design-system/Dialog";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import FIleIcon from "@assets/svgIcons/file.svg";
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
+import { Checkbox } from "@components/common/design-system/Checkbox";
 
 type FileItemType = {
   type: "FILE";
@@ -179,10 +180,10 @@ export default function FileSelector() {
             </button>
           ) : (
             <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
-              <input
-                type="checkbox"
+              <Checkbox
+                className="my-0.5"
                 checked={selectedFiles.length === fileList.length}
-                onChange={() => {
+                onCheckedChange={() => {
                   const allFilesId = fileList.map((item) => item.id);
                   setSelectedFiles(allFilesId);
                 }}
@@ -266,11 +267,10 @@ const GithubRepoItem = ({ item, isChecked, onSelect }: GithubRepoItemProps) => {
       className="cc-flex cc-transition-all cc-py-3 cc-font-semibold cc-text-high_em cc-text-sm cc-border-b cc-border-outline-base_em hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">
-        <input
-          type="checkbox"
-          className="cc-my-1"
+        <Checkbox
+          className="cc-my-0.5"
           checked={isChecked}
-          onChange={onSelect}
+          onCheckedChange={onSelect}
         />
         {item.type === "FOLDER" && (
           <img
