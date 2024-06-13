@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
+import DisconnectModal from "@components/common/DisconnectModal";
+import { Button } from "@components/common/design-system/Button";
 
 const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);

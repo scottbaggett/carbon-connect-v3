@@ -6,14 +6,25 @@ import { DialogFooter } from "@components/common/design-system/Dialog";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import FIleIcon from "@assets/svgIcons/file.svg";
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
+import NoResultsIcon from "@assets/svgIcons/no-result.svg";
+import AddCircleIconBlack from "@assets/svgIcons/add-circle-icon-black.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@components/common/design-system/Breadcrumb";
 
 type FileItemType = {
   type: "FILE";
   id: string;
   name: string;
   createdAt: string;
-  status?: "READY" | "ERROR";
+  status?: "READY" | "ERROR" | "SYNCING";
 };
 
 type FolderItemType = {
@@ -21,7 +32,7 @@ type FolderItemType = {
   id: string;
   name: string;
   createdAt: string;
-  status?: "READY" | "ERROR";
+  status?: "READY" | "ERROR" | "SYNCING";
 };
 
 type GithubRepoItemType = {
@@ -29,7 +40,7 @@ type GithubRepoItemType = {
   id: string;
   name: string;
   url: string;
-  status?: "READY" | "ERROR";
+  status?: "READY" | "ERROR" | "SYNCING";
 };
 
 const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
@@ -68,6 +79,7 @@ const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
     id: "Personal",
     name: "Personal",
     createdAt: "Mar 20, 2019 07:09 AM",
+    status: "SYNCING",
   },
   {
     type: "FILE",
@@ -91,13 +103,13 @@ const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
   },
 ];
 
-export default function FileSelector() {
+export default function FileSelector({
+  setIsUploading,
+}: {
+  setIsUploading: (val: { state: boolean; percentage: number }) => void;
+}) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
-  const [isUploading, setIsUploading] = useState<{
-    state: boolean;
-    percentage: number;
-  }>({ state: false, percentage: 0 });
 
   const filteredList = fileList.filter(
     (item) =>
@@ -105,36 +117,12 @@ export default function FileSelector() {
       (item.type === "GITHUB_REPO" && item.url?.includes(serchValue))
   );
 
-  if (isUploading.state) {
-    return (
-      <div className="cc-h-[560px] cc-flex-grow cc-flex cc-flex-col cc-items-center cc-justify-center">
-        <div className="cc-relative cc-h-14 cc-w-14 cc-rounded-full cc-bg-surface-surface_2 cc-mb-3 cc-p-1">
-          <div
-            className="cc-absolute cc-top-0 cc-left-0 cc-right-0 cc-bottom-0 cc-rounded-full cc-transform -cc-rotate-90"
-            style={{
-              background: `conic-gradient(#0BABFB 0% ${isUploading.percentage}%, transparent ${isUploading.percentage}% 100%)`,
-            }}
-          />
-          <div className="cc-h-full cc-relative cc-w-full cc-bg-white cc-rounded-full cc-flex cc-items-center cc-justify-center cc-z-10">
-            <p className="cc-items-baseline cc-font-semibold cc-text-low_em cc-text-center cc-text-sm">
-              {isUploading.percentage}
-              <span className="cc-text-xs">%</span>
-            </p>
-          </div>
-        </div>
-        <p className="cc-text-sm cc-text-center cc-font-semibold">
-          Uploading 12 files...
-        </p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <div className="cc-p-4 cc-flex-grow cc-overflow-auto">
+      <div className="cc-p-4 cc-flex cc-flex-col cc-overflow-auto">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow">
-            Select files to upload
+            Select repos to sync
           </p>
           <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
             <img
@@ -168,9 +156,46 @@ export default function FileSelector() {
               className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
             />
           </Button>
+          <Button
+            size="sm"
+            variant="neutral-white"
+            className="cc-text-xs cc-rounded-xl cc-font-semibold"
+          >
+            <img
+              src={AddCircleIconBlack}
+              alt="Add Circle Plus"
+              className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+            />
+            Add more files
+          </Button>
         </div>
         <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3">
-          <div className="cc-flex-grow">All repos</div>
+          <div className="cc-overflow-auto cc-pb-4 sm:cc-pb-0 cc-px-4 -cc-mx-4 cc-flex-grow">
+            <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
+              <BreadcrumbList className="cc-flex-nowrap">
+                <BreadcrumbItem className="cc-shrink-0">
+                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center">
+                    <img
+                      src={FolderIcon}
+                      alt="Folder Icon"
+                      className="cc-w-5 cc-shrink-0"
+                    />
+                    All Repos
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="cc-shrink-0" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-shrink-0">
+                    Awesome-Algorithms
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="cc-shrink-0" />
+                <BreadcrumbItem className="cc-shrink-0">
+                  <BreadcrumbPage>Contoso Project</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           {selectedFiles.length > 0 ? (
             <button
               onClick={() => setSelectedFiles([])}
@@ -192,7 +217,7 @@ export default function FileSelector() {
             </label>
           )}
         </div>
-        <div className="cc-border-t cc-border-outline-low_em cc-overflow-auto sm:cc-max-h-80 sm:cc-border sm:cc-rounded-xl">
+        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-auto cc-flex-grow sm:cc-h-80 sm:cc-border sm:cc-rounded-xl">
           <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
             <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
               FILE NAME
@@ -207,7 +232,7 @@ export default function FileSelector() {
             </div>
           </div>
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-10 sm:cc-px-4">
+            <ul className="cc-pb-2 sm:cc-px-4">
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 
@@ -230,8 +255,21 @@ export default function FileSelector() {
               })}
             </ul>
           ) : (
-            <div className="cc-py-4 cc-text-center cc-text-disabledtext cc-font-medium cc-text-sm">
-              No item found
+            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
+              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
+                <img
+                  src={NoResultsIcon}
+                  alt="No results Icon"
+                  className="cc-w-6 cc-shrink-0"
+                />
+              </div>
+              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
+                No matching results
+              </p>
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+                Try another search, or use search options to find a file by
+                type, format or more.
+              </p>
             </div>
           )}
         </div>
@@ -243,7 +281,7 @@ export default function FileSelector() {
             size="lg"
             className="cc-w-full"
             onClick={() => {
-              setIsUploading({ state: true, percentage: 73 });
+              setIsUploading({ state: true, percentage: 24 });
             }}
           >
             Upload {selectedFiles.length} files
@@ -297,6 +335,11 @@ const GithubRepoItem = ({ item, isChecked, onSelect }: GithubRepoItemProps) => {
             {item.status && item.status === "ERROR" && (
               <div className="cc-bg-surface-danger_accent_1 cc-text-outline-danger_high_em cc-py-[3px] cc-text-xs cc-px-2 cc-rounded-lg">
                 Error
+              </div>
+            )}
+            {item.status && item.status === "SYNCING" && (
+              <div className="cc-bg-surface-warning_accent_1 cc-text-warning-600 cc-py-[3px] cc-text-xs cc-px-2 cc-rounded-lg">
+                Syncing
               </div>
             )}
           </>

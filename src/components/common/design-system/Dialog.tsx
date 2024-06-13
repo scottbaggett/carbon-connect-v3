@@ -36,7 +36,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "cc-rootStyle cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px] cc-h-screen sm:cc-h-auto sm:cc-max-h-[90vh] cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 data-[state=open]:cc-animate-in data-[state=closed]:cc-animate-out data-[state=closed]:cc-fade-out-0 data-[state=open]:cc-fade-in-0 data-[state=closed]:cc-zoom-out-95 data-[state=open]:cc-zoom-in-95 data-[state=closed]:cc-slide-out-to-left-1/2 data-[state=closed]:cc-slide-out-to-top-[48%] data-[state=open]:cc-slide-in-from-left-1/2 data-[state=open]:cc-slide-in-from-top-[48%] sm:cc-rounded-[20px] sm:cc-min-h-0",
+        "cc-rootStyle cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px] cc-h-screen sm:cc-h-auto sm:cc-max-h-[90vh] cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 sm:cc-rounded-[20px] sm:cc-min-h-0",
         className
       )}
       {...props}

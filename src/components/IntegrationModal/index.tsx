@@ -5,6 +5,7 @@ import IntegrationList from "@components/IntegrationModal/IntegrationList";
 import WebScraper from "@components/WebScraper/WebScraper";
 import CarbonFilePicker from "@components/CarbonFilePicker/CarbonFilePicker";
 import { integrationsList } from "@utils/integrationModalconstants";
+import AccessKeyAuth from "@components/AccessKeyAuth/AccessKeyAuth";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -49,6 +50,18 @@ function IntegrationModal({
       case "WEB_SCRAPER":
         return (
           <WebScraper activeStep={activeStep} setActiveStep={setActiveStep} />
+        );
+        break;
+
+      case "CONFLUENCE":
+        return (
+          <AccessKeyAuth
+            activeStepData={integrationsList.find(
+              (item) => item.id === activeStep
+            )}
+            setActiveStep={setActiveStep}
+            onCloseModal={onCloseModal}
+          />
         );
         break;
       default:
