@@ -45,6 +45,7 @@ module.exports = {
         dropdown: "0px 8px 24px -4px rgba(0, 0, 0, 0.12)",
         "modal-footer-top": "0px -3px 8px -2px #0000001F",
         e2: "0px 3px 4px -2px #00000029",
+        e3: "0px 8px 24px -4px #0000001F",
       },
       lineHeight: {
         24: "1.5rem",
@@ -57,6 +58,7 @@ module.exports = {
         xxs: ["10px", "16px"],
         xss: ["10px", "16px"],
         smxt: ["14px", "24px"],
+        xlxt: ["20px", "32px"],
         "2.5xl": ["26px", "40px"],
       },
     },

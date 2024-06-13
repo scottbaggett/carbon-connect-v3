@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { emptyFunction, isEmpty } from "@utils/helper-functions";
 import { images } from "@assets/index";
-import FilterDropdown from "@components/FilterDropdown";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import {
   DialogFooter,
@@ -9,7 +8,15 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import { Button } from "@components/common/design-system/Button";
-import * as Dialog from "@radix-ui/react-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomSheet";
+import { Input } from "@components/common/design-system/Input";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -17,7 +24,7 @@ export interface WebScraperProps {
   onCloseModal?: () => void;
 }
 
-type FilterData = {
+export type FilterData = {
   [key: string]: number | string;
 };
 
@@ -46,54 +53,15 @@ function WebScraper({
   const [showSitemapSubmitCTA, setShowSitemapSubmitCTA] =
     useState<boolean>(false);
   const [showSitemapFetchCTA, setShowSitemapFetchCTA] = useState<boolean>(true);
-  const [openDialogId, setOpenDialogId] = useState<string | number | null>(
-    null
-  );
-
-  const [sitemapUrls, setSitemapUrls] = useState([]); // List of URLs to be scraped selected from the sitemap.
-
-  const [areUrlsProvided, setAreUrlsProvided] = useState(false); // Flag to check if the user has provided any URLs to be scraped.
-  const [areSitemapUrlsProvided, setAreSitemapUrlsProvided] = useState(false); // Flag to check if the user has provided any URLs to be scraped from the sitemap.
-
-  const [scrapingResponse, setScrapingResponse] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [sitemapUrl, setSitemapUrl] = useState("");
-
-  const [sitemapUrlsLoading, setSitemapUrlsLoading] = useState(false);
-  const [sitemapUrlsError, setSitemapUrlsError] = useState(null);
-  const [selectedUrlIds, setSelectedUrlIds] = useState([]);
-  const [selectAllUrls, setSelectAllUrls] = useState(false);
-  const [service, setService] = useState(null);
-  const [inputUrl, setInputUrl] = useState("");
-  const [filter, setFilter] = useState("");
-  const [recursionDepth, setRecursionDepth] = useState<number>(3);
-  const [maxPages, setMaxPages] = useState<number>(40);
-  const [isDropdownOpen, setIsDropdownOpen] = useState<Record<number, boolean>>(
-    {}
-  );
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [
+    showMobileWebsiteFilterBottomSheet,
+    setShowMobileWebsiteFilterBottomSheet,
+  ] = useState<boolean>(false);
 
   useEffect(() => {
     setUrls([""]);
     setInternalSteps(1);
   }, [activeTab]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsDropdownOpen({});
-    }
-  };
 
   const handleAddUrl = () => {
     setUrls((prevList) => [...prevList, ""]);
@@ -104,7 +72,7 @@ function WebScraper({
   };
 
   const handleFilterClick = (idx: number) => {
-    setIsDropdownOpen((prevOpen) => ({ ...prevOpen, [idx]: !prevOpen[idx] }));
+    // setIsDropdownOpen((prevOpen) => ({ ...prevOpen, [idx]: !prevOpen[idx] }));
   };
 
   const handleUrlChange = (url_index: number, url: string) => {
@@ -141,52 +109,6 @@ function WebScraper({
   const handleSitemapSubmit = () => {
     console.log("Submitted Sitemap URLs:", urls);
   };
-
-  // const handleSitemapUrlChange = (url) => {
-  //   setSitemapUrl(url);
-  // };
-
-  // const handleFetchSitemapUrls = async () => {
-  //   try {
-  //     if (!sitemapUrl) {
-  //       toast.error("Please provide a valid sitemap URL.");
-  //       return;
-  //     }
-  //     setSitemapUrlsLoading(true);
-  //     const response = await authenticatedFetch(
-  //       `${BASE_URL[environment]}/process_sitemap?url=${sitemapUrl}`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Token ${accessToken}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       const responseData = await response.json();
-  //       setSitemapUrls(responseData.urls);
-  //       setSitemapUrlsLoading(false);
-  //     } else {
-  //       throw new Error("Error fetching sitemap. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     setSitemapUrlsLoading(false);
-  //     toast.error("Error fetching sitemap. Please try again.");
-  //     setSitemapUrlsError("Error fetching sitemap. Please try again.");
-  //   }
-  // };
-
-  const handleRemoveUrl = (url_index: number) => {
-    setUrls((prevList) => {
-      let newUrls = [...prevList];
-      newUrls.splice(url_index, 1);
-      return newUrls;
-    });
-  };
-
-  const filteredUrls = urls.filter((url) => url.includes(filter));
 
   const fileList: UrlType[] = [
     {
@@ -251,6 +173,32 @@ function WebScraper({
           </div>
         </div>
       </li>
+    );
+  };
+
+  const mobileFilterDeleteComponent = (idx: number) => {
+    return (
+      <DropdownMenuContent
+        align="end"
+        className="cc-w-[157px] cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3 cc-z-30"
+      >
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className="cc-flex cc-justify-between cc-font-semibold cc-border-b cc-border-outline-base_em cc-py-2 cc-px-5 cc-cursor-pointer"
+            onClick={() => setShowMobileWebsiteFilterBottomSheet(true)}
+          >
+            <span>Filter by</span>
+            <img src={images.filter} alt="" className="" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cc-flex cc-justify-between cc-text-smxt cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
+            onClick={() => handleDeleteUrl(idx)}
+          >
+            <span>Delete</span>
+            <img src={images.trash_2} alt="" className="cc-cursor-pointer" />
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
     );
   };
 
@@ -385,69 +333,6 @@ function WebScraper({
               </div>
             )}
           </div>
-          {/* <div className="cc-flex cc-justify-center cc-mb-4">
-        <input
-          type="text"
-          placeholder="https://"
-          value={inputUrl}
-          onChange={(e) => setInputUrl(e.target.value)}
-          className="cc-flex-1 cc-p-2 cc-border cc-border-gray-300 cc-rounded"
-        />
-        <button
-          onClick={handleAddUrl}
-          className="cc-flex cc-items-center cc-px-4 cc-py-2 cc-ml-2 cc-bg-blue-500 cc-text-white cc-rounded"
-        >
-          <span className="cc-mr-2">Add</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="cc-h-5 cc-w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 5a1 1 0 01.993.883L11 6v4h4a1 1 0 01.117 1.993L15 12h-4v4a1 1 0 01-1.993.117L9 16v-4H5a1 1 0 01-.117-1.993L5 10h4V6a1 1 0 011-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="cc-flex cc-justify-center cc-mb-4">
-        <input
-          type="text"
-          placeholder="Filter URLs"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="cc-flex-1 cc-p-2 cc-border cc-border-gray-300 cc-rounded"
-        />
-      </div>
-      <div className="cc-mb-4">
-        {filteredUrls.map((url, index) => (
-          <div
-            key={index}
-            className="cc-flex cc-justify-between cc-items-center cc-bg-gray-100 cc-p-2 cc-mb-2 cc-border cc-border-gray-300 cc-rounded"
-          >
-            {url}
-            <button
-              onClick={() => handleDeleteUrl(index)}
-              className="cc-text-red-500"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="cc-h-5 cc-w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6 2a1 1 0 00-.707.293L4 3H2a1 1 0 100 2h1v11a2 2 0 002 2h8a2 2 0 002-2V5h1a1 1 0 100-2h-2l-1.293-1.293A1 1 0 0014 2H6zm3 5a1 1 0 112 0v7a1 1 0 11-2 0V7z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          </div>
-        ))}
-      </div> */}
           <div className="py-4 cc-flex cc-grow cc-w-full">
             {activeTab === "website" && (
               <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
@@ -469,90 +354,66 @@ function WebScraper({
                       />
                       <input
                         type="text"
-                        className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm focus:cc-outline-focus-primary  focus:cc-bg-surface-white cc-font-semibold"
+                        className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm cc-ring-blue-400/40 focus-visible:cc-outline-none focus-visible:cc-bg-white focus-visible:cc-ring-4 focus-visible:cc-ring-ring  focus:cc-bg-surface-white cc-font-semibold"
                         placeholder="Enter URL"
                         value={url}
                         onChange={(e) => handleUrlChange(idx, e.target.value)}
                       />
                     </div>
                     <div className="cc-flex sm:cc-hidden cc-relative">
-                      <Dialog.Root
-                        open={openDialogId === idx}
-                        onOpenChange={(isOpen) =>
-                          setOpenDialogId(isOpen ? idx : null)
-                        }
-                      >
-                        <Dialog.Trigger asChild>
-                          <button className="icon-button cc-cursor-pointer">
-                            <img
-                              src={images.menuIcon}
-                              alt=""
-                              className="cc-mr-3"
-                            />
-                          </button>
-                        </Dialog.Trigger>
-                        <Dialog.Portal>
-                          <Dialog.Content className="dialog-content cc-absolute cc-right-0 cc-top-full cc-flex  cc-z-50 cc-w-full">
-                            <div className="dialog-body">
-                              <div className="dialog-item cc-border-b cc-border-b-color-black-7 cc-p-2 cc-flex">
-                                <span>Filter by</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <img
+                            src={images.menuIcon}
+                            alt="Menu Icon"
+                            className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+                          />
+                        </DropdownMenuTrigger>
+                        {mobileFilterDeleteComponent(idx)}
+                      </DropdownMenu>
+                    </div>
+                    <div className="cc-hidden sm:cc-flex cc-items-center">
+                      <div className="cc-mr-4">
+                        <div className="">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                type="button"
+                                className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
+                                onClick={() => handleFilterClick(idx)}
+                                style={{ width: "140px" }}
+                              >
                                 <img
                                   src={images.filter}
                                   alt=""
                                   className="cc-mr-3"
                                 />
-                              </div>
-                              <div className="dialog-item cc-border-b cc-border-b-color-black-7 cc-p-2 cc-flex">
-                                <span>Delete</span>
-                                <img
-                                  src={images.trash_2}
-                                  alt=""
-                                  className="cc-cursor-pointer"
-                                  onClick={() => handleDeleteUrl(idx)}
-                                />
-                              </div>
-                            </div>
-                          </Dialog.Content>
-                        </Dialog.Portal>
-                      </Dialog.Root>
-                    </div>
-                    <div className="cc-hidden sm:cc-flex cc-items-center">
-                      <div className="cc-mr-4">
-                        <div className="cc-relative cc-p-4">
-                          <div
-                            className="cc-relative cc-inline-block"
-                            ref={dropdownRef}
-                          >
-                            <button
-                              type="button"
-                              className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
-                              onClick={() => handleFilterClick(idx)}
-                              style={{ width: "140px" }}
+                                Filter by
+                                <svg
+                                  className="cc-ml-2 cc-h-5 cc-w-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="cc-w-296 cc-bg-white cc-border cc-rounded-xl cc-border-outline-base_em cc-shadow-e3 cc-z-40"
                             >
-                              <img
-                                src={images.filter}
-                                alt=""
-                                className="cc-mr-3"
-                              />
-                              Filter by
-                              <svg
-                                className="cc-ml-2 cc-h-5 cc-w-5"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                                aria-hidden="true"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M5.293 9.707a1 1 0 011.414 0L10 13.586l3.293-3.879a1 1 0 011.414 1.414l-4 4.5a1 1 0 01-1.414 0l-4-4.5a1 1 0 010-1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </button>
-                            {isDropdownOpen[idx] && (
-                              <div className="cc-absolute cc-right-0 cc-mt-2 cc-w-296 cc-z-10">
-                                <div className="cc-px-2 cc-py-2 cc-shadow-dropdown cc-border cc-rounded-xl cc-bg-white cc-border-color-black-7">
-                                  <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
+                              <DropdownMenuGroup>
+                                <DropdownMenuItem
+                                  className="cc-flex cc-flex-col cc-justify-between cc-font-semibold cc-py-2 cc-px-2 "
+                                  onSelect={(event) => event.preventDefault()}
+                                >
+                                  <div className="cc-py-3 cc-px-2 cc-flex cc-justify-between cc-items-center">
                                     <div className="cc-flex">
                                       <label>
                                         <input
@@ -583,26 +444,79 @@ function WebScraper({
                                         </span>
                                       </label>
                                     </div>
-                                    <FilterDropdown
-                                      options={[
-                                        { label: "03", value: 3 },
-                                        { label: "04", value: 4 },
-                                        { label: "05", value: 5 },
-                                      ]}
-                                      selectedOption={
-                                        filterData[idx]?.depthValue
-                                      }
-                                      onSelect={(value) =>
-                                        handleFilterData(
-                                          idx,
-                                          "depthValue",
-                                          value
-                                        )
-                                      }
-                                      width={"11"}
-                                    />
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <button
+                                          type="button"
+                                          className={`cc-flex cc-items-center cc-rounded-xl cc-bg-surface-surface_2 cc-px-1 cc-py-1 cc-font-semibold cc-text-med_em hover:cc-bg-gray-50 cc-w-[51px] cc-text-xs cc-pl-2 cc-h-8`}
+                                          id="options-menu"
+                                          aria-expanded="true"
+                                          aria-haspopup="true"
+                                        >
+                                          {filterData[idx]?.depthValue}
+                                          <svg
+                                            className="cc-ml-1"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 16 10"
+                                            aria-hidden="true"
+                                            width="12"
+                                            height="8"
+                                          >
+                                            <path
+                                              fillRule="evenodd"
+                                              d="M5.293 3.293a1 1 0 011.414 0L10 7.586l3.293-4.293a1 1 0 011.414 1.414l-4 5a1 1 0 01-1.414 0l-4-5a1 1 0 010-1.414z"
+                                              clipRule="evenodd"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent
+                                        align="end"
+                                        side={"bottom"}
+                                        className="cc-w-[92px] cc-z-40 cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3"
+                                      >
+                                        <DropdownMenuGroup>
+                                          <DropdownMenuItem
+                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
+                                            onClick={() =>
+                                              handleFilterData(
+                                                idx,
+                                                "depthValue",
+                                                1
+                                              )
+                                            }
+                                          >
+                                            01
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
+                                            onClick={() =>
+                                              handleFilterData(
+                                                idx,
+                                                "depthValue",
+                                                2
+                                              )
+                                            }
+                                          >
+                                            02
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
+                                            onClick={() =>
+                                              handleFilterData(
+                                                idx,
+                                                "depthValue",
+                                                3
+                                              )
+                                            }
+                                          >
+                                            03
+                                          </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
                                   </div>
-                                  <div className="cc-py-4 cc-px-4 cc-flex cc-justify-between cc-items-center">
+                                  <div className="cc-py-3 cc-px-2 cc-flex cc-justify-between cc-items-center">
                                     <div className="cc-flex">
                                       <label>
                                         <input
@@ -633,31 +547,30 @@ function WebScraper({
                                         </span>
                                       </label>
                                     </div>
-                                    <FilterDropdown
-                                      options={[
-                                        { label: "40", value: 40 },
-                                        { label: "50", value: 50 },
-                                        { label: "60", value: 60 },
-                                      ]}
-                                      selectedOption={filterData[idx]?.maxPages}
-                                      onSelect={(value) =>
-                                        handleFilterData(idx, "maxPages", value)
+                                    <Input
+                                      type="text"
+                                      placeholder=""
+                                      className="cc-h-8 cc-w-[51px] cc-text-xs cc-pl-2"
+                                      value={filterData[idx]?.maxPages}
+                                      onChange={(e) =>
+                                        handleFilterData(
+                                          idx,
+                                          "maxPages",
+                                          e.target.value
+                                        )
                                       }
-                                      width={"11"}
                                     />
                                   </div>
                                   <button
                                     className="cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4"
-                                    onClick={() => {
-                                      setIsDropdownOpen({});
-                                    }}
+                                    onClick={() => {}}
                                   >
                                     Apply
                                   </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                                </DropdownMenuItem>
+                              </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </div>
                       <div>
@@ -702,7 +615,7 @@ function WebScraper({
                       />
                       <input
                         type="text"
-                        className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm focus:cc-outline-focus-primary  focus:cc-bg-surface-white cc-font-semibold"
+                        className="cc-py-2 cc-px-3 cc-flex-grow cc-text-text-disabled cc-rounded-tr-xl cc-leading-24 cc-rounded-br-xl cc-border-l cc-border-outline-med_em cc-bg-color-black-7 cc-text-sm cc-ring-blue-400/40 focus-visible:cc-outline-none focus-visible:cc-bg-white focus-visible:cc-ring-4 focus-visible:cc-ring-ring  focus:cc-bg-surface-white cc-font-semibold"
                         placeholder="Enter URL"
                         value={urls?.[0]}
                         onChange={(e) => handleUrlChange(0, e.target.value)}
@@ -783,119 +696,6 @@ function WebScraper({
                 )}
               </div>
             )}
-            {/* {activeTab === 'sitemap' && (
-              <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
-                <div className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10">
-                  <input
-                    type="text"
-                    className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
-                    style={{ borderRadius: '0.375rem' }}
-                    placeholder="Enter Sitemap URL"
-                    value={sitemapUrl}
-                    onChange={(e) => handleSitemapUrlChange(e.target.value)}
-                  />
-                  <div
-                    className="cc-text-sm cc-border cc-border-gray-400 cc-w-14 cc-h-10 cc-p-2 cc-cursor-pointer cc-items-center"
-                    onClick={handleFetchSitemapUrls}
-                    style={{
-                      backgroundColor: fetchButtonHoveredState
-                        ? darkenColor(primaryBackgroundColor, -10)
-                        : primaryBackgroundColor,
-                      color: primaryTextColor,
-                      borderRadius: '0.375rem',
-                    }}
-                    onMouseEnter={() => setFetchButtonHoveredState(true)}
-                    onMouseLeave={() => setFetchButtonHoveredState(false)}
-                  >
-                    Fetch
-                  </div>
-                </div>
-
-                <div className="cc-w-full cc-h-70 cc-overflow-y-auto">
-                  {sitemapUrlsLoading && (
-                    <div className="cc-h-full cc-w-full cc-items-center cc-justify-center cc-flex">
-                      <BiLoaderAlt className="cc-animate-spin cc-text-5xl" />
-                    </div>
-                  )}
-                  {sitemapUrlsError && (
-                    <div className="cc-h-full cc-w-full cc-items-center cc-justify-center cc-flex cc-flex-col cc-pt-8">
-                      <div className="cc-flex cc-w-full">
-                        <HiXCircle className="cc-text-red-500 cc-w-6 cc-h-6" />
-                        <p className="cc-text-center">{sitemapUrlsError}</p>
-                      </div>
-                    </div>
-                  )}
-                  {sitemapUrls.length > 0 && (
-                    <>
-                      <div className="cc-flex cc-flex-row cc-items-center cc-w-full cc-h-10 cc-p-2 cc-bg-gray-200 cc-space-x-2">
-                        <input
-                          type="checkbox"
-                          onChange={(e) => {
-                            // const service = processedIntegrations.find(
-                            //   (integration) => integration.id === 'WEB_SCRAPER'
-                            // );
-                            const maxPagesToScrape =
-                              service?.maxPagesToScrape ||
-                              DEFAULT_MAX_PAGES_TO_SCRAPE;
-                            if (e.target.checked) {
-                              if (sitemapUrls.length > maxPagesToScrape) {
-                                toast.error(
-                                  `You can select a maximum of ${maxPagesToScrape} URLs.`
-                                );
-                                return;
-                              }
-                              setSelectAllUrls(true);
-                              setSelectedUrlIds(
-                                sitemapUrls.map((url, idx) => idx)
-                              );
-                            } else {
-                              setSelectAllUrls(false);
-                              setSelectedUrlIds([]);
-                            }
-                          }}
-                          checked={selectAllUrls}
-                        />
-                        <p className="cc-text-sm cc-text-gray-700 cc-font-bold cc-w-full">
-                          URLs
-                        </p>
-                      </div>
-                      <div className="cc-flex cc-flex-col cc-justify-start cc-h-64 cc-items-start cc-w-full cc-space-y-4">
-                        {sitemapUrls.map((url, idx) => (
-                          <div
-                            key={idx}
-                            className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10 cc-p-2"
-                          >
-                            <input
-                              type="checkbox"
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setSelectedUrlIds((prevList) => [
-                                    ...prevList,
-                                    idx,
-                                  ]);
-                                } else {
-                                  setSelectedUrlIds((prevList) => {
-                                    let newIdsList = [...prevList];
-                                    newIdsList.splice(
-                                      newIdsList.indexOf(idx),
-                                      1
-                                    );
-                                    setSelectAllUrls(false);
-                                    return newIdsList;
-                                  });
-                                }
-                              }}
-                              checked={selectedUrlIds.includes(idx)}
-                            />
-                            <p className="cc-text-sm cc-text-gray-700">{url}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            )} */}
           </div>
         </div>
         {activeTab === "website" && (
@@ -959,6 +759,13 @@ function WebScraper({
           </>
         )}
       </div>
+      <WebsiteFilterBottomSheet
+        isOpen={showMobileWebsiteFilterBottomSheet}
+        onOpenChange={setShowMobileWebsiteFilterBottomSheet}
+        filterData={filterData}
+        idx={0}
+        handleFilterData={handleFilterData}
+      />
     </>
   );
 }
