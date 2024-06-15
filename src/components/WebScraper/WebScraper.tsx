@@ -38,7 +38,9 @@ function WebScraper({
   setActiveStep = emptyFunction,
   onCloseModal,
 }: WebScraperProps) {
-  const [activeTab, setActiveTab] = useState<"website" | "sitemap">("website");
+  const [activeTab, setActiveTab] = useState<"website" | "sitemap" | "success">(
+    "website"
+  );
   const [singleTabValue, setSinglTabValue] = useState<
     "website" | "sitemap" | null
   >(null);
@@ -46,6 +48,7 @@ function WebScraper({
   const [filterData, setFilterData] = useState<FilterData[]>([]);
   const [internalSteps, setInternalSteps] = useState<number>(1);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<{
     state: boolean;
     percentage: number;
@@ -104,10 +107,12 @@ function WebScraper({
 
   const handleWebiteSubmit = () => {
     console.log("Submitted Website URLs:", urls);
+    setActiveTab("success");
   };
 
   const handleSitemapSubmit = () => {
     console.log("Submitted Sitemap URLs:", urls);
+    setInternalSteps(3);
   };
 
   const fileList: UrlType[] = [
@@ -375,22 +380,28 @@ function WebScraper({
                     <div className="cc-hidden sm:cc-flex cc-items-center">
                       <div className="cc-mr-4">
                         <div className="">
-                          <DropdownMenu>
+                          <DropdownMenu onOpenChange={setIsFilterOpen}>
                             <DropdownMenuTrigger asChild>
                               <button
                                 type="button"
-                                className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
+                                className={`cc-flex cc-relative cc-justify-center cc-items-center cc-text-smxt cc-border cc-border-color-black-7 cc-rounded-xl cc-w-[130px] cc-h-10 cc-px-3 cc-font-bold cc-text-gray-700 hover:cc-bg-surface-surface_1 ${
+                                  isFilterOpen
+                                    ? "cc-bg-surface-surface_1"
+                                    : "cc-bg-white"
+                                }`}
                                 onClick={() => handleFilterClick(idx)}
-                                style={{ width: "140px" }}
                               >
+                                {filterData[idx]?.filterType != null && (
+                                  <div className="cc-absolute -cc-right-0.5 -cc-top-0.5 cc-border-2 cc-border-white cc-h-2.5 cc-w-2.5 cc-rounded-full cc-bg-surface-info_main "></div>
+                                )}
                                 <img
                                   src={images.filter}
                                   alt=""
-                                  className="cc-mr-3"
+                                  className="cc-mr-2"
                                 />
                                 Filter by
                                 <svg
-                                  className="cc-ml-2 cc-h-5 cc-w-5"
+                                  className="cc-ml-1 cc-h-5 cc-w-5"
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 20 20"
                                   fill="currentColor"
@@ -640,6 +651,30 @@ function WebScraper({
                     )}
                   </div>
                 )}
+              </div>
+            )}
+
+            {activeTab === "success" && (
+              <div className="cc-border cc-border-surface-surface_3 cc-p-4 cc-rounded-xl cc-w-full">
+                <div className="cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 cc-h-[300px]">
+                  <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
+                    <img
+                      src={images.successIcon}
+                      alt="Success"
+                      className="cc-h-6 cc-w-6"
+                    />
+                  </div>
+                  <div className="cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
+                    Scraping request initiated successfully.
+                  </div>
+                  <Button
+                    onClick={() => setActiveStep("INTEGRATION_LIST")}
+                    size="md"
+                    className="cc-px-6"
+                  >
+                    Got it
+                  </Button>
+                </div>
               </div>
             )}
           </div>
