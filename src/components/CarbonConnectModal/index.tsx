@@ -32,20 +32,6 @@ function CarbonConnectModal({
   customClassName = "",
   wrapperId = "react-portal-carbonconnect-modal-container",
 }: ModalProps) {
-  useEffect(() => {
-    if (
-      isOpen &&
-      typeof window !== "undefined" &&
-      typeof document !== "undefined"
-    )
-      document.body.classList.add("hasModal");
-    return () => {
-      if (typeof window !== "undefined" && typeof document !== "undefined") {
-        document.body.classList.remove("hasModal");
-      }
-    };
-  }, [isOpen]);
-
   const handleCloseModal = () => {
     onCloseModal();
   };
