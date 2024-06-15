@@ -112,7 +112,7 @@ function WebScraper({
 
   const handleSitemapSubmit = () => {
     console.log("Submitted Sitemap URLs:", urls);
-    setInternalSteps(3);
+    setActiveTab("success");
   };
 
   const fileList: UrlType[] = [
