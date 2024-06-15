@@ -78,59 +78,18 @@ export default function WebsiteFilterBottomSheet({
                   </span>
                 </label>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={`cc-flex cc-items-center cc-rounded-xl cc-bg-surface-surface_2 cc-px-1 cc-py-1 cc-font-semibold cc-text-med_em hover:cc-bg-gray-50 cc-w-[51px] cc-text-xs cc-pl-2 cc-h-8`}
-                    id="options-menu"
-                    aria-expanded="true"
-                    aria-haspopup="true"
-                  >
-                    {filterData[idx]?.depthValue}
-                    <svg
-                      className="cc-ml-1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 10"
-                      aria-hidden="true"
-                      width="12"
-                      height="8"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 3.293a1 1 0 011.414 0L10 7.586l3.293-4.293a1 1 0 011.414 1.414l-4 5a1 1 0 01-1.414 0l-4-5a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  side={"top"}
-                  className="cc-w-[92px] cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3"
-                >
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem
-                      className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                      onClick={() => handleFilterData(idx, "depthValue", 1)}
-                    >
-                      01
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                      onClick={() => handleFilterData(idx, "depthValue", 2)}
-                    >
-                      02
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                      onClick={() => handleFilterData(idx, "depthValue", 3)}
-                    >
-                      03
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+
+              <div className="cc-w-[51px]">
+                <Input
+                  type="text"
+                  placeholder=""
+                  className="cc-h-8 cc-text-xs cc-pl-2"
+                  value={filterData[idx]?.maxPages}
+                  onChange={(e) =>
+                    handleFilterData(idx, "maxPages", e.target.value)
+                  }
+                />
+              </div>
             </div>
             <div className="cc-py-3 cc-flex cc-justify-between cc-items-center">
               <div className="cc-flex">
@@ -157,15 +116,17 @@ export default function WebsiteFilterBottomSheet({
                   </span>
                 </label>
               </div>
-              <Input
-                type="text"
-                placeholder=""
-                className="cc-h-8 cc-w-[51px] cc-text-xs cc-pl-2"
-                value={filterData[idx]?.maxPages}
-                onChange={(e) =>
-                  handleFilterData(idx, "maxPages", e.target.value)
-                }
-              />
+              <div className="cc-w-[51px]">
+                <Input
+                  type="text"
+                  placeholder=""
+                  className="cc-h-8 cc-text-xs cc-pl-2"
+                  value={filterData[idx]?.maxPages}
+                  onChange={(e) =>
+                    handleFilterData(idx, "maxPages", e.target.value)
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
