@@ -185,14 +185,14 @@ function WebScraper({
     return (
       <DropdownMenuContent
         align="end"
-        className="cc-w-[157px] cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3 cc-z-30"
+        className="cc-w-48 cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3 cc-z-30"
       >
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="cc-flex cc-justify-between cc-font-semibold cc-border-b cc-border-outline-base_em cc-py-2 cc-px-5 cc-cursor-pointer"
             onClick={() => setShowMobileWebsiteFilterBottomSheet(true)}
           >
-            <span>Filter by</span>
+            <span>Configure by</span>
             <img src={images.filter} alt="" className="" />
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -378,13 +378,13 @@ function WebScraper({
                       </DropdownMenu>
                     </div>
                     <div className="cc-hidden sm:cc-flex cc-items-center">
-                      <div className="cc-mr-4">
+                      <div className="cc-mr-3">
                         <div className="">
                           <DropdownMenu onOpenChange={setIsFilterOpen}>
                             <DropdownMenuTrigger asChild>
                               <button
                                 type="button"
-                                className={`cc-flex cc-relative cc-justify-center cc-items-center cc-text-smxt cc-border cc-border-color-black-7 cc-rounded-xl cc-w-[130px] cc-h-10 cc-px-3 cc-font-bold cc-text-gray-700 hover:cc-bg-surface-surface_1 ${
+                                className={`cc-flex cc-relative cc-justify-center cc-items-center cc-text-smxt cc-border cc-border-color-black-7 cc-rounded-xl cc-w-[166px] cc-h-10 cc-px-3 cc-font-bold cc-text-gray-700 hover:cc-bg-surface-surface_1 ${
                                   isFilterOpen
                                     ? "cc-bg-surface-surface_1"
                                     : "cc-bg-white"
@@ -399,7 +399,7 @@ function WebScraper({
                                   alt=""
                                   className="cc-mr-2"
                                 />
-                                Filter by
+                                Configure by
                                 <svg
                                   className="cc-ml-1 cc-h-5 cc-w-5"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -530,7 +530,7 @@ function WebScraper({
                           </DropdownMenu>
                         </div>
                       </div>
-                      <div>
+                      <div className="cc-mr-2">
                         <img
                           src={images.trash_2}
                           alt=""

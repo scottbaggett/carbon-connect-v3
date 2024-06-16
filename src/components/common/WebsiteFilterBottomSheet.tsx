@@ -53,7 +53,7 @@ export default function WebsiteFilterBottomSheet({
           </button>
         </DialogClose>
         <div className="cc-p-4 sm:cc-p-8">
-          <div className="cc-text-xlxt cc-font-bold cc-mb-2">Filter by</div>
+          <div className="cc-text-xlxt cc-font-bold cc-mb-2">Configure by</div>
           <div>
             <div className="cc-py-3 cc-flex cc-justify-between cc-items-center">
               <div className="cc-flex">
