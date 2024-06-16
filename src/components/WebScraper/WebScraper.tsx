@@ -231,7 +231,7 @@ function WebScraper({
         </div>
       </DialogHeader>
       <div className="cc-text-center cc-w-full cc-flex cc-flex-col cc-h-full">
-        <div className="cc-min-h-80 cc-max-h-96 cc-p-4 cc-flex-grow cc-overflow-auto">
+        <div className="cc-min-h-80 sm:cc-max-h-96 cc-p-4 cc-flex-grow cc-overflow-auto">
           <div className="cc-flex cc-w-full cc-mb-6">
             {singleTabValue === null && (
               <div className="cc-flex cc-w-full cc-gap-x-4">
