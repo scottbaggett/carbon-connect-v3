@@ -17,6 +17,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomSheet";
 import { Input } from "@components/common/design-system/Input";
+import { Checkbox } from "@components/common/design-system/Checkbox";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -167,11 +168,10 @@ function WebScraper({
         className="cc-flex cc-transition-all cc-py-3 cc-font-semibold cc-text-high_em cc-text-sm cc-border-b cc-border-outline-base_em hover:cc-bg-gray-25 cc-cursor-pointer"
       >
         <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">
-          <input
-            type="checkbox"
-            className="cc-my-1"
+          <Checkbox
+            className="cc-my-0.5"
             checked={isChecked}
-            onChange={onSelect}
+            onCheckedChange={onSelect}
           />
           <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
             <p className="cc-flex cc-flex-grow cc-flex-start">{item.url}</p>
@@ -606,10 +606,10 @@ function WebScraper({
                           </button>
                         ) : (
                           <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
-                            <input
-                              type="checkbox"
+                            <Checkbox
+                              className="cc-my-0.5"
                               checked={selectedFiles.length === fileList.length}
-                              onChange={() => {
+                              onCheckedChange={() => {
                                 const allFilesId = fileList.map(
                                   (item) => item.id
                                 );
