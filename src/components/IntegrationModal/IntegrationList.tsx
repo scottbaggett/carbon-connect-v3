@@ -7,8 +7,10 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
+import CrossIcon from "@assets/svgIcons/cross-icon.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
+import { cn } from "@components/common/design-system/utils";
 
 export interface IntegrationListProps {
   activeStep?: string;
@@ -58,7 +60,7 @@ function IntegrationList({
           </DialogTitle>
         </div>
       </DialogHeader>
-      <div className="cc-p-4 cc-flex-grow cc-overflow-auto">
+      <div className="cc-p-4 cc-flex-grow cc-overflow-auto sm:cc-h-[640px] sm:cc-max-h-[90vh]">
         <div className="cc-relative cc-mb-6">
           <Input
             placeholder="Search Integrations"
@@ -71,6 +73,16 @@ function IntegrationList({
             alt="search Icon"
             className="cc-h-5 cc-w-5 cc-absolute cc-left-[14px] cc-transform -cc-translate-y-1/2 cc-top-1/2 cc-pointer-events-none"
           />
+          {searchText !== "" && (
+            <Button
+              size="xs"
+              onClick={() => setSearchText("")}
+              variant="neutral-white"
+              className="cc-absolute cc-border-none cc-right-2 cc-transform -cc-translate-y-1/2 cc-top-1/2 cc-px-[0_!important] cc-w-6 cc-bg-transparent"
+            >
+              <img src={CrossIcon} alt="Cross Icon" className="cc-h-3 cc-w-3" />
+            </Button>
+          )}
         </div>
         <ul className="cc-grid cc-grid-cols-2 cc-gap-3 sm:cc-grid-cols-3">
           {!isEmpty(listData) &&
@@ -83,49 +95,30 @@ function IntegrationList({
                       ? "cc-bg-gray-200 cc-cursor-not-allowed"
                       : "cc-bg-white cc-cursor-pointer hover:cc-bg-surface-surface_1 hover:cc-border-outline-med_em"
                   }`}
+                  onClick={() => setActiveStep(integration?.id)}
                 >
-                  <div
-                    className="cc-flex cc-flex-row cc-items-center cc-w-full cc-justify-between"
-                    onClick={() => setActiveStep(integration?.id)}
-                  >
-                    <div className="cc-flex cc-flex-row cc-items-center cc-justify-start">
-                      <div className="cc-flex cc-items-center cc-justify-center cc-border-2 cc-rounded-md cc-shadow-e2 cc-border-white cc-h-[56px] cc-w-[56px] cc-mr-3 cc-shrink-0">
-                        <div
-                          className={`cc-flex  cc-items-center cc-justify-center cc-h-full cc-w-full cc-rounded-md
-                      ${
-                        integration?.iconBgColor
-                          ? "cc-bg-" + integration?.iconBgColor
-                          : ""
-                      }`}
-                        >
-                          {integration.icon}
-                        </div>
-                      </div>
-                      <div className="cc-flex-grow">
-                        <h2 className="cc-text-base cc-font-semibold cc-items-center cc-justify-center">
-                          {integration.integrationsListViewTitle ||
-                            integration.name}
-                          {/* {integration.data_source_type === "GOOGLE_DRIVE"
-                            ? "Connect your Google Drive"
-                            : integration.name} */}
-                        </h2>
-                        <p className="cc-font-semibold cc-text-xs cc-text-low_em cc-mt-1">
-                          {integration.additionalInfo}
-                        </p>
+                  <div className="cc-grid cc-grid-cols-[40px,calc(100%_-_52px)] sm:cc-grid-cols-[56px,calc(100%_-_68px)] cc-gap-3 cc-items-center cc-justify-start">
+                    <div className="cc-flex cc-aspect-square cc-items-center cc-justify-center cc-border-2 cc-rounded-md cc-shadow-e2 cc-border-white cc-shrink-0">
+                      <div
+                        className={cn(
+                          `cc-flex  cc-items-center cc-justify-center cc-h-full cc-w-full cc-rounded-md`,
+                          integration?.iconBgColor &&
+                            "cc-bg-" + integration?.iconBgColor
+                        )}
+                      >
+                        {integration.icon}
                       </div>
                     </div>
-                    <div className="cc-flex cc-flex-col">
-                      <div className="cc-flex cc-flex-row cc-w-full cc-items-center cc-space-x-4">
-                        {!integration.active && (
-                          <p className="cc-text-xs cc-text-gray-600 cc-bg-white cc-px-4 cc-py-1 cc-rounded-full ">
-                            Coming Soon
-                          </p>
-                        )}
-
-                        {/* {integration.active && integrationStatus && (
-                            <HiCheckCircle className="cc-text-green-500 cc-w-6 cc-h-6" />
-                          )} */}
-                      </div>
+                    <div className="cc-flex-grow">
+                      <h2 className="cc-text-base cc-font-semibold cc-items-center cc-justify-center cc-truncate">
+                        {integration.integrationsListViewTitle ||
+                          integration.name}
+                      </h2>
+                      {(!integration.active || integration.additionalInfo) && (
+                        <p className="cc-font-semibold cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
+                          {integration.additionalInfo || "Coming Soon"}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </li>
