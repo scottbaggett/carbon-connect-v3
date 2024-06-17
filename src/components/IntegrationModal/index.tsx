@@ -24,20 +24,6 @@ function IntegrationModal({
   const entryPoint: string = "INTEGRATION_LIST";
   const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
 
-  useEffect(() => {
-    if (
-      isOpen &&
-      typeof window !== "undefined" &&
-      typeof document !== "undefined"
-    )
-      document.body.classList.add("hasModal");
-    return () => {
-      if (typeof window !== "undefined" && typeof document !== "undefined") {
-        document.body.classList.remove("hasModal");
-      }
-    };
-  }, [isOpen]);
-
   const showActiveContent = (activeStep: string | number) => {
     switch (activeStep) {
       case "INTEGRATION_LIST":
@@ -52,7 +38,11 @@ function IntegrationModal({
         break;
       case "WEB_SCRAPER":
         return (
-          <WebScraper activeStep={activeStep} setActiveStep={setActiveStep} />
+          <WebScraper
+            activeStep={activeStep}
+            setActiveStep={setActiveStep}
+            onCloseModal={onCloseModal}
+          />
         );
         break;
 

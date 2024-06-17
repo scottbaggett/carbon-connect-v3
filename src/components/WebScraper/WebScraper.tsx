@@ -17,6 +17,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomSheet";
 import { Input } from "@components/common/design-system/Input";
+import { Checkbox } from "@components/common/design-system/Checkbox";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -38,7 +39,9 @@ function WebScraper({
   setActiveStep = emptyFunction,
   onCloseModal,
 }: WebScraperProps) {
-  const [activeTab, setActiveTab] = useState<"website" | "sitemap">("website");
+  const [activeTab, setActiveTab] = useState<"website" | "sitemap" | "success">(
+    "website"
+  );
   const [singleTabValue, setSinglTabValue] = useState<
     "website" | "sitemap" | null
   >(null);
@@ -46,6 +49,7 @@ function WebScraper({
   const [filterData, setFilterData] = useState<FilterData[]>([]);
   const [internalSteps, setInternalSteps] = useState<number>(1);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<{
     state: boolean;
     percentage: number;
@@ -104,10 +108,12 @@ function WebScraper({
 
   const handleWebiteSubmit = () => {
     console.log("Submitted Website URLs:", urls);
+    setActiveTab("success");
   };
 
   const handleSitemapSubmit = () => {
     console.log("Submitted Sitemap URLs:", urls);
+    setActiveTab("success");
   };
 
   const fileList: UrlType[] = [
@@ -162,11 +168,10 @@ function WebScraper({
         className="cc-flex cc-transition-all cc-py-3 cc-font-semibold cc-text-high_em cc-text-sm cc-border-b cc-border-outline-base_em hover:cc-bg-gray-25 cc-cursor-pointer"
       >
         <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">
-          <input
-            type="checkbox"
-            className="cc-my-1"
+          <Checkbox
+            className="cc-my-0.5"
             checked={isChecked}
-            onChange={onSelect}
+            onCheckedChange={onSelect}
           />
           <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
             <p className="cc-flex cc-flex-grow cc-flex-start">{item.url}</p>
@@ -180,14 +185,14 @@ function WebScraper({
     return (
       <DropdownMenuContent
         align="end"
-        className="cc-w-[157px] cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3 cc-z-30"
+        className="cc-w-48 cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3 cc-z-30"
       >
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="cc-flex cc-justify-between cc-font-semibold cc-border-b cc-border-outline-base_em cc-py-2 cc-px-5 cc-cursor-pointer"
             onClick={() => setShowMobileWebsiteFilterBottomSheet(true)}
           >
-            <span>Filter by</span>
+            <span>Configure by</span>
             <img src={images.filter} alt="" className="" />
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -226,7 +231,7 @@ function WebScraper({
         </div>
       </DialogHeader>
       <div className="cc-text-center cc-w-full cc-flex cc-flex-col cc-h-full">
-        <div className="cc-min-h-96 cc-p-4 cc-flex-grow cc-overflow-auto">
+        <div className="cc-min-h-80 sm:cc-max-h-96 cc-p-4 cc-flex-grow cc-overflow-auto">
           <div className="cc-flex cc-w-full cc-mb-6">
             {singleTabValue === null && (
               <div className="cc-flex cc-w-full cc-gap-x-4">
@@ -373,24 +378,30 @@ function WebScraper({
                       </DropdownMenu>
                     </div>
                     <div className="cc-hidden sm:cc-flex cc-items-center">
-                      <div className="cc-mr-4">
+                      <div className="cc-mr-3">
                         <div className="">
-                          <DropdownMenu>
+                          <DropdownMenu onOpenChange={setIsFilterOpen}>
                             <DropdownMenuTrigger asChild>
                               <button
                                 type="button"
-                                className="cc-flex cc-justify-center cc-items-center cc-rounded-xl cc-w-[130px] cc-bg-white cc-px-3 cc-py-2 cc-text-sm cc-font-medium cc-text-gray-700 hover:cc-bg-gray-50"
+                                className={`cc-flex cc-relative cc-justify-center cc-items-center cc-text-smxt cc-border cc-border-color-black-7 cc-rounded-xl cc-w-[166px] cc-h-10 cc-px-3 cc-font-bold cc-text-gray-700 hover:cc-bg-surface-surface_1 ${
+                                  isFilterOpen
+                                    ? "cc-bg-surface-surface_1"
+                                    : "cc-bg-white"
+                                }`}
                                 onClick={() => handleFilterClick(idx)}
-                                style={{ width: "140px" }}
                               >
+                                {filterData[idx]?.filterType != null && (
+                                  <div className="cc-absolute -cc-right-0.5 -cc-top-0.5 cc-border-2 cc-border-white cc-h-2.5 cc-w-2.5 cc-rounded-full cc-bg-surface-info_main "></div>
+                                )}
                                 <img
                                   src={images.filter}
                                   alt=""
-                                  className="cc-mr-3"
+                                  className="cc-mr-2"
                                 />
-                                Filter by
+                                Configure by
                                 <svg
-                                  className="cc-ml-2 cc-h-5 cc-w-5"
+                                  className="cc-ml-1 cc-h-5 cc-w-5"
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 20 20"
                                   fill="currentColor"
@@ -444,77 +455,21 @@ function WebScraper({
                                         </span>
                                       </label>
                                     </div>
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <button
-                                          type="button"
-                                          className={`cc-flex cc-items-center cc-rounded-xl cc-bg-surface-surface_2 cc-px-1 cc-py-1 cc-font-semibold cc-text-med_em hover:cc-bg-gray-50 cc-w-[51px] cc-text-xs cc-pl-2 cc-h-8`}
-                                          id="options-menu"
-                                          aria-expanded="true"
-                                          aria-haspopup="true"
-                                        >
-                                          {filterData[idx]?.depthValue}
-                                          <svg
-                                            className="cc-ml-1"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 16 10"
-                                            aria-hidden="true"
-                                            width="12"
-                                            height="8"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M5.293 3.293a1 1 0 011.414 0L10 7.586l3.293-4.293a1 1 0 011.414 1.414l-4 5a1 1 0 01-1.414 0l-4-5a1 1 0 010-1.414z"
-                                              clipRule="evenodd"
-                                            />
-                                          </svg>
-                                        </button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent
-                                        align="end"
-                                        side={"bottom"}
-                                        className="cc-w-[92px] cc-z-40 cc-bg-white cc-border cc-border-outline-base_em cc-rounded-xl cc-shadow-e3"
-                                      >
-                                        <DropdownMenuGroup>
-                                          <DropdownMenuItem
-                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                                            onClick={() =>
-                                              handleFilterData(
-                                                idx,
-                                                "depthValue",
-                                                1
-                                              )
-                                            }
-                                          >
-                                            01
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem
-                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                                            onClick={() =>
-                                              handleFilterData(
-                                                idx,
-                                                "depthValue",
-                                                2
-                                              )
-                                            }
-                                          >
-                                            02
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem
-                                            className="cc-flex cc-justify-between cc-font-semibold cc-py-2 cc-px-5 cc-cursor-pointer"
-                                            onClick={() =>
-                                              handleFilterData(
-                                                idx,
-                                                "depthValue",
-                                                3
-                                              )
-                                            }
-                                          >
-                                            03
-                                          </DropdownMenuItem>
-                                        </DropdownMenuGroup>
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <div className="cc-w-[51px]">
+                                      <Input
+                                        type="text"
+                                        placeholder=""
+                                        className="cc-h-8 cc-text-xs cc-pl-2"
+                                        value={filterData[idx]?.depthValue}
+                                        onChange={(e) =>
+                                          handleFilterData(
+                                            idx,
+                                            "depthValue",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
                                   </div>
                                   <div className="cc-py-3 cc-px-2 cc-flex cc-justify-between cc-items-center">
                                     <div className="cc-flex">
@@ -547,19 +502,21 @@ function WebScraper({
                                         </span>
                                       </label>
                                     </div>
-                                    <Input
-                                      type="text"
-                                      placeholder=""
-                                      className="cc-h-8 cc-w-[51px] cc-text-xs cc-pl-2"
-                                      value={filterData[idx]?.maxPages}
-                                      onChange={(e) =>
-                                        handleFilterData(
-                                          idx,
-                                          "maxPages",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
+                                    <div className="cc-w-[51px]">
+                                      <Input
+                                        type="text"
+                                        placeholder=""
+                                        className="cc-h-8 cc-text-xs cc-pl-2"
+                                        value={filterData[idx]?.maxPages}
+                                        onChange={(e) =>
+                                          handleFilterData(
+                                            idx,
+                                            "maxPages",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </div>
                                   </div>
                                   <button
                                     className="cc-flex cc-flex-row cc-w-full cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-px-4 cc-py-2 cc-text-base cc-font-extrabold cc-bg-surface-white cc-border cc-border-color-black-7 cc-text-high_em cc-mt-4"
@@ -573,7 +530,7 @@ function WebScraper({
                           </DropdownMenu>
                         </div>
                       </div>
-                      <div>
+                      <div className="cc-mr-2">
                         <img
                           src={images.trash_2}
                           alt=""
@@ -649,10 +606,10 @@ function WebScraper({
                           </button>
                         ) : (
                           <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
-                            <input
-                              type="checkbox"
+                            <Checkbox
+                              className="cc-my-0.5"
                               checked={selectedFiles.length === fileList.length}
-                              onChange={() => {
+                              onCheckedChange={() => {
                                 const allFilesId = fileList.map(
                                   (item) => item.id
                                 );
@@ -694,6 +651,30 @@ function WebScraper({
                     )}
                   </div>
                 )}
+              </div>
+            )}
+
+            {activeTab === "success" && (
+              <div className="cc-border cc-border-surface-surface_3 cc-p-4 cc-rounded-xl cc-w-full">
+                <div className="cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 cc-h-[300px]">
+                  <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
+                    <img
+                      src={images.successIcon}
+                      alt="Success"
+                      className="cc-h-6 cc-w-6"
+                    />
+                  </div>
+                  <div className="cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
+                    Scraping request initiated successfully.
+                  </div>
+                  <Button
+                    onClick={() => setActiveStep("INTEGRATION_LIST")}
+                    size="md"
+                    className="cc-px-6"
+                  >
+                    Got it
+                  </Button>
+                </div>
               </div>
             )}
           </div>

@@ -13,6 +13,7 @@ import tabler_sitemap from "./svgIcons/tabler_sitemap.svg";
 import filter from "./svgIcons/filter.svg";
 import addIcon from "./svgIcons/add.svg";
 import menuIcon from "./svgIcons/menu-icon.svg";
+import successIcon from "./svgIcons/success.svg";
 
 export const images = {
   logoCarbon,
@@ -29,5 +30,6 @@ export const images = {
   tabler_sitemap,
   filter,
   addIcon,
-  menuIcon
+  menuIcon,
+  successIcon
 };
