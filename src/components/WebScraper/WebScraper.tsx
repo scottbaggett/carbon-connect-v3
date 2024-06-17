@@ -597,7 +597,7 @@ function WebScraper({
                         Fetched URLs
                       </div>
                       <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-text-right cc-mr-4">
-                        {selectedFiles.length > 0 ? (
+                        {selectedFiles.length === fileList.length ? (
                           <button
                             onClick={() => setSelectedFiles([])}
                             className="cc-text-sm cc-font-semibold cc-text-outline-danger_high_em cc-items-start cc-text-left"
