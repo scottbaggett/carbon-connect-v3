@@ -4,15 +4,15 @@ import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
 import DisconnectModal from "@components/common/DisconnectModal";
 import { Button } from "@components/common/design-system/Button";
+import { CarbonConnectProps, EmbeddingGenerators } from "./typing/shared";
+import { CarbonProvider } from "./context/CarbonContext";
 
-const App: React.FC = () => {
+const App: React.FC<CarbonConnectProps> = (props) => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
 
-  // injectToastifyStyle();
-
   return (
-    <>
+    <CarbonProvider {...props}>
       <CarbonConnectModal
         isOpen={openCarbonConnect}
         title=""
@@ -43,7 +43,7 @@ const App: React.FC = () => {
         pauseOnHover
         theme="light"
       /> */}
-    </>
+    </CarbonProvider>
   );
 };
 

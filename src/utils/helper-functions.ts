@@ -54,3 +54,17 @@ export function keyExists(key: string, obj: any) {
   }
   return false;
 }
+
+export const generateRequestId = (length: number) => {
+  const prefix = "cc-";
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return prefix + result;
+};
