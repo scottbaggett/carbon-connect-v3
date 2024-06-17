@@ -14,6 +14,7 @@ import filter from "./svgIcons/filter.svg";
 import addIcon from "./svgIcons/add.svg";
 import menuIcon from "./svgIcons/menu-icon.svg";
 import successIcon from "./svgIcons/success.svg";
+import solidplusIcon from "./svgIcons/solid-plus.svg";
 
 export const images = {
   logoCarbon,
@@ -31,5 +32,6 @@ export const images = {
   filter,
   addIcon,
   menuIcon,
-  successIcon
+  successIcon,
+  solidplusIcon
 };
