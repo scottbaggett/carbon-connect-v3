@@ -1,7 +1,13 @@
+export enum ENV {
+  PRODUCTION = "PRODUCTION",
+  DEVELOPMENT = "DEVELOPMENT",
+  LOCAL = "LOCAL",
+}
+
 export const BASE_URL = {
-  PRODUCTION: "https://api.carbon.ai",
-  DEVELOPMENT: "https://api.dev.carbon.ai",
-  LOCAL: "http://localhost:8000",
+  [ENV.PRODUCTION]: "https://api.carbon.ai",
+  [ENV.DEVELOPMENT]: "https://api.dev.carbon.ai",
+  [ENV.LOCAL]: "http://localhost:8000",
 };
 
 export const onSuccessEvents = {

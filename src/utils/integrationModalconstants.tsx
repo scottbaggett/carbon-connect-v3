@@ -20,9 +20,10 @@ import ZoteroLogo from "../assets/logos/zotero.svg";
 import GitbookLogo from "../assets/logos/gitbook.svg";
 import GithubLogo from "../assets/logos/github.svg";
 import SalesforceLogo from "../assets/logos/salesforce.svg";
+import { IntegrationName } from "../typing/shared";
 
 export interface IntegrationItemType {
-  id: string;
+  id: IntegrationName;
   subpath: string;
   name: string;
   description: string;
@@ -31,16 +32,16 @@ export interface IntegrationItemType {
   iconBgColor?: string;
   logo: any;
   active: boolean;
-  data_source_type: string;
+  data_source_type: IntegrationName;
   requiresOAuth: boolean;
   multiStep?: boolean;
   integrationsListViewTitle?: string;
   additionalInfo?: string;
 }
 
-export const integrationsList: IntegrationItemType[] = [
+export const INTEGRATIONS_LIST: IntegrationItemType[] = [
   {
-    id: "CONFLUENCE",
+    id: IntegrationName.CONFLUENCE,
     subpath: "confluence",
     name: "Confluence",
     description: "Lets your users connect their Confluence accounts to Carbon.",
@@ -49,12 +50,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: ConfluenceLogo,
     active: true,
-    data_source_type: "CONFLUENCE",
+    data_source_type: IntegrationName.CONFLUENCE,
     requiresOAuth: true,
     multiStep: true,
   },
   {
-    id: "LOCAL_FILES",
+    id: IntegrationName.LOCAL_FILES,
     subpath: "local",
     name: "File Upload",
     description: "Lets your users upload local files to Carbon.",
@@ -63,12 +64,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: FileUploadIcon,
     active: true,
-    data_source_type: "LOCAL_FILES",
+    data_source_type: IntegrationName.LOCAL_FILES,
     requiresOAuth: false,
     additionalInfo: "max 20MB per file",
   },
   {
-    id: "WEB_SCRAPER",
+    id: IntegrationName.WEB_SCRAPER,
     subpath: "scraper",
     name: "Web Scraper",
     description: "Lets your users Scrape websites to Carbon.",
@@ -77,12 +78,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: WebScraperIcon,
     active: true,
-    data_source_type: "WEB_SCRAPER",
+    data_source_type: IntegrationName.WEB_SCRAPER,
     requiresOAuth: false,
     additionalInfo: "max 50 links to sync",
   },
   {
-    id: "GITHUB",
+    id: IntegrationName.GITHUB,
     subpath: "github",
     name: "Github",
     description: "Lets your users connect their Gitbook accounts to Carbon.",
@@ -91,12 +92,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: GithubLogo,
     active: true,
-    data_source_type: "GITHUB",
+    data_source_type: IntegrationName.GITHUB,
     requiresOAuth: false,
     multiStep: true,
   },
   {
-    id: "DROPBOX",
+    id: IntegrationName.DROPBOX,
     subpath: "dropbox",
     name: "Dropbox",
     description: "Lets your users connect their Dropbox accounts to Carbon.",
@@ -105,11 +106,11 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: DropboxLogo,
     active: true,
-    data_source_type: "DROPBOX",
+    data_source_type: IntegrationName.DROPBOX,
     requiresOAuth: true,
   },
   {
-    id: "GOOGLE_DRIVE",
+    id: IntegrationName.GOOGLE_DRIVE,
     subpath: "google",
     name: "Google Drive",
     description: "Lets your users connect their Google Drive to Carbon.",
@@ -118,12 +119,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: GoogleDriveLogo,
     active: true,
-    data_source_type: "GOOGLE_DRIVE",
+    data_source_type: IntegrationName.GOOGLE_DRIVE,
     requiresOAuth: true,
     integrationsListViewTitle: "Connect your Google Drive",
   },
   {
-    id: "NOTION",
+    id: IntegrationName.NOTION,
     subpath: "notion",
     name: "Notion",
     description: "Lets your users connect their Notion accounts to Carbon.",
@@ -132,11 +133,11 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: NotionLogo,
     active: true,
-    data_source_type: "NOTION",
+    data_source_type: IntegrationName.NOTION,
     requiresOAuth: true,
   },
   {
-    id: "SALESFORCE",
+    id: IntegrationName.SALESFORCE,
     subpath: "salesforce",
     name: "Salesforce",
     description: "Lets your users connect their Salesforce accounts to Carbon.",
@@ -145,12 +146,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: SalesforceLogo,
     active: true,
-    data_source_type: "SALESFORCE",
+    data_source_type: IntegrationName.SALESFORCE,
     requiresOAuth: true,
     multiStep: true,
   },
   {
-    id: "ZENDESK",
+    id: IntegrationName.ZENDESK,
     subpath: "zendesk",
     name: "Zendesk",
     description: "Lets your users connect their Zendesk accounts to Carbon.",
@@ -159,12 +160,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: ZendeskLogo,
     active: true,
-    data_source_type: "ZENDESK",
+    data_source_type: IntegrationName.ZENDESK,
     requiresOAuth: true,
     multiStep: true,
   },
   {
-    id: "ONEDRIVE",
+    id: IntegrationName.ONEDRIVE,
     subpath: "onedrive",
     name: "OneDrive",
     description: "Lets your users connect their OneDrive accounts to Carbon.",
@@ -173,11 +174,11 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: OneDriveLogo,
     active: true,
-    data_source_type: "ONEDRIVE",
+    data_source_type: IntegrationName.ONEDRIVE,
     requiresOAuth: true,
   },
   {
-    id: "S3",
+    id: IntegrationName.S3,
     subpath: "s3",
     name: "S3",
     description: "Lets your users connect their data on S3 to Carbon.",
@@ -186,12 +187,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: S3Logo,
     active: true,
-    data_source_type: "S3",
+    data_source_type: IntegrationName.S3,
     requiresOAuth: false,
     multiStep: true,
   },
   {
-    id: "SHAREPOINT",
+    id: IntegrationName.SHAREPOINT,
     subpath: "sharepoint",
     name: "Sharepoint",
     description: "Lets your users connect their Sharepoint accounts to Carbon.",
@@ -199,12 +200,12 @@ export const integrationsList: IntegrationItemType[] = [
     icon: <img src={SharePointLogo} className="cc-w-7 cc-h-7" />,
     logo: SharePointLogo,
     active: true,
-    data_source_type: "SHAREPOINT",
+    data_source_type: IntegrationName.SHAREPOINT,
     requiresOAuth: true,
     multiStep: true,
   },
   {
-    id: "GMAIL",
+    id: IntegrationName.GMAIL,
     subpath: "gmail",
     name: "Gmail",
     description: "Lets your users connect their Gmail to Carbon.",
@@ -213,12 +214,12 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: GmailLogo,
     active: true,
-    data_source_type: "GMAIL",
+    data_source_type: IntegrationName.GMAIL,
     requiresOAuth: true,
-    integrationsListViewTitle: "Connect your Gmail",
+    integrationsListViewTitle: "Gmail",
   },
   {
-    id: "FRESHDESK",
+    id: IntegrationName.FRESHDESK,
     subpath: "freshdesk",
     name: "Freshdesk",
     description: "Lets your users connect their Freshdesk accounts to Carbon.",
@@ -226,12 +227,12 @@ export const integrationsList: IntegrationItemType[] = [
     icon: <img src={FreshdeskLogo} className="cc-w-7 cc-h-7" />,
     logo: FreshdeskLogo,
     active: true,
-    data_source_type: "FRESHDESK",
+    data_source_type: IntegrationName.FRESHDESK,
     requiresOAuth: true,
     multiStep: true,
   },
   {
-    id: "BOX",
+    id: IntegrationName.BOX,
     subpath: "box",
     name: "Box",
     description: "Lets your users connect their Box accounts to Carbon.",
@@ -240,11 +241,11 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: BoxLogo,
     active: true,
-    data_source_type: "BOX",
+    data_source_type: IntegrationName.BOX,
     requiresOAuth: true,
   },
   {
-    id: "GITBOOK",
+    id: IntegrationName.GITBOOK,
     subpath: "gitbook",
     name: "Gitbook",
     description: "Lets your users connect their Gitbook accounts to Carbon.",
@@ -252,12 +253,12 @@ export const integrationsList: IntegrationItemType[] = [
     icon: <img src={GitbookLogo} className="cc-w-7 cc-h-7" />,
     logo: GitbookLogo,
     active: true,
-    data_source_type: "GITBOOK",
+    data_source_type: IntegrationName.GITBOOK,
     requiresOAuth: false,
     multiStep: true,
   },
   {
-    id: "INTERCOM",
+    id: IntegrationName.INTERCOM,
     subpath: "intercom",
     name: "Intercom",
     description: "Lets your users connect their Intercom to Carbon.",
@@ -266,11 +267,11 @@ export const integrationsList: IntegrationItemType[] = [
     iconBgColor: "gray-50",
     logo: IntercomLogo,
     active: true,
-    data_source_type: "INTERCOM",
+    data_source_type: IntegrationName.INTERCOM,
     requiresOAuth: true,
   },
   {
-    id: "OUTLOOK",
+    id: IntegrationName.OUTLOOK,
     subpath: "outlook",
     name: "Outlook",
     description: "Lets your users connect their Outlook accounts to Carbon.",
@@ -278,11 +279,11 @@ export const integrationsList: IntegrationItemType[] = [
     icon: <img src={OutlookLogo} className="cc-w-7 cc-h-7" />,
     logo: OutlookLogo,
     active: true,
-    data_source_type: "OUTLOOK",
+    data_source_type: IntegrationName.OUTLOOK,
     requiresOAuth: true,
   },
   {
-    id: "ZOTERO",
+    id: IntegrationName.ZOTERO,
     subpath: "zotero",
     name: "Zotero",
     description: "Lets your users connect their Zotero accounts to Carbon.",
@@ -290,7 +291,7 @@ export const integrationsList: IntegrationItemType[] = [
     icon: <img src={ZoteroLogo} className="cc-w-7 cc-h-7" />,
     logo: ZoteroLogo,
     active: true,
-    data_source_type: "ZOTERO",
+    data_source_type: IntegrationName.ZOTERO,
     requiresOAuth: true,
     multiStep: false,
   },

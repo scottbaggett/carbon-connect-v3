@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { emptyFunction, isEmpty } from "@utils/helper-functions";
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
-import { integrationsList } from "@utils/integrationModalconstants";
+import { INTEGRATIONS_LIST } from "@utils/integrationModalconstants";
 import {
   DialogHeader,
   DialogTitle,
@@ -9,8 +9,10 @@ import {
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
+import { IntegrationAPIResponse } from ".";
 
 export interface IntegrationListProps {
+  activeIntegrations: IntegrationAPIResponse[];
   activeStep?: string;
   setActiveStep?: (stepId: string) => void;
   onCloseModal?: () => void;
@@ -18,6 +20,7 @@ export interface IntegrationListProps {
 }
 
 function IntegrationList({
+  activeIntegrations,
   activeStep = "",
   setActiveStep = emptyFunction,
   onCloseModal,
@@ -25,13 +28,12 @@ function IntegrationList({
 }: IntegrationListProps) {
   const [searchText, setSearchText] = useState<string>("");
 
-  const listData = integrationsList?.filter(
+  const listData = INTEGRATIONS_LIST?.filter(
     (ai) =>
       ai.name?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
       ai?.integrationsListViewTitle
         ?.toLowerCase()
-        ?.includes(searchText?.toLowerCase()) ||
-      ai.description?.toLowerCase()?.includes(searchText?.toLowerCase())
+        ?.includes(searchText?.toLowerCase())
   );
 
   return (
@@ -75,6 +77,9 @@ function IntegrationList({
         <ul className="cc-grid cc-grid-cols-2 cc-gap-3 sm:cc-grid-cols-3">
           {!isEmpty(listData) &&
             listData.map((integration) => {
+              const isActive = activeIntegrations.find(
+                (int) => int.data_source_type == integration.data_source_type
+              );
               return (
                 <li
                   key={integration.id}
@@ -122,9 +127,10 @@ function IntegrationList({
                           </p>
                         )}
 
-                        {/* {integration.active && integrationStatus && (
-                            <HiCheckCircle className="cc-text-green-500 cc-w-6 cc-h-6" />
-                          )} */}
+                        {integration.active && isActive && (
+                          <div>green</div>
+                          // <HiCheckCircle className="cc-text-green-500 cc-w-6 cc-h-6" />
+                        )}
                       </div>
                     </div>
                   </div>

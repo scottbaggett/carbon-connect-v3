@@ -4,9 +4,11 @@ import { emptyFunction } from "@utils/helper-functions";
 import IntegrationList from "@components/IntegrationModal/IntegrationList";
 import WebScraper from "@components/WebScraper/WebScraper";
 import CarbonFilePicker from "@components/CarbonFilePicker/CarbonFilePicker";
-import { integrationsList } from "@utils/integrationModalconstants";
+import { INTEGRATIONS_LIST } from "@utils/integrationModalconstants";
 import AccessKeyAuth from "@components/AccessKeyAuth/AccessKeyAuth";
 import { useCarbon } from "../../context/CarbonContext";
+import { BASE_URL } from "../../constants/shared";
+import { IntegrationName } from "../../typing/shared";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -14,15 +16,66 @@ export interface ModalProps {
   goToConnectModal?: () => void;
 }
 
+// todo - better types
+export type IntegrationAPIResponse = {
+  id: number;
+  data_source_type: IntegrationName;
+  data_source_external_id: string;
+  files: never;
+  synced_files: never[];
+  sync_status: string;
+  last_synced_at: Date;
+  last_sync_action: string;
+  source_items_synced_at: Date;
+  files_synced_at: Date;
+  data_source_metadata: object;
+};
+
 function IntegrationModal({
   isOpen = false,
   onCloseModal = emptyFunction,
   goToConnectModal = emptyFunction,
 }: ModalProps) {
-  const { orgName, accessToken } = useCarbon();
-  console.log(orgName);
+  const { orgName, accessToken, fetchTokens } = useCarbon();
   const entryPoint: string = "INTEGRATION_LIST";
   const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
+  const [activeIntegrations, setActiveIntegrations] = useState<
+    IntegrationAPIResponse[]
+  >([]);
+
+  const { environment = "PRODUCTION", authenticatedFetch } = useCarbon();
+
+  const fetchUserIntegrations = async () => {
+    try {
+      const userIntegrationsResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/integrations/?${new URLSearchParams({
+          include_files: "false",
+        })}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Token ${accessToken}`,
+          },
+        }
+      );
+
+      if (userIntegrationsResponse.status === 200) {
+        const responseBody = await userIntegrationsResponse.json();
+        setActiveIntegrations(responseBody["active_integrations"]);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchUserIntegrations();
+    } else {
+      fetchTokens();
+    }
+  }, [accessToken]);
 
   const showActiveContent = (activeStep: string | number) => {
     switch (activeStep) {
@@ -33,6 +86,7 @@ function IntegrationModal({
             setActiveStep={setActiveStep}
             goToConnectModal={goToConnectModal}
             onCloseModal={onCloseModal}
+            activeIntegrations={activeIntegrations}
           />
         );
         break;
@@ -49,7 +103,7 @@ function IntegrationModal({
       case "CONFLUENCE":
         return (
           <AccessKeyAuth
-            activeStepData={integrationsList.find(
+            activeStepData={INTEGRATIONS_LIST.find(
               (item) => item.id === activeStep
             )}
             setActiveStep={setActiveStep}
@@ -60,7 +114,7 @@ function IntegrationModal({
       default:
         return (
           <CarbonFilePicker
-            activeStepData={integrationsList.find(
+            activeStepData={INTEGRATIONS_LIST.find(
               (item) => item.id === activeStep
             )}
             setActiveStep={setActiveStep}

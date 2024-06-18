@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 import {
   BASE_URL,
+  ENV,
   onSuccessEvents,
   SYNC_FILES_ON_CONNECT,
   SYNC_SOURCE_ITEMS,
@@ -15,14 +16,16 @@ import {
   IntegrationName,
   ProcessedIntegration,
 } from "../typing/shared";
-import { INTEGRATIONS_LIST } from "../constants/integrationsList";
 import { generateRequestId } from "../utils/helper-functions";
+import { INTEGRATIONS_LIST } from "../utils/integrationModalconstants";
 
 const DEFAULT_CHUNK_SIZE = 1500;
 const DEFAULT_OVERLAP_SIZE = 20;
 
 type CarbonContextValues = CarbonConnectProps & {
   accessToken?: string | null;
+  authenticatedFetch?: any;
+  fetchTokens?: any;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -40,7 +43,7 @@ export const CarbonProvider = ({
   onError = () => {},
   tags = {},
   maxFileSize = 20000000,
-  environment = "PRODUCTION",
+  environment = ENV.PRODUCTION,
   entryPoint = null,
   enabledIntegrations = [
     {
@@ -164,6 +167,7 @@ export const CarbonProvider = ({
     setLoading(true);
     try {
       const response = tokenFetcher && (await tokenFetcher());
+      console.log(environment);
       setAccessToken(response?.access_token || null);
 
       const whiteLabelingResponse = await authenticatedFetch(

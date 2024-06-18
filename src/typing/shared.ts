@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { IntegrationData } from "../constants/integrationsList";
 import { BASE_URL } from "../constants/shared";
+import { IntegrationItemType } from "../utils/integrationModalconstants";
 
 export enum IntegrationName {
   LOCAL_FILES = "LOCAL_FILES",
@@ -235,4 +235,4 @@ export type CarbonConnectProps = {
   fileSyncConfig?: FileSyncConfig;
 };
 
-export type ProcessedIntegration = IntegrationData & Integration;
+export type ProcessedIntegration = IntegrationItemType & Integration;
