@@ -134,6 +134,7 @@ function IntegrationModal({
             )}
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}
+            activeIntegrations={activeIntegrations}
           />
         );
         break;

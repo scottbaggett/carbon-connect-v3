@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DialogHeader,
   DialogTitle,
@@ -11,21 +11,51 @@ import { Button } from "@components/common/design-system/Button";
 import { IntegrationItemType } from "@utils/integrationModalconstants";
 import SettingsDropdown from "@components/common/SettingsDropdown";
 import AccountDropdown from "@components/common/AccountDropdown";
+import { IntegrationAPIResponse } from "../IntegrationModal";
+import UserPlus from "@assets/svgIcons/user-plus.svg";
+import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
 
 export default function CarbonFilePicker({
   activeStepData,
   setActiveStep,
   onCloseModal,
+  activeIntegrations,
 }: {
   activeStepData?: IntegrationItemType;
   setActiveStep: (val: string) => void;
   onCloseModal: () => void;
+  activeIntegrations: IntegrationAPIResponse[];
 }) {
   const [isUploading, setIsUploading] = useState<{
     state: boolean;
     percentage: number;
   }>({ state: false, percentage: 0 });
   const [step, setStep] = useState<number>(1);
+  const [connectedDataSources, setConnectedDataSources] = useState<
+    IntegrationAPIResponse[]
+  >([]);
+  const [selectedDataSource, setSelectedDataSource] =
+    useState<IntegrationAPIResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const connected = activeIntegrations.filter(
+      (integration) => integration.data_source_type === activeStepData?.id
+    );
+    setConnectedDataSources(connected);
+
+    if (selectedDataSource === null && connected.length) {
+      if (connected.length === 1) {
+        setSelectedDataSource(connected[0]);
+      } else {
+        const sorted = connected.sort((a, b) => b.id - a.id);
+        setSelectedDataSource(sorted[0]);
+      }
+    }
+    setIsLoading(false);
+  }, [JSON.stringify(activeIntegrations)]);
+
+  console.log(connectedDataSources, activeStepData, activeIntegrations);
 
   if (isUploading.state) {
     return (
@@ -102,14 +132,34 @@ export default function CarbonFilePicker({
           )}
         </div>
       </DialogHeader>
-      {step === 1 && (
+      {!isLoading && connectedDataSources?.length === 0 ? (
+        <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
+          <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
+            <img src={UserPlus} alt="User Plus" className="cc-h-6 cc-w-6" />
+          </div>
+          <div className="cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
+            No account connected, please connect an account
+          </div>
+          <Button onClick={() => setStep(2)} size="md" className="cc-px-6">
+            <img
+              src={AddCircleIconWhite}
+              alt="Add Circle Plus"
+              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+            />
+            Connect Account
+          </Button>
+        </div>
+      ) : (
+        <FileSelector setIsUploading={setIsUploading} />
+      )}
+      {/* {step === 1 && (
         <AuthForm
           onSubmit={() => {
             setStep(2);
           }}
         />
-      )}
-      {step === 2 && <FileSelector setIsUploading={setIsUploading} />}
+      )} */}
+      {/* {step === 2 && } */}
     </>
   );
 }
