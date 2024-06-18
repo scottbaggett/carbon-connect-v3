@@ -41,9 +41,9 @@ export default function FileListItem({
   return (
     <li
       key={item.id}
-      className="cc-flex cc-transition-all cc-py-3 cc-font-semibold cc-text-high_em cc-text-sm cc-border-b cc-border-outline-base_em hover:cc-bg-gray-25 cc-cursor-pointer"
+      className="cc-flex sm:cc-px-4 cc-transition-all cc-font-semibold cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
     >
-      <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">
+      <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2 cc-border-b cc-border-outline-base_em cc-py-3">
         <Checkbox
           className="cc-my-0.5"
           checked={isChecked}

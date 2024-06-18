@@ -92,8 +92,9 @@ export default function FileSelector({
 
   const filteredList = fileList.filter(
     (item) =>
-      item.name.includes(serchValue) ||
-      (item.type === "GITHUB_REPO" && item.url?.includes(serchValue))
+      item.name.toLowerCase().includes(serchValue.toLowerCase()) ||
+      (item.type === "GITHUB_REPO" &&
+        item.url?.toLowerCase().includes(serchValue.toLowerCase()))
   );
 
   return (
@@ -211,7 +212,7 @@ export default function FileSelector({
             </div>
           </div>
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-2 sm:cc-px-4">
+            <ul className="cc-pb-2 cc-overflow-hidden">
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 

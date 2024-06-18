@@ -9,6 +9,7 @@ import AccessKeyAuth from "@components/AccessKeyAuth/AccessKeyAuth";
 import { useCarbon } from "../../context/CarbonContext";
 import { BASE_URL } from "../../constants/shared";
 import { IntegrationName } from "../../typing/shared";
+import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -93,6 +94,9 @@ function IntegrationModal({
       case "WEB_SCRAPER":
         return (
           <WebScraper
+            // activeStepData={integrationsList.find(
+            //   (item) => item.id === activeStep
+            // )}
             activeStep={activeStep}
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}
@@ -103,6 +107,17 @@ function IntegrationModal({
       case "CONFLUENCE":
         return (
           <AccessKeyAuth
+            activeStepData={INTEGRATIONS_LIST.find(
+              (item) => item.id === activeStep
+            )}
+            setActiveStep={setActiveStep}
+            onCloseModal={onCloseModal}
+          />
+        );
+        break;
+      case "LOCAL_FILES":
+        return (
+          <SystemFileUpload
             activeStepData={INTEGRATIONS_LIST.find(
               (item) => item.id === activeStep
             )}

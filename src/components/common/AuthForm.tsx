@@ -18,19 +18,23 @@ export default function AuthForm({ onSubmit }: AuthFormProps) {
         </div>
         <div className="cc-text-base cc-font-semibold cc-mb-5">
           Please enter your Github{" "}
-          <span className="cc-px-2 cc-mx-2 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md">
+          <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md">
             access key
           </span>
           and
-          <span className="cc-px-2 cc-mx-2 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md">
+          <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md">
             access key secret
           </span>
           of the acount you wish to connect.
         </div>
-        <Input type="text" value="Github.heeko.design" className="cc-mb-4" />
+        <Input
+          type="text"
+          placeholder="Github.heeko.design"
+          className="cc-mb-4"
+        />
         <Input
           type="password"
-          value="Github.heeko.design"
+          placeholder="Enter Password"
           className="cc-mb-32"
         />
       </div>
