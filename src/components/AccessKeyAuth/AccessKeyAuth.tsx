@@ -56,7 +56,7 @@ export default function AccessKeyAuth({
         </div>
       </DialogHeader>
       {step === 1 && (
-        <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
+        <div className="cc-h-full cc-flex-grow cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
           <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
             <img src={UserPlus} alt="User Plus" className="cc-h-6 cc-w-6" />
           </div>

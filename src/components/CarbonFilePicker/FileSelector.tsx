@@ -99,55 +99,57 @@ export default function FileSelector({
 
   return (
     <>
-      <div className="cc-p-4 cc-flex cc-flex-col cc-overflow-auto">
+      <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow">
             Select repos to sync
           </p>
-          <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
-            <img
-              src={SearchIcon}
-              alt="Search Icon"
-              className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
-            />
-            <Input
-              type="text"
-              placeholder="Search"
-              className="cc-h-8 cc-text-xs cc-pl-7"
-              value={serchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </label>
-          <Button
-            size="sm"
-            variant="neutral-white"
-            className="cc-text-xs cc-rounded-xl cc-font-semibold"
-          >
-            View synced files
-          </Button>
-          <Button
-            size="sm"
-            variant="gray"
-            className="cc-rounded-xl cc-shrink-0 cc-hidden sm:cc-flex"
-          >
-            <img
-              src={RefreshIcon}
-              alt="User Plus"
-              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
-            />
-          </Button>
-          <Button
-            size="sm"
-            variant="neutral-white"
-            className="cc-text-xs cc-rounded-xl cc-font-semibold"
-          >
-            <img
-              src={AddCircleIconBlack}
-              alt="Add Circle Plus"
-              className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
-            />
-            Add more files
-          </Button>
+          <div className="cc-flex cc-gap-2 sm:cc-gap-3">
+            <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
+              <img
+                src={SearchIcon}
+                alt="Search Icon"
+                className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
+              />
+              <Input
+                type="text"
+                placeholder="Search"
+                className="cc-h-8 cc-text-xs cc-pl-7"
+                value={serchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </label>
+            <Button
+              size="sm"
+              variant="neutral-white"
+              className="cc-text-xs cc-rounded-xl cc-font-semibold"
+            >
+              View synced files
+            </Button>
+            <Button
+              size="sm"
+              variant="gray"
+              className="cc-rounded-xl cc-shrink-0 cc-hidden sm:cc-flex"
+            >
+              <img
+                src={RefreshIcon}
+                alt="User Plus"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              />
+            </Button>
+            {/* <Button
+              size="sm"
+              variant="neutral-white"
+              className="cc-text-xs cc-rounded-xl cc-font-semibold cc-shrink-0"
+            >
+              <img
+                src={AddCircleIconBlack}
+                alt="Add Circle Plus"
+                className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+              />
+              Add more files
+            </Button> */}
+          </div>
         </div>
         <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3">
           <div className="cc-overflow-auto cc-pb-4 sm:cc-pb-0 cc-px-4 -cc-mx-4 cc-flex-grow">
@@ -197,7 +199,7 @@ export default function FileSelector({
             </label>
           )}
         </div>
-        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-auto cc-flex-grow sm:cc-h-80 sm:cc-border sm:cc-rounded-xl">
+        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-auto cc-flex-grow sm:cc-border sm:cc-rounded-xl">
           <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
             <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
               FILE NAME
@@ -212,7 +214,7 @@ export default function FileSelector({
             </div>
           </div>
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-2 cc-overflow-hidden">
+            <ul className="cc-pb-2 cc-overflow-auto">
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 

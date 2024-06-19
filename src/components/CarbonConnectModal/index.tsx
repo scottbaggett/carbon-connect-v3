@@ -47,7 +47,7 @@ function CarbonConnectModal({
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:cc-max-h-[90vh] sm:cc-w-[415px] cc-gap-0 sm:cc-rounded-[20px]">
+      <DialogContent className="sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-auto cc-gap-0 sm:cc-rounded-[20px]">
         <div className="cc-p-8 cc-border-b cc-border-color-black-7 cc-flex-grow cc-overflow-auto">
           <div className="cc-mb-6">
             <img

@@ -36,7 +36,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "cc-rootStyle cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px] cc-h-screen sm:cc-h-auto sm:cc-max-h-[90vh] cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 sm:cc-rounded-[20px] sm:cc-min-h-0",
+        "cc-rootStyle cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px] cc-h-screen sm:cc-h-[90vh] sm:cc-max-h-[90vh] cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 sm:cc-rounded-[20px] sm:cc-min-h-0",
         className
       )}
       {...props}
@@ -88,7 +88,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "cc-p-4 cc-border-t cc-border-outline-low_em sm:cc-shadow-modal-footer-top",
+      "cc-p-4 cc-border-t cc-bg-white cc-border-outline-low_em sm:cc-shadow-modal-footer-top",
       className
     )}
     {...props}
