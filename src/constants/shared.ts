@@ -37,41 +37,57 @@ export const TWO_STEP_CONNECTORS = [
 ];
 
 export const THIRD_PARTY_CONNECTORS = [
-  "BOX",
-  "CONFLUENCE",
-  "DROPBOX",
-  "GOOGLE_DRIVE",
-  "INTERCOM",
-  "NOTION",
-  "ONEDRIVE",
-  "SHAREPOINT",
-  "ZENDESK",
-  "ZOTERO",
-  "FRESHDESK",
-  "GITBOOK",
-  "GMAIL",
-  "OUTLOOK",
-  "SALESFORCE",
-  "S3",
-  "GITHUB",
+  IntegrationName.BOX,
+  IntegrationName.CONFLUENCE,
+  IntegrationName.DROPBOX,
+  IntegrationName.GOOGLE_DRIVE,
+  IntegrationName.INTERCOM,
+  IntegrationName.NOTION,
+  IntegrationName.ONEDRIVE,
+  IntegrationName.SHAREPOINT,
+  IntegrationName.ZENDESK,
+  IntegrationName.ZOTERO,
+  IntegrationName.FRESHDESK,
+  IntegrationName.GITBOOK,
+  IntegrationName.GMAIL,
+  IntegrationName.OUTLOOK,
+  IntegrationName.SALESFORCE,
+  IntegrationName.S3,
+  IntegrationName.GITHUB,
 ];
 
 // used to check if we need to generate sync/OAuth URL for syncing files
-export const SYNC_URL_BASED_CONNECTORS = [
-  "BOX",
-  "DROPBOX",
-  "GOOGLE_DRIVE",
-  "INTERCOM",
-  "NOTION",
-  "ONEDRIVE",
-  "SHAREPOINT",
-  "ZENDESK",
-  "ZOTERO",
+export const SYNC_URL_SUPPORTED_CONNECTORS = [
+  IntegrationName.BOX,
+  IntegrationName.DROPBOX,
+  IntegrationName.GOOGLE_DRIVE,
+  IntegrationName.INTERCOM,
+  IntegrationName.NOTION,
+  IntegrationName.ONEDRIVE,
+  IntegrationName.SHAREPOINT,
+  IntegrationName.ZENDESK,
+  IntegrationName.ZOTERO,
+  IntegrationName.CONFLUENCE,
+  IntegrationName.SALESFORCE,
 ];
 
-export const FILE_PICKER_BASED_CONNECTORS = ["GITHUB"];
-
-export const PICKER_OR_URL_BASED_CONNECTORS = ["CONFLUENCE", "SALESFORCE"];
+export const FILE_PICKER_SUPPORTED_CONNECTORS = [
+  IntegrationName.BOX,
+  IntegrationName.CONFLUENCE,
+  IntegrationName.DROPBOX,
+  IntegrationName.GOOGLE_DRIVE,
+  IntegrationName.INTERCOM,
+  IntegrationName.NOTION,
+  IntegrationName.ONEDRIVE,
+  IntegrationName.SHAREPOINT,
+  IntegrationName.ZENDESK,
+  IntegrationName.ZOTERO,
+  IntegrationName.FRESHDESK,
+  IntegrationName.GITBOOK,
+  IntegrationName.SALESFORCE,
+  IntegrationName.S3,
+  IntegrationName.GITHUB,
+];
 
 export const LOCAL_FILE_TYPES = [
   "TEXT",

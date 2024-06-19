@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { AutoSyncedSourceTypes, IntegrationName } from "../typing/shared";
+import {
+  AutoSyncedSourceTypes,
+  CarbonConnectProps,
+  FilePickerMode,
+  IntegrationName,
+} from "../typing/shared";
 import { ENV } from "./shared";
 
 // const [showDataSourcesModal, toggleDataSourcesModal] = useState(true);
@@ -11,7 +16,7 @@ const tokenFetcher = async () => {
   };
 };
 
-export const TEST_PROPS = {
+export const TEST_PROPS: CarbonConnectProps = {
   orgName: "Rubber",
   brandIcon: "/assets/images/icon-integration.png",
   tokenFetcher: tokenFetcher,
@@ -81,7 +86,7 @@ export const TEST_PROPS = {
       generateSparseVectors: false,
       maxItemsPerChunk: 2,
       setPageAsBoundary: true,
-      filePickerMode: "FILES",
+      filePickerMode: FilePickerMode.FILES,
       sendDeletionWebhooks: true,
       allowedFileTypes: [
         {
@@ -149,6 +154,7 @@ export const TEST_PROPS = {
       id: IntegrationName.SALESFORCE,
       syncFilesOnConnection: false,
       setPageAsBoundary: true,
+      useCarbonFilePicker: true,
     },
     {
       id: IntegrationName.GMAIL,

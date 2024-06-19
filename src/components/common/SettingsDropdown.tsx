@@ -11,15 +11,28 @@ import {
   DropdownMenuTrigger,
 } from "@components/common/design-system/Dropdown";
 import DisconnectModal from "@components/common/DisconnectModal";
+import { IntegrationAPIResponse } from "../IntegrationModal";
 
-export default function SettingsDropdown() {
+export default function SettingsDropdown({
+  revokeDataSource,
+  isRevokingDataSource,
+  resyncDataSource,
+  isResyncingDataSource,
+}: {
+  revokeDataSource: () => Promise<void>;
+  isRevokingDataSource: boolean;
+  resyncDataSource: () => Promise<void>;
+  isResyncingDataSource: boolean;
+}) {
   const [showDisconnectModal, setShowDisconnectModal] =
     useState<boolean>(false);
+
   return (
     <>
       <DisconnectModal
         isOpen={showDisconnectModal}
         onOpenChange={setShowDisconnectModal}
+        revokeDataSource={revokeDataSource}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -39,7 +52,7 @@ export default function SettingsDropdown() {
           <DropdownMenuGroup>
             <DropdownMenuItem
               onClick={() => {
-                setShowDisconnectModal(true);
+                !isRevokingDataSource && setShowDisconnectModal(true);
               }}
               className="hover:cc-bg-surface-surface_1 cc-justify-between"
             >
@@ -50,7 +63,10 @@ export default function SettingsDropdown() {
                 className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:cc-bg-surface-surface_1 cc-justify-between">
+            <DropdownMenuItem
+              className="hover:cc-bg-surface-surface_1 cc-justify-between"
+              onClick={() => !isResyncingDataSource && resyncDataSource()}
+            >
               Re-sync account
               <img
                 src={RefreshIcon}

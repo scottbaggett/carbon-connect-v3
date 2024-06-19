@@ -169,6 +169,7 @@ export type BaseIntegration = {
   parsePdfTablesWithOcr?: boolean;
   sendDeletionWebhooks?: boolean;
   fileSyncConfig?: FileSyncConfig;
+  useCarbonFilePicker?: boolean;
 };
 
 export type LocalFilesIntegration = BaseIntegration & {
@@ -255,4 +256,6 @@ export type UserSourceItemApi = {
   created_at: Date;
   external_url: string | null;
   type: string;
+  is_expandable: boolean;
+  is_selectable: boolean;
 };

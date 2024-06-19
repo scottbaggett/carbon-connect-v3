@@ -15,15 +15,20 @@ import { BASE_URL, ENV } from "../../constants/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import { UserFileApi } from "../../typing/shared";
 import FileItem from "./FileItem";
+import { SyncingModes } from "./CarbonFilePicker";
 
 const PER_PAGE = 20;
 
-export default function SyncedFiles({
+export default function SyncedFilesList({
   setIsUploading,
   selectedDataSource,
+  handleUploadFilesClick,
+  mode,
 }: {
   setIsUploading: (val: { state: boolean; percentage: number }) => void;
   selectedDataSource: IntegrationAPIResponse | null;
+  handleUploadFilesClick: () => void;
+  mode: SyncingModes | null;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
@@ -36,6 +41,7 @@ export default function SyncedFiles({
   const [hasMoreFiles, setHasMoreFiles] = useState(true);
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse,
@@ -78,7 +84,6 @@ export default function SyncedFiles({
   const loadInitialData = async (
     selectedDataSource: IntegrationAPIResponse
   ) => {
-    console.log("initial");
     const { count, userFiles } = await getUserFiles(selectedDataSource, 0);
     setFiles([...userFiles]);
     setOffset(offset + userFiles.length);
@@ -91,7 +96,6 @@ export default function SyncedFiles({
   };
 
   const loadMoreRows = async () => {
-    console.log("more");
     if (!selectedDataSource) return;
     const { count, userFiles } = await getUserFiles(selectedDataSource, offset);
     const newFiles = [...files, ...userFiles];
@@ -113,12 +117,11 @@ export default function SyncedFiles({
     setHasMoreFiles(true);
     setIsLoading(true);
     loadInitialData(selectedDataSource).then(() => setIsLoading(false));
-  }, [selectedDataSource?.id]);
+  }, [selectedDataSource?.id, syncedFilesRefreshes]);
 
   const filteredList = files.filter((item) =>
     item.name.toLowerCase().includes(serchValue.toLowerCase())
   );
-  console.log(hasMoreFiles);
 
   return (
     <>
@@ -151,6 +154,7 @@ export default function SyncedFiles({
               size="sm"
               variant="gray"
               className="cc-rounded-xl cc-shrink-0 cc-hidden sm:cc-flex"
+              onClick={() => setSyncedFilesRefreshes((prev) => prev + 1)}
             >
               <img
                 src={RefreshIcon}
@@ -158,18 +162,21 @@ export default function SyncedFiles({
                 className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
               />
             </Button>
-            <Button
-              size="sm"
-              variant="neutral-white"
-              className="cc-text-xs cc-rounded-xl cc-font-semibold cc-shrink-0"
-            >
-              <img
-                src={AddCircleIconBlack}
-                alt="Add Circle Plus"
-                className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
-              />
-              Add more files
-            </Button>
+            {mode ? (
+              <Button
+                size="sm"
+                variant="neutral-white"
+                className="cc-text-xs cc-rounded-xl cc-font-semibold cc-shrink-0"
+                onClick={() => handleUploadFilesClick()}
+              >
+                <img
+                  src={AddCircleIconBlack}
+                  alt="Add Circle Plus"
+                  className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+                />
+                Add more files
+              </Button>
+            ) : null}
           </div>
         </div>
         <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3">

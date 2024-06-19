@@ -10,9 +10,11 @@ import DisconnectIconWhite from "@assets/svgIcons/disconnect-icon-white.svg";
 export default function DisconnectModal({
   isOpen,
   onOpenChange,
+  revokeDataSource,
 }: {
   isOpen: boolean;
   onOpenChange: (val: boolean) => void;
+  revokeDataSource: () => Promise<void>;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -38,6 +40,7 @@ export default function DisconnectModal({
             variant="danger"
             size="lg"
             className="cc-w-full cc-mb-2 sm:cc-mb-5"
+            onClick={() => revokeDataSource()}
           >
             Disconnect account
           </Button>

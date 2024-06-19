@@ -1,3 +1,4 @@
+import { IntegrationAPIResponse } from "../components/IntegrationModal";
 import {
   DEFAULT_CHUNK_SIZE,
   DEFAULT_OVERLAP_SIZE,
@@ -5,6 +6,8 @@ import {
   SYNC_SOURCE_ITEMS,
 } from "../constants/shared";
 import { useCarbon } from "../context/CarbonContext";
+import { IntegrationName } from "../typing/shared";
+import { UserSourceItemApi } from "../typing/shared";
 import { UserFileApi } from "../typing/shared";
 import { CarbonConnectProps, ProcessedIntegration } from "../typing/shared";
 
@@ -141,6 +144,11 @@ export const getFileItemType = (item: UserFileApi) => {
   }
 };
 
+export const getSourceItemType = (item: UserSourceItemApi) => {
+  if (item.is_expandable) return "FOLDER";
+  return "FILE";
+};
+
 export const formatDate = (data: Date) => {
   const dateString = new Date(data).toLocaleDateString(undefined, {
     year: "numeric",
@@ -156,3 +164,28 @@ export const formatDate = (data: Date) => {
   });
   return `${dateString} ${timeString}`;
 };
+
+export function getDataSourceDomain(dataSource: IntegrationAPIResponse) {
+  const extId = dataSource.data_source_external_id;
+  const type = dataSource.data_source_type;
+
+  if (!extId) return null;
+
+  const parts = extId.split("|");
+
+  if (
+    type == IntegrationName.SALESFORCE ||
+    type == IntegrationName.ZENDESK ||
+    type == IntegrationName.SHAREPOINT
+  ) {
+    if (parts.length == 3) return parts[2];
+    else return null;
+  }
+
+  if (type == "CONFLUENCE") {
+    const workspace = parts[2];
+    const workspaceParts = workspace.split("/");
+    if (workspaceParts.length == 2) return workspaceParts[1];
+    return null;
+  }
+}

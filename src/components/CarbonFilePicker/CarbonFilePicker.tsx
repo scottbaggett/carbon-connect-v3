@@ -19,17 +19,33 @@ import {
   DEFAULT_CHUNK_SIZE,
   DEFAULT_OVERLAP_SIZE,
   ENV,
+  FILE_PICKER_SUPPORTED_CONNECTORS,
   onSuccessEvents,
   SYNC_FILES_ON_CONNECT,
   SYNC_SOURCE_ITEMS,
+  SYNC_URL_SUPPORTED_CONNECTORS,
   TWO_STEP_CONNECTORS,
 } from "../../constants/shared";
-import { ActionType, ProcessedIntegration } from "../../typing/shared";
+import {
+  ActionType,
+  IntegrationName,
+  ProcessedIntegration,
+} from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
-import { generateRequestId } from "../../utils/helper-functions";
+import {
+  generateRequestId,
+  getDataSourceDomain,
+} from "../../utils/helper-functions";
 import GithubScreen from "../Screens/FreshdeskScreen";
 import FreshdeskScreen from "../Screens/FreshdeskScreen";
-import SyncedFiles from "./SyncedFiles";
+import SyncedFiles from "./SyncedFilesList";
+import SyncedFilesList from "./SyncedFilesList";
+import SourceItemsList from "./SourceItemsList";
+
+export enum SyncingModes {
+  FILE_PICKER = "FILE_PICKER",
+  SYNC_URL = "SYNC_URL",
+}
 
 export default function CarbonFilePicker({
   activeStepData,
@@ -79,6 +95,26 @@ export default function CarbonFilePicker({
   const [processedIntegration, setProcessedIntegration] =
     useState<ProcessedIntegration | null>(null);
   const [showAdditionalStep, setShowAdditionalStep] = useState(false);
+  const [showFilePicker, setShowFilePicker] = useState(false);
+  const [filePickerRefreshes, setFilePickerRefreshes] = useState(0);
+  const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
+  const [isResyncingDataSource, setIsResyncingDataSource] = useState(false);
+  const [mode, setMode] = useState<SyncingModes | null>(null);
+
+  // if user specified that they want to use file picker or if sync url is not supported
+  useEffect(() => {
+    if (
+      FILE_PICKER_SUPPORTED_CONNECTORS.find((c) => c == integrationName) &&
+      (processedIntegration?.useCarbonFilePicker ||
+        !SYNC_URL_SUPPORTED_CONNECTORS.find((c) => c == integrationName))
+    ) {
+      setMode(SyncingModes.FILE_PICKER);
+    } else if (
+      SYNC_URL_SUPPORTED_CONNECTORS.find((c) => c == integrationName)
+    ) {
+      setMode(SyncingModes.SYNC_URL);
+    }
+  });
 
   useEffect(() => {
     setProcessedIntegration(
@@ -87,6 +123,37 @@ export default function CarbonFilePicker({
       ) || null
     );
   }, [processedIntegrations]);
+
+  useEffect(() => {
+    const connected = activeIntegrations.filter(
+      (integration) => integration.data_source_type === activeStepData?.id
+    );
+    setConnectedDataSources(connected);
+
+    if (selectedDataSource === null && connected.length) {
+      if (connected.length === 1) {
+        setSelectedDataSource(connected[0]);
+      } else {
+        const sorted = connected.sort((a, b) => b.id - a.id);
+        setSelectedDataSource(sorted[0]);
+      }
+    }
+    setIsLoading(false);
+  }, [JSON.stringify(activeIntegrations)]);
+
+  // show file selector by default if
+  useEffect(() => {
+    if (!selectedDataSource) return;
+    if (
+      integrationName &&
+      !selectedDataSource.files_synced_at &&
+      mode == SyncingModes.FILE_PICKER
+    ) {
+      setShowFilePicker(true);
+    } else {
+      setShowFilePicker(false);
+    }
+  }, [selectedDataSource?.id]);
 
   const sendOauthRequest = async (
     mode = "CONNECT",
@@ -220,22 +287,86 @@ export default function CarbonFilePicker({
     setSelectedDataSource(selectedAccount || null);
   };
 
-  useEffect(() => {
-    const connected = activeIntegrations.filter(
-      (integration) => integration.data_source_type === activeStepData?.id
-    );
-    setConnectedDataSources(connected);
-
-    if (selectedDataSource === null && connected.length) {
-      if (connected.length === 1) {
-        setSelectedDataSource(connected[0]);
-      } else {
-        const sorted = connected.sort((a, b) => b.id - a.id);
-        setSelectedDataSource(sorted[0]);
+  const handleUploadFilesClick = () => {
+    if (!selectedDataSource) return;
+    if (mode == SyncingModes.SYNC_URL) {
+      const dataSourceType = selectedDataSource.data_source_type;
+      const extraParams: any = {};
+      if (dataSourceType == IntegrationName.SALESFORCE) {
+        extraParams.salesforce_domain = getDataSourceDomain(selectedDataSource);
+      } else if (dataSourceType == IntegrationName.ZENDESK) {
+        extraParams.zendesk_subdomain = getDataSourceDomain(selectedDataSource);
+      } else if (dataSourceType == "CONFLUENCE") {
+        extraParams.confluence_subdomain =
+          getDataSourceDomain(selectedDataSource);
+      } else if (dataSourceType == "SHAREPOINT") {
+        const workspace = getDataSourceDomain(selectedDataSource) || "";
+        const parts = workspace.split("/");
+        if (parts.length == 2) {
+          extraParams.microsoft_tenant = parts[0];
+          extraParams.sharepoint_site_name = parts[1];
+        }
       }
+      sendOauthRequest("UPLOAD", selectedDataSource.id, extraParams);
+    } else if (mode == SyncingModes.FILE_PICKER) {
+      setShowFilePicker(!showFilePicker);
+    } else {
+      // toast.error("Unable to start a file sync");
     }
-    setIsLoading(false);
-  }, [JSON.stringify(activeIntegrations)]);
+  };
+
+  const revokeDataSource = async () => {
+    setIsRevokingDataSource(true);
+    if (!selectedDataSource) return;
+
+    const revokeAccessResponse = await authenticatedFetch(
+      `${BASE_URL[environment]}/revoke_access_token`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data_source_id: selectedDataSource.id }),
+      }
+    );
+
+    if (revokeAccessResponse.status === 200) {
+      // toast.success('Successfully disconnected account');
+      setSelectedDataSource(null);
+      setActiveStep("INTEGRATION_LIST");
+    } else {
+      // toast.error('Error disconnecting account');
+    }
+    setIsRevokingDataSource(false);
+  };
+  console.log(showFilePicker);
+  const resyncDataSource = async () => {
+    if (!selectedDataSource) return;
+    setIsResyncingDataSource(true);
+    const requestBody = {
+      data_source_id: selectedDataSource.id,
+    };
+
+    const resyncDataSourceResponse = await authenticatedFetch(
+      `${BASE_URL[environment]}/integrations/items/sync`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (resyncDataSourceResponse.status === 200) {
+      // toast.success("Your connection is being synced");
+    } else {
+      // toast.error("Error resyncing connection");
+    }
+    setIsResyncingDataSource(false);
+  };
 
   if (isUploading.state) {
     return (
@@ -314,7 +445,12 @@ export default function CarbonFilePicker({
                   handleAddAccountClick={handleAddAccountClick}
                   handleAccountChange={handleAccountChange}
                 />
-                <SettingsDropdown />{" "}
+                <SettingsDropdown
+                  revokeDataSource={revokeDataSource}
+                  isRevokingDataSource={isRevokingDataSource}
+                  resyncDataSource={resyncDataSource}
+                  isResyncingDataSource={isResyncingDataSource}
+                />{" "}
               </>
             ) : null}
           </>
@@ -381,6 +517,11 @@ export default function CarbonFilePicker({
         integrationName == "FRESHDESK" && (
           <FreshdeskScreen processedIntegration={processedIntegration} />
         )
+      ) : showFilePicker ? (
+        <SourceItemsList
+          setIsUploading={setIsUploading}
+          setShowFilePicker={setShowFilePicker}
+        />
       ) : (
         // (integrationName == 'GITBOOK' && (
         //   <GitbookScreen
@@ -416,9 +557,11 @@ export default function CarbonFilePicker({
         //     setPauseDataSourceSelection={setPauseDataSourceSelection}
         //   />
         // ))
-        <SyncedFiles
+        <SyncedFilesList
           setIsUploading={setIsUploading}
           selectedDataSource={selectedDataSource}
+          handleUploadFilesClick={handleUploadFilesClick}
+          mode={mode}
         />
       )}
       {/* {step === 1 && (
