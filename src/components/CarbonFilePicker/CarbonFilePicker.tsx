@@ -29,6 +29,7 @@ import { useCarbon } from "../../context/CarbonContext";
 import { generateRequestId } from "../../utils/helper-functions";
 import GithubScreen from "../Screens/FreshdeskScreen";
 import FreshdeskScreen from "../Screens/FreshdeskScreen";
+import SyncedFiles from "./SyncedFiles";
 
 export default function CarbonFilePicker({
   activeStepData,
@@ -211,6 +212,14 @@ export default function CarbonFilePicker({
     }
   };
 
+  const handleAccountChange = (id: number) => {
+    const selectedAccount = connectedDataSources.find(
+      (account) => account.id === id
+    );
+
+    setSelectedDataSource(selectedAccount || null);
+  };
+
   useEffect(() => {
     const connected = activeIntegrations.filter(
       (integration) => integration.data_source_type === activeStepData?.id
@@ -303,6 +312,7 @@ export default function CarbonFilePicker({
                   dataSources={connectedDataSources}
                   selectedDataSource={selectedDataSource}
                   handleAddAccountClick={handleAddAccountClick}
+                  handleAccountChange={handleAccountChange}
                 />
                 <SettingsDropdown />{" "}
               </>
@@ -406,7 +416,10 @@ export default function CarbonFilePicker({
         //     setPauseDataSourceSelection={setPauseDataSourceSelection}
         //   />
         // ))
-        <FileSelector setIsUploading={setIsUploading} />
+        <SyncedFiles
+          setIsUploading={setIsUploading}
+          selectedDataSource={selectedDataSource}
+        />
       )}
       {/* {step === 1 && (
         <AuthForm

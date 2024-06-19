@@ -5,6 +5,7 @@ import {
   SYNC_SOURCE_ITEMS,
 } from "../constants/shared";
 import { useCarbon } from "../context/CarbonContext";
+import { UserFileApi } from "../typing/shared";
 import { CarbonConnectProps, ProcessedIntegration } from "../typing/shared";
 
 export function isEmpty(obj: any) {
@@ -130,4 +131,28 @@ export const getConnectRequestProps = (
     sync_source_items: syncSourceItems,
     file_sync_config: fileSyncConfigValue,
   };
+};
+
+export const getFileItemType = (item: UserFileApi) => {
+  if (item.file_metadata?.is_folder) {
+    return "FOLDER";
+  } else {
+    return "FILE";
+  }
+};
+
+export const formatDate = (data: Date) => {
+  const dateString = new Date(data).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+
+  const timeString = new Date(data).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    // second: '2-digit',
+    hour12: true,
+  });
+  return `${dateString} ${timeString}`;
 };

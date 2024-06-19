@@ -237,3 +237,22 @@ export type CarbonConnectProps = {
 };
 
 export type ProcessedIntegration = IntegrationItemType & Integration;
+
+export type UserFileApi = {
+  id: number;
+  name: string;
+  created_at: Date;
+  sync_status: string;
+  external_url: string | null;
+  file_metadata: {
+    is_folder?: boolean;
+  };
+};
+
+export type UserSourceItemApi = {
+  id: number;
+  name: string;
+  created_at: Date;
+  external_url: string | null;
+  type: string;
+};

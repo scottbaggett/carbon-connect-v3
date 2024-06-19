@@ -18,10 +18,12 @@ export default function AccountDropdown({
   dataSources,
   selectedDataSource,
   handleAddAccountClick,
+  handleAccountChange,
 }: {
   dataSources: IntegrationAPIResponse[];
   selectedDataSource: IntegrationAPIResponse | null;
   handleAddAccountClick: () => Promise<void>;
+  handleAccountChange: (id: number) => void;
 }) {
   const [isDropboxAccountReady, setIsDropboxAccountReady] =
     useState<boolean>(false);
@@ -42,6 +44,7 @@ export default function AccountDropdown({
               <DropdownMenuItem
                 key={dataSource.id}
                 className="cc-border-b cc-border-outline-base_em cc-bg-surface-surface_1"
+                onClick={() => handleAccountChange(dataSource.id)}
               >
                 <div>
                   <p className="cc-text-xs cc-font-semibold cc-text-high_em">
