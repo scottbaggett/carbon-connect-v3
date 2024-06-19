@@ -26,6 +26,9 @@ type CarbonContextValues = CarbonConnectProps & {
   accessToken?: string | null;
   authenticatedFetch?: any;
   fetchTokens?: any;
+  processedIntegrations?: ProcessedIntegration[];
+  setRequestIds?: any;
+  requestIds?: object;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -343,12 +346,10 @@ export const CarbonProvider = ({
     secondaryBackgroundColor,
     secondaryTextColor,
     allowMultipleFiles,
-    topLevelChunkSize: chunkSize,
-    topLevelOverlapSize: overlapSize,
+    chunkSize,
+    overlapSize,
     processedIntegrations,
     entryPointIntegrationObject,
-    defaultChunkSize: 1500,
-    defaultOverlapSize: 20,
     handleServiceOAuthFlow,
     whiteLabelingData,
     tosURL,

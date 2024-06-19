@@ -1,3 +1,12 @@
+import {
+  DEFAULT_CHUNK_SIZE,
+  DEFAULT_OVERLAP_SIZE,
+  SYNC_FILES_ON_CONNECT,
+  SYNC_SOURCE_ITEMS,
+} from "../constants/shared";
+import { useCarbon } from "../context/CarbonContext";
+import { CarbonConnectProps, ProcessedIntegration } from "../typing/shared";
+
 export function isEmpty(obj: any) {
   let isEmpty = false;
   const type = typeof obj;
@@ -67,4 +76,58 @@ export const generateRequestId = (length: number) => {
     counter += 1;
   }
   return prefix + result;
+};
+
+export const getConnectRequestProps = (
+  processedIntegration: ProcessedIntegration,
+  requestId: string | null,
+  additionalProps: object = {},
+  carbonProps: CarbonConnectProps
+) => {
+  const {
+    chunkSize,
+    overlapSize,
+    embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
+    tags,
+    fileSyncConfig,
+  } = carbonProps;
+
+  const chunkSizeValue =
+    processedIntegration?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
+  const overlapSizeValue =
+    processedIntegration?.overlapSize || overlapSize || DEFAULT_OVERLAP_SIZE;
+  const skipEmbeddingGeneration =
+    processedIntegration?.skipEmbeddingGeneration || false;
+  const embeddingModelValue = embeddingModel || null;
+  const generateSparseVectorsValue =
+    processedIntegration?.generateSparseVectors ||
+    generateSparseVectors ||
+    false;
+  const prependFilenameToChunksValue =
+    processedIntegration?.prependFilenameToChunks ||
+    prependFilenameToChunks ||
+    false;
+  const syncFilesOnConnection =
+    processedIntegration?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT;
+  const syncSourceItems =
+    processedIntegration?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
+  const fileSyncConfigValue =
+    processedIntegration?.fileSyncConfig || fileSyncConfig || {};
+
+  return {
+    ...additionalProps,
+    tags: tags,
+    chunk_size: chunkSizeValue,
+    chunk_overlap: overlapSizeValue,
+    skip_embedding_generation: skipEmbeddingGeneration,
+    embedding_model: embeddingModelValue,
+    generate_sparse_vectors: generateSparseVectorsValue,
+    prepend_filename_to_chunks: prependFilenameToChunksValue,
+    sync_files_on_connection: syncFilesOnConnection,
+    ...(requestId && { request_id: requestId }),
+    sync_source_items: syncSourceItems,
+    file_sync_config: fileSyncConfigValue,
+  };
 };

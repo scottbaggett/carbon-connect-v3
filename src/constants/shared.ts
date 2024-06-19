@@ -1,3 +1,5 @@
+import { IntegrationName } from "../typing/shared";
+
 export enum ENV {
   PRODUCTION = "PRODUCTION",
   DEVELOPMENT = "DEVELOPMENT",
@@ -24,14 +26,14 @@ export const SYNC_FILES_ON_CONNECT = true;
 export const SYNC_SOURCE_ITEMS = true;
 
 export const TWO_STEP_CONNECTORS = [
-  "ZENDESK",
-  "SHAREPOINT",
-  "CONFLUENCE",
-  "SALESFORCE",
-  "S3",
-  "FRESHDESK",
-  "GITBOOK",
-  "GITHUB",
+  IntegrationName.ZENDESK,
+  IntegrationName.SHAREPOINT,
+  IntegrationName.CONFLUENCE,
+  IntegrationName.SALESFORCE,
+  IntegrationName.S3,
+  IntegrationName.FRESHDESK,
+  IntegrationName.GITBOOK,
+  IntegrationName.GITHUB,
 ];
 
 export const THIRD_PARTY_CONNECTORS = [
@@ -99,3 +101,7 @@ export const LOCAL_FILE_TYPES = [
   "OPUS",
   "WEBM",
 ];
+
+export const DEFAULT_CHUNK_SIZE = 1500;
+
+export const DEFAULT_OVERLAP_SIZE = 20;

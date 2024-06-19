@@ -12,49 +12,49 @@ import {
   DropdownMenuTrigger,
 } from "@components/common/design-system/Dropdown";
 import DropboxAccountReady from "@components/common/DropboxAccountReady";
+import { IntegrationAPIResponse } from "../IntegrationModal";
 
-export default function AccountDropdown() {
+export default function AccountDropdown({
+  dataSources,
+  selectedDataSource,
+  handleAddAccountClick,
+}: {
+  dataSources: IntegrationAPIResponse[];
+  selectedDataSource: IntegrationAPIResponse | null;
+  handleAddAccountClick: () => Promise<void>;
+}) {
   const [isDropboxAccountReady, setIsDropboxAccountReady] =
     useState<boolean>(false);
+
+  const getAccountEmail = (dataSource: IntegrationAPIResponse | null) => {
+    return (
+      dataSource?.data_source_external_id.split("|")[1] ||
+      dataSource?.data_source_external_id.split("-")[1]
+    );
+  };
 
   const commonMenuConponent = () => {
     return (
       <DropdownMenuContent align="end" className="cc-w-[232px]">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cc-border-b cc-border-outline-base_em cc-bg-surface-surface_1">
-            <div>
-              <p className="cc-text-xs cc-font-semibold cc-text-high_em">
-                Kende Attila
-              </p>
-              <p className="cc-text-xxs cc-text-low_em cc-font-semibold">
-                csilvers@verizon.net
-              </p>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cc-bg-surface-surface_1">
-            <div>
-              <p className="cc-text-xs cc-font-semibold cc-text-high_em">
-                Rámai Ivette
-              </p>
-              <p className="cc-text-xxs cc-text-low_em cc-font-semibold">
-                crowemojo@hotmail.com
-              </p>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cc-bg-surface-surface_1">
-            <div>
-              <p className="cc-text-xs cc-font-semibold cc-text-high_em">
-                Fekete Csanád
-              </p>
-              <p className="cc-text-xxs cc-text-low_em cc-font-semibold">
-                dowdy@yahoo.com
-              </p>
-            </div>
-          </DropdownMenuItem>
+          {dataSources.map((dataSource) => {
+            return (
+              <DropdownMenuItem
+                key={dataSource.id}
+                className="cc-border-b cc-border-outline-base_em cc-bg-surface-surface_1"
+              >
+                <div>
+                  <p className="cc-text-xs cc-font-semibold cc-text-high_em">
+                    {getAccountEmail(dataSource)}
+                  </p>
+                </div>
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => setIsDropboxAccountReady(true)}
+          onClick={() => handleAddAccountClick()}
           className="hover:cc-bg-surface-surface_1"
         >
           <p className="cc-text-xs cc-font-semibold cc-text-info_em cc-flex-grow">
@@ -97,7 +97,9 @@ export default function AccountDropdown() {
             variant="gray"
             className="cc-font-semibold cc-px-3 cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl cc-hidden sm:cc-flex cc-shrink-0"
           >
-            <span className="cc-flex-grow cc-text-left">Kende Attila</span>
+            <span className="cc-flex-grow cc-text-left">
+              {getAccountEmail(selectedDataSource)}
+            </span>
             <img
               src={DownChevIcon}
               alt="Down Chev Icon"

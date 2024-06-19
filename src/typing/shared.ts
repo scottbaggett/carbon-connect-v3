@@ -36,6 +36,7 @@ export enum ActionType {
   ADD = "ADD",
   UPDATE = "UPDATE",
   CANCEL = "CANCEL",
+  ERROR = "ERROR",
 }
 
 export enum AutoSyncedSourceTypes {
@@ -93,7 +94,7 @@ export type OnSuccessData = {
   } | null;
   action: ActionType;
   event: ActionType;
-  integration: IntegrationName;
+  integration?: IntegrationName;
 };
 
 export type OnErrorData = {

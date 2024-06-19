@@ -14,6 +14,21 @@ import AccountDropdown from "@components/common/AccountDropdown";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import UserPlus from "@assets/svgIcons/user-plus.svg";
 import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
+import {
+  BASE_URL,
+  DEFAULT_CHUNK_SIZE,
+  DEFAULT_OVERLAP_SIZE,
+  ENV,
+  onSuccessEvents,
+  SYNC_FILES_ON_CONNECT,
+  SYNC_SOURCE_ITEMS,
+  TWO_STEP_CONNECTORS,
+} from "../../constants/shared";
+import { ActionType, ProcessedIntegration } from "../../typing/shared";
+import { useCarbon } from "../../context/CarbonContext";
+import { generateRequestId } from "../../utils/helper-functions";
+import GithubScreen from "../Screens/FreshdeskScreen";
+import FreshdeskScreen from "../Screens/FreshdeskScreen";
 
 export default function CarbonFilePicker({
   activeStepData,
@@ -26,6 +41,29 @@ export default function CarbonFilePicker({
   onCloseModal: () => void;
   activeIntegrations: IntegrationAPIResponse[];
 }) {
+  const {
+    accessToken,
+    processedIntegrations,
+    chunkSize,
+    overlapSize,
+    embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
+    maxItemsPerChunk,
+    setPageAsBoundary,
+    useOcr,
+    parsePdfTablesWithOcr,
+    fileSyncConfig,
+    useRequestIds,
+    setRequestIds,
+    requestIds,
+    authenticatedFetch,
+    environment = ENV.PRODUCTION,
+    tags,
+    onSuccess,
+  } = useCarbon();
+
+  const integrationName = activeStepData?.id;
   const [isUploading, setIsUploading] = useState<{
     state: boolean;
     percentage: number;
@@ -37,6 +75,141 @@ export default function CarbonFilePicker({
   const [selectedDataSource, setSelectedDataSource] =
     useState<IntegrationAPIResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [processedIntegration, setProcessedIntegration] =
+    useState<ProcessedIntegration | null>(null);
+  const [showAdditionalStep, setShowAdditionalStep] = useState(false);
+
+  useEffect(() => {
+    setProcessedIntegration(
+      processedIntegrations?.find(
+        (integration) => integration.id === integrationName
+      ) || null
+    );
+  }, [processedIntegrations]);
+
+  const sendOauthRequest = async (
+    mode = "CONNECT",
+    dataSourceId: number | null = null,
+    extraParams = {}
+  ) => {
+    try {
+      const oauthWindow = window.open("", "_blank");
+      oauthWindow?.document.write("Loading...");
+
+      const chunkSizeValue =
+        processedIntegration?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
+      const overlapSizeValue =
+        processedIntegration?.overlapSize ||
+        overlapSize ||
+        DEFAULT_OVERLAP_SIZE;
+      const skipEmbeddingGeneration =
+        processedIntegration?.skipEmbeddingGeneration || false;
+      const embeddingModelValue = embeddingModel || null;
+      const generateSparseVectorsValue =
+        processedIntegration?.generateSparseVectors ||
+        generateSparseVectors ||
+        false;
+      const prependFilenameToChunksValue =
+        processedIntegration?.prependFilenameToChunks ||
+        prependFilenameToChunks ||
+        false;
+      const maxItemsPerChunkValue =
+        processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
+      const syncFilesOnConnection =
+        processedIntegration?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT;
+      const setPageAsBoundaryValue =
+        processedIntegration?.setPageAsBoundary || setPageAsBoundary || false;
+      const useOcrValue = processedIntegration?.useOcr || useOcr || false;
+      const parsePdfTablesWithOcrValue =
+        processedIntegration?.parsePdfTablesWithOcr ||
+        parsePdfTablesWithOcr ||
+        false;
+      const syncSourceItems =
+        processedIntegration?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
+      const fileSyncConfigValue =
+        processedIntegration?.fileSyncConfig || fileSyncConfig || {};
+
+      let requestId = null;
+      if (useRequestIds && processedIntegration) {
+        requestId = generateRequestId(20);
+        setRequestIds({
+          ...requestIds,
+          [processedIntegration?.data_source_type]: requestId,
+        });
+      }
+
+      const oAuthURLResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/integrations/oauth_url`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Token ${accessToken}`,
+          },
+          body: JSON.stringify({
+            tags: tags,
+            service: processedIntegration?.data_source_type,
+            chunk_size: chunkSizeValue,
+            chunk_overlap: overlapSizeValue,
+            skip_embedding_generation: skipEmbeddingGeneration,
+            embedding_model: embeddingModelValue,
+            generate_sparse_vectors: generateSparseVectorsValue,
+            prepend_filename_to_chunks: prependFilenameToChunksValue,
+            ...(maxItemsPerChunkValue && {
+              max_items_per_chunk: maxItemsPerChunkValue,
+            }),
+            sync_files_on_connection: syncFilesOnConnection,
+            set_page_as_boundary: setPageAsBoundaryValue,
+            connecting_new_account: mode == "CONNECT" ? true : false,
+            ...(dataSourceId && { data_source_id: dataSourceId }),
+            ...extraParams,
+            ...(requestId && { request_id: requestId }),
+            use_ocr: useOcrValue,
+            parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
+            sync_source_items: syncSourceItems,
+            file_sync_config: fileSyncConfigValue,
+          }),
+        }
+      );
+
+      const oAuthURLResponseData = await oAuthURLResponse.json();
+
+      if (oAuthURLResponse.status === 200) {
+        // setFlag(service?.data_source_type, true);
+        onSuccess &&
+          onSuccess({
+            status: 200,
+            data: { request_id: requestId },
+            integration: processedIntegration?.data_source_type,
+            action: ActionType.INITIATE,
+            event: ActionType.INITIATE,
+          });
+        if (oauthWindow)
+          oauthWindow.location.href = oAuthURLResponseData.oauth_url;
+      } else {
+        if (oauthWindow)
+          oauthWindow.document.body.innerHTML = oAuthURLResponseData.detail;
+      }
+    } catch (err) {
+      console.error(
+        "[ThirdPartyHome.js] Error in sending Oauth request: ",
+        err
+      );
+    }
+  };
+
+  const handleAddAccountClick = async () => {
+    if (!integrationName) return;
+    if (TWO_STEP_CONNECTORS.indexOf(integrationName) !== -1) {
+      setShowAdditionalStep(true);
+      setSelectedDataSource(null);
+    } else {
+      // toast.info(
+      //   'You will be redirected to the service to connect your account'
+      // );
+      await sendOauthRequest();
+    }
+  };
 
   useEffect(() => {
     const connected = activeIntegrations.filter(
@@ -54,8 +227,6 @@ export default function CarbonFilePicker({
     }
     setIsLoading(false);
   }, [JSON.stringify(activeIntegrations)]);
-
-  console.log(connectedDataSources, activeStepData, activeIntegrations);
 
   if (isUploading.state) {
     return (
@@ -113,23 +284,30 @@ export default function CarbonFilePicker({
           <DialogTitle className="cc-flex-grow cc-text-left">
             {activeStepData?.name}
           </DialogTitle>
-          {step > 1 && (
-            <>
-              <Button
-                size="sm"
-                variant="gray"
-                className="cc-rounded-xl cc-shrink-0 sm:cc-hidden"
-              >
-                <img
-                  src={RefreshIcon}
-                  alt="User Plus"
-                  className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+          {/* {step > 1 && ( */}
+          <>
+            <Button
+              size="sm"
+              variant="gray"
+              className="cc-rounded-xl cc-shrink-0 sm:cc-hidden"
+            >
+              <img
+                src={RefreshIcon}
+                alt="User Plus"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              />
+            </Button>
+            {!showAdditionalStep ? (
+              <>
+                <AccountDropdown
+                  dataSources={connectedDataSources}
+                  selectedDataSource={selectedDataSource}
+                  handleAddAccountClick={handleAddAccountClick}
                 />
-              </Button>
-              <AccountDropdown />
-              <SettingsDropdown />
-            </>
-          )}
+                <SettingsDropdown />{" "}
+              </>
+            ) : null}
+          </>
         </div>
       </DialogHeader>
       {!isLoading && connectedDataSources?.length === 0 ? (
@@ -149,7 +327,85 @@ export default function CarbonFilePicker({
             Connect Account
           </Button>
         </div>
+      ) : showAdditionalStep && processedIntegration ? (
+        // (integrationName === 'ZENDESK' && (
+        //   <ZendeskScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        // (integrationName === 'CONFLUENCE' && (
+        //   <ConfluenceScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        // (integrationName === 'SHAREPOINT' && (
+        //   <SharepointScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        // (integrationName == 'S3' && (
+        //   <S3Screen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        integrationName == "FRESHDESK" && (
+          <FreshdeskScreen processedIntegration={processedIntegration} />
+        )
       ) : (
+        // (integrationName == 'GITBOOK' && (
+        //   <GitbookScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        // (integrationName == 'SALESFORCE' && (
+        //   <SalesforceScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //   />
+        // )) ||
+        // (integrationName == 'GITHUB' && (
+        //   <GithubScreen
+        //     buttonColor={
+        //       integrationData?.branding?.header?.primaryButtonColor
+        //     }
+        //     labelColor={
+        //       integrationData?.branding?.header?.primaryLabelColor
+        //     }
+        //     activeIntegrations={activeIntegrations}
+        //     setActiveStep={setActiveStep}
+        //     pauseDataSourceSelection={pauseDataSourceSelection}
+        //     setPauseDataSourceSelection={setPauseDataSourceSelection}
+        //   />
+        // ))
         <FileSelector setIsUploading={setIsUploading} />
       )}
       {/* {step === 1 && (
