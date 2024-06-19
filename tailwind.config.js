@@ -31,7 +31,9 @@ module.exports = {
         disabledtext: "rgba(0, 0, 0, 0.32)",
         "gray-25": "#F8F8F8",
         "gray-50": "#F3F3F4",
+        "success-600": "#02B151",
         "warning-600": "#E09400",
+        "danger-600": "#DE2424",
         "gradient-blue":
           "linear-gradient(0deg, rgba(31, 123, 245, 0.10) 0%, rgba(31, 123, 245, 0.10) 100%), var(--color-white-20, rgba(255, 255, 255, 0.20)",
         "focus-primary": "#D9D6FE",

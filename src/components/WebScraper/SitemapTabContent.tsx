@@ -130,7 +130,7 @@ export default function SitemapTabContent({
           </Button>
         </div>
         {internalStep === 2 && (
-          <div className="cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-auto sm:cc-border sm:cc-rounded-xl cc-w-full">
+          <div className="cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 sm:cc-mx-0 sm:cc-border sm:cc-rounded-xl">
             <div className="cc-flex cc-justify-between cc-items-center cc-bg-surface-surface_1 sm:cc-flex">
               <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold">
                 Fetched URLs
@@ -159,7 +159,7 @@ export default function SitemapTabContent({
               </div>
             </div>
             {fileList.length > 0 ? (
-              <ul className="cc-pb-2">
+              <ul className="cc-px-4 sm:cc-px-0 sm:cc-pb-2">
                 {fileList.map((item) => {
                   const isChecked = selectedFiles.indexOf(item.id) >= 0;
 
@@ -240,7 +240,7 @@ function SitemapItem({ item, isChecked, onSelect }: SitemapItemProps) {
   return (
     <li
       key={item.id}
-      className="cc-flex cc-transition-all  cc-px-4 cc-font-semibold cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
+      className="cc-flex cc-transition-all sm:cc-px-4 cc-font-semibold cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-py-3 cc-border-b cc-border-outline-base_em cc-w-full">
         <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">

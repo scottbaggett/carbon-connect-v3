@@ -116,8 +116,20 @@ function IntegrationList({
                     </div>
                     <div className="cc-flex-grow">
                       <h2 className="cc-text-base cc-font-semibold cc-items-center cc-justify-center cc-truncate">
-                        {integration.integrationsListViewTitle ||
-                          integration.name}
+                        <span className="cc-mr-1 cc-inline-block">
+                          {integration.integrationsListViewTitle ||
+                            integration.name}
+                        </span>
+                        {integration.online !== undefined && (
+                          <span
+                            className={cn(
+                              "cc-h-2 cc-inline-block cc-w-2 cc-border cc-border-white cc-rounded-lg",
+                              integration.online
+                                ? "cc-bg-success-600"
+                                : "cc-bg-danger-600"
+                            )}
+                          />
+                        )}
                       </h2>
                       {(!integration.active || integration.additionalInfo) && (
                         <p className="cc-font-semibold cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
