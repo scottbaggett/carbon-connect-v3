@@ -128,7 +128,7 @@ export default function FreshdeskScreen({
   };
   return (
     <>
-      <div className="cc-p-4 cc-flex-grow">
+      <div className="cc-p-4 cc-min-h-0 cc-flex-grow">
         <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-5">
           <img src={UserPlus} alt="User Plus" className="cc-h-6 cc-w-6" />
         </div>
