@@ -199,7 +199,7 @@ export default function FileSelector({
             </label>
           )}
         </div>
-        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-auto cc-flex-grow sm:cc-border sm:cc-rounded-xl">
+        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl">
           <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
             <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
               FILE NAME
@@ -214,7 +214,7 @@ export default function FileSelector({
             </div>
           </div>
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-2 cc-overflow-auto">
+            <ul className="cc-pb-2">
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 

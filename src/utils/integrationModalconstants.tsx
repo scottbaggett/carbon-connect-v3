@@ -36,6 +36,7 @@ export interface IntegrationItemType {
   multiStep?: boolean;
   integrationsListViewTitle?: string;
   additionalInfo?: string;
+  online?: boolean;
 }
 
 export const integrationsList: IntegrationItemType[] = [
@@ -52,6 +53,7 @@ export const integrationsList: IntegrationItemType[] = [
     data_source_type: "CONFLUENCE",
     requiresOAuth: true,
     multiStep: true,
+    online: true,
   },
   {
     id: "LOCAL_FILES",
@@ -94,6 +96,7 @@ export const integrationsList: IntegrationItemType[] = [
     data_source_type: "GITHUB",
     requiresOAuth: false,
     multiStep: true,
+    online: false,
   },
   {
     id: "DROPBOX",
@@ -120,7 +123,7 @@ export const integrationsList: IntegrationItemType[] = [
     active: true,
     data_source_type: "GOOGLE_DRIVE",
     requiresOAuth: true,
-    integrationsListViewTitle: "Connect your Google Drive",
+    integrationsListViewTitle: "Google Drive",
   },
   {
     id: "NOTION",
@@ -215,7 +218,7 @@ export const integrationsList: IntegrationItemType[] = [
     active: true,
     data_source_type: "GMAIL",
     requiresOAuth: true,
-    integrationsListViewTitle: "Connect your Gmail",
+    integrationsListViewTitle: "Gmail",
   },
   {
     id: "FRESHDESK",
