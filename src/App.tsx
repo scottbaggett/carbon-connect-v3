@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
+import "react-circular-progressbar/dist/styles.css";
 
 const App: React.FC = () => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);

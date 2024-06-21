@@ -59,7 +59,7 @@ const DialogHeader = ({
 }) => (
   <div
     className={cn(
-      "cc-flex cc-items-center cc-gap-3 cc-text-center sm:cc-text-left cc-p-4 cc-bg-surface-surface_1 sm:cc-rounded-t-2xl",
+      "cc-flex cc-items-center cc-gap-3 cc-text-center sm:cc-text-left cc-p-4 cc-bg-[#0000000A] sm:cc-rounded-t-2xl",
       className
     )}
     {...rest}
@@ -68,14 +68,14 @@ const DialogHeader = ({
     <DialogPrimitive.Close
       onClick={onCloseModal}
       className={cn(
-        "cc-rounded-xl cc-h-10 cc-w-10 cc-shrink-0 cc-flex cc-items-center cc-justify-center cc-opacity-70 cc-ring-offset-background cc-transition-opacity hover:cc-opacity-100 focus:cc-outline-none focus:cc-ring-2 focus:cc-ring-ring focus:cc-ring-offset-2 disabled:cc-pointer-events-none data-[state=open]:cc-bg-accent data-[state=open]:cc-text-muted-foreground cc-ml-auto",
+        "md:cc-hidden cc-rounded-xl cc-h-10 cc-w-10 cc-shrink-0 cc-flex cc-items-center cc-justify-center cc-opacity-70 cc-ring-offset-background cc-transition-opacity hover:cc-opacity-100 focus:cc-outline-none focus:cc-ring-2 focus:cc-ring-ring focus:cc-ring-offset-2 disabled:cc-pointer-events-none data-[state=open]:cc-bg-accent data-[state=open]:cc-text-muted-foreground cc-ml-auto",
         closeButtonClass
       )}
     >
       <img
         src={CrossIcon}
         alt="CrossIcon"
-        className="cc-h-[18px] cc-w-[18px]"
+        className="cc-h-[18px] cc-w-[18px] "
       />
     </DialogPrimitive.Close>
   </div>
@@ -103,7 +103,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "cc-text-xl cc-font-semibold cc-leading-none cc-tracking-tight",
+      "cc-text-xl cc-font-semibold cc-leading-none cc-tracking-tight md:cc-mr-[34px] md:cc-text-center",
       className
     )}
     {...props}
