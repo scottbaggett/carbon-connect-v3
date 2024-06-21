@@ -1,3 +1,6 @@
+// WARNING - THIS FILE IS ONLY FOR REFERENCE, DO NOT MODIFY
+// IT HAS BEEN INTEGRATED AS SourceItemsList and SyncedFilesList
+
 import React, { useState } from "react";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";

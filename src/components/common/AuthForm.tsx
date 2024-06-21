@@ -1,3 +1,6 @@
+// WARNING - THIS FILE IS ONLY FOR REFERENCE, DO NOT MODIFY
+// THIS HAS BEEN INTEGRATED AS FreshdeskScreen
+
 import React from "react";
 import { DialogFooter } from "@components/common/design-system/Dialog";
 import InfoFill from "@assets/svgIcons/info_fill.svg";
