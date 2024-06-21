@@ -65,6 +65,7 @@ export const TEST_PROPS: CarbonConnectProps = {
         detect_audio_language: true,
         split_rows: true,
       },
+      useCarbonFilePicker: true,
     },
     {
       id: IntegrationName.INTERCOM,
@@ -159,6 +160,7 @@ export const TEST_PROPS: CarbonConnectProps = {
     {
       id: IntegrationName.GMAIL,
       syncFilesOnConnection: false,
+      useCarbonFilePicker: true,
     },
     {
       id: IntegrationName.OUTLOOK,

@@ -340,7 +340,6 @@ export default function CarbonFilePicker({
     }
     setIsRevokingDataSource(false);
   };
-  console.log(showFilePicker);
   const resyncDataSource = async () => {
     if (!selectedDataSource) return;
     setIsResyncingDataSource(true);

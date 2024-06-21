@@ -46,7 +46,7 @@ export default function SourceItemsList({
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow">
-            Select repos to sync
+            Select files to sync
           </p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
             <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">

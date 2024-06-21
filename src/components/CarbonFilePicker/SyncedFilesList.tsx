@@ -86,9 +86,9 @@ export default function SyncedFilesList({
   ) => {
     const { count, userFiles } = await getUserFiles(selectedDataSource, 0);
     setFiles([...userFiles]);
-    setOffset(offset + userFiles.length);
+    setOffset(userFiles.length);
 
-    if (count > offset + userFiles.length) {
+    if (count > userFiles.length) {
       setHasMoreFiles(true);
     } else {
       setHasMoreFiles(false);
