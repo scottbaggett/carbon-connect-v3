@@ -13,6 +13,11 @@ const getFileIcon = (fileName: string): string => {
       return images.pptx;
   }
   switch (image) {
+    case "":
+      return images.folderIcon;
+    case "zip":
+      return images.folderIcon;
+
     case "pdf":
       return images.pdf;
     case "mp4":

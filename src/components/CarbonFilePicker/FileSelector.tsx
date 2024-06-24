@@ -116,15 +116,23 @@ export default function FileSelector({
   const [errorMessage, setErrorMessage] = useState(isErrorMessage);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const timer = () => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
 
     return () => clearTimeout(timer);
+  };
+
+  useEffect(() => {
+    timer();
   }, []);
   const handleWarningMessage = () => {
     setErrorMessage(false);
+  };
+  const handleRefresh = () => {
+    setLoading(true);
+    timer();
   };
 
   const filteredList = fileList.filter(
@@ -208,6 +216,7 @@ export default function FileSelector({
               className="cc-rounded-xl cc-shrink-0 cc-hidden sm:cc-flex"
             >
               <img
+                onClick={handleRefresh}
                 src={RefreshIcon}
                 alt="User Plus"
                 className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
@@ -319,8 +328,24 @@ export default function FileSelector({
             </div>
           </div>
 
+          <div
+            className={`${
+              loading ? "cc-block" : "cc-hidden"
+            } cc-flex cc-justify-center cc-items-center cc-h-full`}
+          >
+            <ColorRing
+              visible={true}
+              height="50"
+              width="50"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={["#0BABFB", "#0BABFB", "#0BABFB", "#0BABFB", "#0BABFB"]}
+            />
+          </div>
+
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-2">
+            <ul className={`cc-pb-2 ${loading ? "cc-hidden" : "cc-block"}`}>
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 

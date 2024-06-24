@@ -44,7 +44,8 @@ import warningTick from './svgIcons/warningIcon.svg';
 import verticleSeperate from './svgIcons/divider_vertical.svg';
 import deleteIcon from './svgIcons/deleteIcon.svg';
 import menudot from './svgIcons/menuDots.svg';
-import deleteIconBlack from './svgIcons/deleteIcon_black.svg'
+import deleteIconBlack from './svgIcons/deleteIcon_black.svg';
+import folderIcon from './svgIcons/folderIcon.svg';
 
 
 
@@ -117,6 +118,7 @@ export const images = {
   verticleSeperate,
   deleteIcon,
   menudot,
-  deleteIconBlack
+  deleteIconBlack,
+  folderIcon
 
 };

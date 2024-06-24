@@ -54,29 +54,26 @@ export default function SystemFileUpload({
   const handleItemClick = (id: number) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
-  const handleFileUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const selectedFiles = event.target.files;
-    if (selectedFiles) {
-      const fileList = Array.from(selectedFiles);
-      setFile(fileList);
+  const handleFileUpload = (selectedFiles: File[]): void => {
+    const fileList = Array.from(selectedFiles);
+    setFile(fileList);
 
-      const firstFile = fileList[0];
-      if (firstFile.webkitRelativePath) {
-        const pathParts = firstFile.webkitRelativePath.split("/");
-        if (pathParts.length > 1) {
-          setFolderName(pathParts[0]);
-        } else {
-          setFolderName(null);
-        }
+    const firstFile = fileList[0];
+    if (firstFile.webkitRelativePath) {
+      const pathParts = firstFile.webkitRelativePath.split("/");
+
+      if (pathParts.length > 1) {
+        setFolderName(pathParts[0]);
+        setStep(2);
       } else {
         setFolderName(null);
       }
-
-      setStep(2);
-      uploadFiles(fileList);
+    } else {
+      setFolderName(null);
     }
+
+    setStep(2);
+    uploadFiles(fileList);
   };
 
   const uploadFiles = (fileList: UploadFileData[]) => {
@@ -95,7 +92,7 @@ export default function SystemFileUpload({
         if (uploadedFiles === totalFiles) {
           setUploading(false);
           setUploadSuccess(true);
-          setTimeout(() => setUploadSuccess(true), 3000); // Remove success message after 3 seconds
+          setTimeout(() => setUploadSuccess(true), 3000);
         }
       }, (index + 1) * 1000);
     });
@@ -105,7 +102,10 @@ export default function SystemFileUpload({
     return (bytes / 1024).toFixed(2) + " KB";
   };
 
-  useEffect(() => {}, [file]);
+  useEffect(() => {
+    console.log(folderName);
+    console.log(file);
+  }, [file]);
 
   return (
     <>
