@@ -524,13 +524,13 @@ export default function CarbonFilePicker({
           mode={mode}
         />
       )}
-      {step === 1 && (
+      {/* {step === 1 && (
         <AuthForm
           onSubmit={() => {
             setStep(2);
           }}
         />
-      )}
+      )} */}
       {step === 2 && (
         <FileSelector
           headName="Select repos to sync"
