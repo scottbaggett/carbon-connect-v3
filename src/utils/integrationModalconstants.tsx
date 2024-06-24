@@ -58,7 +58,7 @@ export const integrationsList: IntegrationItemType[] = [
   {
     id: "LOCAL_FILES",
     subpath: "local",
-    name: "File Upload",
+    name: "Upload Files",
     description: "Lets your users upload local files to Carbon.",
     announcementName: "to upload local files",
     icon: <img src={FileUploadIcon} className="cc-w-7 cc-h-7" />,

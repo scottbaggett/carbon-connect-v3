@@ -63,6 +63,10 @@ module.exports = {
         xlxt: ["20px", "32px"],
         "2.5xl": ["26px", "40px"],
       },
+      screens: {
+        md: { max: "767px" },
+        // => @media (max-width: 767px) { ... }
+      },
     },
   },
   plugins: [],

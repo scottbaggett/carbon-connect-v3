@@ -16,6 +16,8 @@ const buttonVariants = cva(
         gray: "cc-text-high_em cc-bg-surface-surface_2 hover:cc-bg-surface-surface_3 cc-ring-black/10",
         danger:
           "cc-text-white cc-bg-surface-danger_main hover:cc-bg-surface-danger_accent_3 cc-ring-surface-danger_main/30",
+        secondary:
+          "cc-text-[#F03D3D] cc-bg-[#FFE0E0] hover:cc-bg-[#FFE0E0]/90 cc-ring-info_em/30",
       },
       size: {
         xs: "cc-h-6 cc-rounded-md cc-px-2 gap-1",

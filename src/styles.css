@@ -80,3 +80,17 @@ input[type="radio"]:checked + .cc-custom-radio {
 input[type="radio"]:not(:checked) + .cc-custom-radio {
   /* @apply cc-bg-gray-100; */
 }
+
+.uploadFileWrapper:hover .delete {
+  display: block;
+  @media (max-width: 767) {
+    display: none;
+  }
+}
+
+.uploadFileWrapper:hover .success {
+  display: none;
+  @media (max-width: 767) {
+    display: block;
+  }
+}
