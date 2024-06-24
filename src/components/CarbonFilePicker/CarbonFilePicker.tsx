@@ -524,14 +524,28 @@ export default function CarbonFilePicker({
           mode={mode}
         />
       )}
-      {/* {step === 1 && (
+      {step === 1 && (
         <AuthForm
           onSubmit={() => {
             setStep(2);
           }}
         />
-      )} */}
-      {/* {step === 2 && } */}
+      )}
+      {step === 2 && (
+        <FileSelector
+          headName="Select repos to sync"
+          navigationHeadingFirst="All Repos"
+          navigationHeadingSecond="Awesome-Algorithms"
+          navigationHeadingThird="Contoso Project"
+          forwardMard={true}
+          isAddIcon={false}
+          addViewCtaText="View synced files"
+          isDeleteCta={false}
+          isErrorMessage={false}
+          forwardMove={() => {}}
+          setIsUploading={setIsUploading}
+        />
+      )}
     </>
   );
 }

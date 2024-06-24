@@ -1,7 +1,7 @@
 // WARNING - THIS FILE IS ONLY FOR REFERENCE, DO NOT MODIFY
 // IT HAS BEEN INTEGRATED AS SourceItemsList and SyncedFilesList
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
@@ -11,6 +11,7 @@ import SearchIcon from "@assets/svgIcons/search-icon.svg";
 import NoResultsIcon from "@assets/svgIcons/no-result.svg";
 import AddCircleIconBlack from "@assets/svgIcons/add-circle-icon-black.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
+import { Audio, Circles, ColorRing } from "react-loader-spinner";
 
 import {
   Breadcrumb,
@@ -24,6 +25,7 @@ import FileListItem, {
   FolderItemType,
   GithubRepoItemType,
 } from "@components/common/FileListItem";
+import { images } from "@assets/index";
 
 const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
   {
@@ -85,13 +87,56 @@ const fileList: (FileItemType | FolderItemType | GithubRepoItemType)[] = [
   },
 ];
 
+type Props = {
+  setIsUploading: (val: { state: boolean; percentage: number }) => void;
+  headName: string;
+  navigationHeadingFirst: string;
+  navigationHeadingSecond: string;
+  navigationHeadingThird: string;
+  forwardMard: boolean;
+  addViewCtaText: string;
+  isAddIcon: boolean;
+  isDeleteCta: boolean;
+  isErrorMessage: boolean;
+  forwardMove: () => void;
+};
+
 export default function FileSelector({
   setIsUploading,
-}: {
-  setIsUploading: (val: { state: boolean; percentage: number }) => void;
-}) {
+  headName,
+  navigationHeadingFirst,
+  navigationHeadingSecond,
+  navigationHeadingThird,
+  forwardMard,
+  addViewCtaText,
+  isAddIcon,
+  isDeleteCta,
+  isErrorMessage,
+  forwardMove,
+}: Props) {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState(isErrorMessage);
+  const [loading, setLoading] = useState(true);
+
+  const timer = () => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  };
+
+  useEffect(() => {
+    timer();
+  }, []);
+  const handleWarningMessage = () => {
+    setErrorMessage(false);
+  };
+  const handleRefresh = () => {
+    setLoading(true);
+    timer();
+  };
 
   const filteredList = fileList.filter(
     (item) =>
@@ -102,11 +147,33 @@ export default function FileSelector({
 
   return (
     <>
-      <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
+      {errorMessage && (
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FEF2F2] cc-p-[8px_24px_8px_16px]">
+          <div className="cc-flex cc-items-center">
+            <img src={images.warningTick} alt="" className="cc-mr-[10px]" />
+            <div>
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] cc-mr-[10px]">
+                File size is too large for 23 files
+              </span>
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A]">
+                max 20 MB per file allowed
+              </span>
+            </div>
+          </div>
+          <div className="cc-flex cc-items-center">
+            <img src={images.verticleSeperate} alt="" />
+            <p
+              onClick={handleWarningMessage}
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer"
+            >
+              Got it
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col ">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
-          <p className="cc-text-xl cc-font-semibold cc-flex-grow">
-            Select repos to sync
-          </p>
+          <p className="cc-text-xl cc-font-semibold cc-flex-grow">{headName}</p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
             <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
               <img
@@ -125,9 +192,26 @@ export default function FileSelector({
             <Button
               size="sm"
               variant="neutral-white"
-              className="cc-text-xs cc-rounded-xl cc-font-semibold"
+              className="cc-text-xs cc-rounded-xl cc-font-semibold md:cc-hidden"
             >
-              View synced files
+              {isAddIcon ? (
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.00008 11.8332C9.22174 11.8332 11.8334 9.2215 11.8334 5.99984C11.8334 2.77818 9.22174 0.166504 6.00008 0.166504C2.77842 0.166504 0.166748 2.77818 0.166748 5.99984C0.166748 9.2215 2.77842 11.8332 6.00008 11.8332ZM5.41675 8.9165V6.58317H3.08341V5.4165H5.41675V3.08317H6.58341V5.4165H8.91675V6.58317H6.58341V8.9165H5.41675Z"
+                    fill="black"
+                  />
+                </svg>
+              ) : null}
+
+              {addViewCtaText}
             </Button>
             <Button
               size="sm"
@@ -135,6 +219,7 @@ export default function FileSelector({
               className="cc-rounded-xl cc-shrink-0 cc-hidden sm:cc-flex"
             >
               <img
+                onClick={handleRefresh}
                 src={RefreshIcon}
                 alt="User Plus"
                 className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
@@ -154,29 +239,58 @@ export default function FileSelector({
             </Button> */}
           </div>
         </div>
-        <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3">
+        <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3 md:cc-gap-3">
           <div className="cc-overflow-auto cc-pb-4 sm:cc-pb-0 cc-px-4 -cc-mx-4 cc-flex-grow">
             <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
               <BreadcrumbList className="cc-flex-nowrap">
-                <BreadcrumbItem className="cc-shrink-0">
+                <BreadcrumbItem className="cc-shrink-0 cc-flex cc-justify-between md:cc-w-full">
                   <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center">
                     <img
                       src={FolderIcon}
                       alt="Folder Icon"
                       className="cc-w-5 cc-shrink-0"
                     />
-                    All Repos
+                    {navigationHeadingFirst}
                   </BreadcrumbPage>
+                  <Button
+                    size="sm"
+                    variant="neutral-white"
+                    className="cc-text-xs cc-rounded-xl cc-font-semibold cc-hidden md:cc-flex"
+                  >
+                    {isAddIcon ? (
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M6.00008 11.8332C9.22174 11.8332 11.8334 9.2215 11.8334 5.99984C11.8334 2.77818 9.22174 0.166504 6.00008 0.166504C2.77842 0.166504 0.166748 2.77818 0.166748 5.99984C0.166748 9.2215 2.77842 11.8332 6.00008 11.8332ZM5.41675 8.9165V6.58317H3.08341V5.4165H5.41675V3.08317H6.58341V5.4165H8.91675V6.58317H6.58341V8.9165H5.41675Z"
+                          fill="black"
+                        />
+                      </svg>
+                    ) : null}
+
+                    {addViewCtaText}
+                  </Button>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="cc-shrink-0" />
+                {forwardMard ? (
+                  <BreadcrumbSeparator className="cc-shrink-0" />
+                ) : null}
+
                 <BreadcrumbItem>
                   <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-shrink-0">
-                    Awesome-Algorithms
+                    {navigationHeadingSecond}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="cc-shrink-0" />
+                {forwardMard ? (
+                  <BreadcrumbSeparator className="cc-shrink-0" />
+                ) : null}
                 <BreadcrumbItem className="cc-shrink-0">
-                  <BreadcrumbPage>Contoso Project</BreadcrumbPage>
+                  <BreadcrumbPage>{navigationHeadingThird}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -207,17 +321,34 @@ export default function FileSelector({
             <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
               FILE NAME
             </div>
-            {filteredList[0]?.status && (
-              <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px]">
-                STATUS
-              </div>
-            )}
+
+            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px]">
+              STATUS
+            </div>
+
             <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
+
+          <div
+            className={`${
+              loading ? "cc-block" : "cc-hidden"
+            } cc-flex cc-justify-center cc-items-center cc-h-full`}
+          >
+            <ColorRing
+              visible={true}
+              height="50"
+              width="50"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={["#0BABFB", "#0BABFB", "#0BABFB", "#0BABFB", "#0BABFB"]}
+            />
+          </div>
+
           {filteredList.length > 0 ? (
-            <ul className="cc-pb-2">
+            <ul className={`cc-pb-2 ${loading ? "cc-hidden" : "cc-block"}`}>
               {filteredList.map((item) => {
                 const isChecked = selectedFiles.indexOf(item.id) >= 0;
 
@@ -259,18 +390,34 @@ export default function FileSelector({
           )}
         </div>
       </div>
+
       {selectedFiles.length > 0 && (
-        <DialogFooter>
+        <DialogFooter className="cc-flex cc-justify-between md:cc-flex-col md:cc-gap-2">
           <Button
             variant="primary"
             size="lg"
-            className="cc-w-full"
+            className={`${
+              isDeleteCta ? "cc-w-[68%]" : "cc-w-full"
+            } md:cc-w-full`}
             onClick={() => {
               setIsUploading({ state: true, percentage: 24 });
+              forwardMove();
             }}
           >
             Upload {selectedFiles.length} files
           </Button>
+          {isDeleteCta ? (
+            <Button
+              variant="secondary"
+              size="lg"
+              className="cc-w-[30%] cc-bg-[#FFE0E0] cc-text-[#F03D3D] md:cc-w-full"
+              onClick={() => {
+                setIsUploading({ state: true, percentage: 24 });
+              }}
+            >
+              Delete {selectedFiles.length} files
+            </Button>
+          ) : null}
         </DialogFooter>
       )}
     </>
