@@ -36,7 +36,6 @@ const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
     "OGG",
     "OPUS",
     "WEBP",
-    "ZIP",
   ];
 
   return (

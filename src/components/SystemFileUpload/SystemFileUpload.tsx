@@ -102,10 +102,7 @@ export default function SystemFileUpload({
     return (bytes / 1024).toFixed(2) + " KB";
   };
 
-  useEffect(() => {
-    console.log(folderName);
-    console.log(file);
-  }, [file]);
+  useEffect(() => {}, [file]);
 
   return (
     <>
