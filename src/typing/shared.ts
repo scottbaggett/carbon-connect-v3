@@ -252,6 +252,7 @@ export type UserFileApi = {
 
 export type UserSourceItemApi = {
   id: number;
+  external_id: string;
   name: string;
   created_at: Date;
   external_url: string | null;

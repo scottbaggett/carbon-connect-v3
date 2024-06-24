@@ -38,9 +38,9 @@ import {
 } from "../../utils/helper-functions";
 import GithubScreen from "../Screens/FreshdeskScreen";
 import FreshdeskScreen from "../Screens/FreshdeskScreen";
-import SyncedFiles from "./SyncedFilesList";
-import SyncedFilesList from "./SyncedFilesList";
+
 import SourceItemsList from "./SourceItemsList";
+import SyncedFilesList from "./SyncedFilesList";
 
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",
@@ -520,6 +520,8 @@ export default function CarbonFilePicker({
         <SourceItemsList
           setIsUploading={setIsUploading}
           setShowFilePicker={setShowFilePicker}
+          selectedDataSource={selectedDataSource}
+          processedIntegration={processedIntegration}
         />
       ) : (
         // (integrationName == 'GITBOOK' && (

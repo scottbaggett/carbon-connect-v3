@@ -96,6 +96,10 @@ export const getConnectRequestProps = (
     prependFilenameToChunks,
     tags,
     fileSyncConfig,
+    maxItemsPerChunk,
+    setPageAsBoundary,
+    useOcr,
+    parsePdfTablesWithOcr,
   } = carbonProps;
 
   const chunkSizeValue =
@@ -119,6 +123,15 @@ export const getConnectRequestProps = (
     processedIntegration?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
   const fileSyncConfigValue =
     processedIntegration?.fileSyncConfig || fileSyncConfig || {};
+  const maxItemsPerChunkValue =
+    processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
+  const setPageAsBoundaryValue =
+    processedIntegration?.setPageAsBoundary || setPageAsBoundary || false;
+  const useOcrValue = processedIntegration?.useOcr || useOcr || false;
+  const parsePdfTablesWithOcrValue =
+    processedIntegration?.parsePdfTablesWithOcr ||
+    parsePdfTablesWithOcr ||
+    false;
 
   return {
     ...additionalProps,
@@ -133,6 +146,12 @@ export const getConnectRequestProps = (
     ...(requestId && { request_id: requestId }),
     sync_source_items: syncSourceItems,
     file_sync_config: fileSyncConfigValue,
+    ...(maxItemsPerChunkValue && {
+      max_items_per_chunk: maxItemsPerChunkValue,
+    }),
+    set_page_as_boundary: setPageAsBoundaryValue,
+    use_ocr: useOcrValue,
+    parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
   };
 };
 

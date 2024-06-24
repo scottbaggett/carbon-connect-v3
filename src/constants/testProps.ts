@@ -12,7 +12,7 @@ import { ENV } from "./shared";
 const tokenFetcher = async () => {
   return {
     access_token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6Miwib3JnYW5pemF0aW9uX2lkIjoyLCJvcmdhbml6YXRpb25fc3VwcGxpZWRfdXNlcl9pZCI6InN3YXBuaWxAY2FyYm9uLmFpIiwib3JnYW5pemF0aW9uX3VzZXJfaWQiOjIzNywiZXhwIjoxNzE4ODI0ODY1fQ.L9610LLwlIT6ohtNzudNpbxwvf_aRgWq9yojIkkgxjs",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6Miwib3JnYW5pemF0aW9uX2lkIjoyLCJvcmdhbml6YXRpb25fc3VwcGxpZWRfdXNlcl9pZCI6InN3YXBuaWxAY2FyYm9uLmFpIiwib3JnYW5pemF0aW9uX3VzZXJfaWQiOjIzNywiZXhwIjoxNzE5MjU0OTE1fQ.UZgrYlmQzKiodp-ZYWSZPsC-MTV5HZLUMBlEmTuSGB4",
   };
 };
 
@@ -146,10 +146,7 @@ export const TEST_PROPS: CarbonConnectProps = {
     {
       id: IntegrationName.GITHUB,
       syncFilesOnConnection: false,
-      generateSparseVectors: true,
       skipEmbeddingGeneration: false,
-      useOcr: true,
-      parsePdfTablesWithOcr: true,
     },
     {
       id: IntegrationName.SALESFORCE,
