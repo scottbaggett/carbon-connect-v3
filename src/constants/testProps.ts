@@ -10,10 +10,25 @@ import { ENV } from "./shared";
 // const [showDataSourcesModal, toggleDataSourcesModal] = useState(true);
 
 const tokenFetcher = async () => {
-  return {
-    access_token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6Miwib3JnYW5pemF0aW9uX2lkIjoyLCJvcmdhbml6YXRpb25fc3VwcGxpZWRfdXNlcl9pZCI6InN3YXBuaWxAY2FyYm9uLmFpIiwib3JnYW5pemF0aW9uX3VzZXJfaWQiOjIzNywiZXhwIjoxNzE5MjU0OTE1fQ.UZgrYlmQzKiodp-ZYWSZPsC-MTV5HZLUMBlEmTuSGB4",
-  };
+  const response = await fetch(
+    "https://api.dev.carbon.ai/auth/v1/access_token",
+    {
+      method: "GET",
+      headers: {
+        "customer-id": "swapnil@carbon.ai",
+        authorization:
+          "Bearer bd393e801e24f93e7f231f427895539b0137d4c46d82c6f5aeb366181ad646cb",
+      },
+    }
+  );
+  if (response.status == 200) {
+    const data = await response.json();
+    return {
+      access_token: data.access_token,
+    };
+  } else {
+    return { access_token: "" };
+  }
 };
 
 export const TEST_PROPS: CarbonConnectProps = {
