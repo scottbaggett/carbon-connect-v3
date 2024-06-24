@@ -34,6 +34,7 @@ import {
 import { useCarbon } from "../../context/CarbonContext";
 import {
   generateRequestId,
+  getConnectRequestProps,
   getDataSourceDomain,
 } from "../../utils/helper-functions";
 import GithubScreen from "../Screens/FreshdeskScreen";
@@ -58,6 +59,7 @@ export default function CarbonFilePicker({
   onCloseModal: () => void;
   activeIntegrations: IntegrationAPIResponse[];
 }) {
+  const carbonProps = useCarbon();
   const {
     accessToken,
     processedIntegrations,
@@ -78,7 +80,7 @@ export default function CarbonFilePicker({
     environment = ENV.PRODUCTION,
     tags,
     onSuccess,
-  } = useCarbon();
+  } = carbonProps;
 
   const integrationName = activeStepData?.id;
   const [isUploading, setIsUploading] = useState<{
@@ -160,42 +162,10 @@ export default function CarbonFilePicker({
     dataSourceId: number | null = null,
     extraParams = {}
   ) => {
+    if (!processedIntegration) return;
     try {
       const oauthWindow = window.open("", "_blank");
       oauthWindow?.document.write("Loading...");
-
-      const chunkSizeValue =
-        processedIntegration?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
-      const overlapSizeValue =
-        processedIntegration?.overlapSize ||
-        overlapSize ||
-        DEFAULT_OVERLAP_SIZE;
-      const skipEmbeddingGeneration =
-        processedIntegration?.skipEmbeddingGeneration || false;
-      const embeddingModelValue = embeddingModel || null;
-      const generateSparseVectorsValue =
-        processedIntegration?.generateSparseVectors ||
-        generateSparseVectors ||
-        false;
-      const prependFilenameToChunksValue =
-        processedIntegration?.prependFilenameToChunks ||
-        prependFilenameToChunks ||
-        false;
-      const maxItemsPerChunkValue =
-        processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
-      const syncFilesOnConnection =
-        processedIntegration?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT;
-      const setPageAsBoundaryValue =
-        processedIntegration?.setPageAsBoundary || setPageAsBoundary || false;
-      const useOcrValue = processedIntegration?.useOcr || useOcr || false;
-      const parsePdfTablesWithOcrValue =
-        processedIntegration?.parsePdfTablesWithOcr ||
-        parsePdfTablesWithOcr ||
-        false;
-      const syncSourceItems =
-        processedIntegration?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
-      const fileSyncConfigValue =
-        processedIntegration?.fileSyncConfig || fileSyncConfig || {};
 
       let requestId = null;
       if (useRequestIds && processedIntegration) {
@@ -206,6 +176,17 @@ export default function CarbonFilePicker({
         });
       }
 
+      const requestObject = getConnectRequestProps(
+        processedIntegration,
+        requestId,
+        {
+          ...(dataSourceId && { data_source_id: dataSourceId }),
+          ...extraParams,
+          service: processedIntegration.data_source_type,
+        },
+        carbonProps
+      );
+
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -214,29 +195,7 @@ export default function CarbonFilePicker({
             "Content-Type": "application/json",
             authorization: `Token ${accessToken}`,
           },
-          body: JSON.stringify({
-            tags: tags,
-            service: processedIntegration?.data_source_type,
-            chunk_size: chunkSizeValue,
-            chunk_overlap: overlapSizeValue,
-            skip_embedding_generation: skipEmbeddingGeneration,
-            embedding_model: embeddingModelValue,
-            generate_sparse_vectors: generateSparseVectorsValue,
-            prepend_filename_to_chunks: prependFilenameToChunksValue,
-            ...(maxItemsPerChunkValue && {
-              max_items_per_chunk: maxItemsPerChunkValue,
-            }),
-            sync_files_on_connection: syncFilesOnConnection,
-            set_page_as_boundary: setPageAsBoundaryValue,
-            connecting_new_account: mode == "CONNECT" ? true : false,
-            ...(dataSourceId && { data_source_id: dataSourceId }),
-            ...extraParams,
-            ...(requestId && { request_id: requestId }),
-            use_ocr: useOcrValue,
-            parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
-            sync_source_items: syncSourceItems,
-            file_sync_config: fileSyncConfigValue,
-          }),
+          body: JSON.stringify(requestObject),
         }
       );
 

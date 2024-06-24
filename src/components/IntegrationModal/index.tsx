@@ -104,17 +104,6 @@ function IntegrationModal({
         );
         break;
 
-      case "CONFLUENCE":
-        return (
-          <AccessKeyAuth
-            activeStepData={INTEGRATIONS_LIST.find(
-              (item) => item.id === activeStep
-            )}
-            setActiveStep={setActiveStep}
-            onCloseModal={onCloseModal}
-          />
-        );
-        break;
       case "LOCAL_FILES":
         return (
           <SystemFileUpload
