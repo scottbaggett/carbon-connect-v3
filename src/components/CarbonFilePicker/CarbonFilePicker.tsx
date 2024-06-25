@@ -63,22 +63,12 @@ export default function CarbonFilePicker({
   const {
     accessToken,
     processedIntegrations,
-    chunkSize,
-    overlapSize,
-    embeddingModel,
-    generateSparseVectors,
-    prependFilenameToChunks,
-    maxItemsPerChunk,
-    setPageAsBoundary,
-    useOcr,
-    parsePdfTablesWithOcr,
-    fileSyncConfig,
     useRequestIds,
     setRequestIds,
     requestIds,
     authenticatedFetch,
     environment = ENV.PRODUCTION,
-    tags,
+    entryPoint,
     onSuccess,
   } = carbonProps;
 
@@ -357,11 +347,8 @@ export default function CarbonFilePicker({
           <button
             className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0"
             onClick={() => {
-              if (step > 1) {
-                setStep((prev) => prev - 1);
-              } else {
-                setActiveStep("INTEGRATION_LIST");
-              }
+              if (!entryPoint) setActiveStep("INTEGRATIONS_HOME");
+              else setActiveStep("CONNECT");
             }}
           >
             <img

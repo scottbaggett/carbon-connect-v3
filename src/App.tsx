@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
@@ -16,7 +16,14 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
-  const [activeStep, setActiveStep] = useState("INTEGRATION_LIST");
+  const [activeStep, setActiveStep] = useState<string>("CONNECT");
+
+  useEffect(() => {
+    if (activeStep == "CONNECT") {
+      setOpenIntegration(false);
+      setOpenCarbonConnect(true);
+    }
+  }, [activeStep]);
 
   return (
     <CarbonProvider {...finalProps}>
