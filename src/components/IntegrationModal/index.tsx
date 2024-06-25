@@ -15,6 +15,8 @@ export interface ModalProps {
   isOpen: boolean;
   onCloseModal?: () => void;
   goToConnectModal?: () => void;
+  activeStep: string;
+  setActiveStep: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // todo - better types
@@ -36,10 +38,10 @@ function IntegrationModal({
   isOpen = false,
   onCloseModal = emptyFunction,
   goToConnectModal = emptyFunction,
+  activeStep,
+  setActiveStep,
 }: ModalProps) {
   const { orgName, accessToken, fetchTokens } = useCarbon();
-  const entryPoint: string = "INTEGRATION_LIST";
-  const [activeStep, setActiveStep] = useState<string | number>(entryPoint);
   const [activeIntegrations, setActiveIntegrations] = useState<
     IntegrationAPIResponse[]
   >([]);

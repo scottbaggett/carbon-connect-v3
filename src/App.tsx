@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
-<<<<<<< HEAD
-import { CarbonConnectProps, EmbeddingGenerators } from "./typing/shared";
+import {
+  CarbonConnectProps,
+  EmbeddingGenerators,
+  IntegrationName,
+} from "./typing/shared";
 import { CarbonProvider } from "./context/CarbonContext";
 import { TEST_PROPS } from "./constants/testProps";
 import { ENV } from "./constants/shared";
-=======
 import "react-circular-progressbar/dist/styles.css";
->>>>>>> main
 
 const App: React.FC<CarbonConnectProps> = (props) => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
+  const [activeStep, setActiveStep] = useState("INTEGRATION_LIST");
 
   return (
     <CarbonProvider {...finalProps}>
@@ -22,8 +24,9 @@ const App: React.FC<CarbonConnectProps> = (props) => {
         isOpen={openCarbonConnect}
         title=""
         onCloseModal={() => setOpenCarbonConnect(false)}
-        onPrimaryButtonClick={() => {
+        onPrimaryButtonClick={(step: string) => {
           setOpenCarbonConnect(false);
+          setActiveStep(step);
           setOpenIntegration(true);
         }}
       />
@@ -34,6 +37,8 @@ const App: React.FC<CarbonConnectProps> = (props) => {
           setOpenIntegration(false);
           setOpenCarbonConnect(true);
         }}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
       />
     </CarbonProvider>
   );

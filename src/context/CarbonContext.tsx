@@ -29,6 +29,8 @@ type CarbonContextValues = CarbonConnectProps & {
   processedIntegrations?: ProcessedIntegration[];
   setRequestIds?: any;
   requestIds?: object;
+  whiteLabelingData?: any;
+  entryPointIntegrationObject?: ProcessedIntegration | null;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -170,7 +172,6 @@ export const CarbonProvider = ({
     setLoading(true);
     try {
       const response = tokenFetcher && (await tokenFetcher());
-      console.log(environment);
       setAccessToken(response?.access_token || null);
 
       const whiteLabelingResponse = await authenticatedFetch(

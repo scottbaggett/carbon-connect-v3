@@ -32,8 +32,9 @@ const tokenFetcher = async () => {
 };
 
 export const TEST_PROPS: CarbonConnectProps = {
-  orgName: "Rubber",
-  brandIcon: "/assets/images/icon-integration.png",
+  orgName: "Wikemedia",
+  brandIcon:
+    "https://upload.wikimedia.org/wikipedia/commons/5/53/Wikimedia-logo.png",
   tokenFetcher: tokenFetcher,
   environment: ENV.DEVELOPMENT,
   tags: {
@@ -49,7 +50,7 @@ export const TEST_PROPS: CarbonConnectProps = {
   generateSparseVectors: false,
   prependFilenameToChunks: true,
   maxItemsPerChunk: 1,
-  // entryPoint="INTEGRATIONS_HOME"
+  entryPoint: IntegrationName.CONFLUENCE,
   // showFilesTab={false}
   setPageAsBoundary: false,
   useRequestIds: true,
