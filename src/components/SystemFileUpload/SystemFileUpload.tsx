@@ -18,6 +18,7 @@ import SuccessScreen from "./SuccessScreen";
 import FileExtension from "@components/SystemFileUpload/FileExtension/FileExtension";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
+import { ActiveStep } from "../../typing/shared";
 
 export interface UploadFileData {
   lastModified: number;
@@ -32,7 +33,7 @@ export default function SystemFileUpload({
   onCloseModal,
 }: {
   activeStepData?: IntegrationItemType;
-  setActiveStep: (val: string) => void;
+  setActiveStep: (val: ActiveStep) => void;
   onCloseModal: () => void;
 }) {
   const [step, setStep] = useState<number>(1);

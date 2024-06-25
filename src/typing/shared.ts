@@ -260,3 +260,5 @@ export type UserSourceItemApi = {
   is_expandable: boolean;
   is_selectable: boolean;
 };
+
+export type ActiveStep = IntegrationName | "INTEGRATION_LIST" | "CONNECT";

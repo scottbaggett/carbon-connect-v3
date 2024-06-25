@@ -8,15 +8,15 @@ import { INTEGRATIONS_LIST } from "@utils/integrationModalconstants";
 import AccessKeyAuth from "@components/AccessKeyAuth/AccessKeyAuth";
 import { useCarbon } from "../../context/CarbonContext";
 import { BASE_URL } from "../../constants/shared";
-import { IntegrationName } from "../../typing/shared";
+import { ActiveStep, IntegrationName } from "../../typing/shared";
 import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
 
 export interface ModalProps {
   isOpen: boolean;
   onCloseModal?: () => void;
   goToConnectModal?: () => void;
-  activeStep: string;
-  setActiveStep: React.Dispatch<React.SetStateAction<string>>;
+  activeStep: ActiveStep;
+  setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
 }
 
 // todo - better types
@@ -92,8 +92,8 @@ function IntegrationModal({
             activeIntegrations={activeIntegrations}
           />
         );
-        break;
-      case "WEB_SCRAPER":
+
+      case IntegrationName.WEB_SCRAPER:
         return (
           <WebScraper
             // activeStepData={integrationsList.find(
@@ -104,9 +104,8 @@ function IntegrationModal({
             onCloseModal={onCloseModal}
           />
         );
-        break;
 
-      case "LOCAL_FILES":
+      case IntegrationName.LOCAL_FILES:
         return (
           <SystemFileUpload
             activeStepData={INTEGRATIONS_LIST.find(

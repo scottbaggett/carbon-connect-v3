@@ -28,6 +28,7 @@ import {
 } from "../../constants/shared";
 import {
   ActionType,
+  ActiveStep,
   IntegrationName,
   ProcessedIntegration,
 } from "../../typing/shared";
@@ -55,7 +56,7 @@ export default function CarbonFilePicker({
   activeIntegrations,
 }: {
   activeStepData?: IntegrationItemType;
-  setActiveStep: (val: string) => void;
+  setActiveStep: (val: ActiveStep) => void;
   onCloseModal: () => void;
   activeIntegrations: IntegrationAPIResponse[];
 }) {
@@ -283,7 +284,7 @@ export default function CarbonFilePicker({
     if (revokeAccessResponse.status === 200) {
       // toast.success('Successfully disconnected account');
       setSelectedDataSource(null);
-      setActiveStep("INTEGRATION_LIST");
+      setActiveStep(entryPoint ? "CONNECT" : "INTEGRATION_LIST");
     } else {
       // toast.error('Error disconnecting account');
     }
@@ -347,7 +348,7 @@ export default function CarbonFilePicker({
           <button
             className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0"
             onClick={() => {
-              if (!entryPoint) setActiveStep("INTEGRATIONS_HOME");
+              if (!entryPoint) setActiveStep("INTEGRATION_LIST");
               else setActiveStep("CONNECT");
             }}
           >

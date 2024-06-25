@@ -50,7 +50,7 @@ export const TEST_PROPS: CarbonConnectProps = {
   generateSparseVectors: false,
   prependFilenameToChunks: true,
   maxItemsPerChunk: 1,
-  entryPoint: IntegrationName.CONFLUENCE,
+  // entryPoint: IntegrationName.CONFLUENCE,
   // showFilesTab={false}
   setPageAsBoundary: false,
   useRequestIds: true,

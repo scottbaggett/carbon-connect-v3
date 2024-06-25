@@ -3,6 +3,7 @@ import CarbonConnectModal from "./components/CarbonConnectModal";
 import IntegrationModal from "./components/IntegrationModal";
 import "./styles.css";
 import {
+  ActiveStep,
   CarbonConnectProps,
   EmbeddingGenerators,
   IntegrationName,
@@ -16,7 +17,7 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
   const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
-  const [activeStep, setActiveStep] = useState<string>("CONNECT");
+  const [activeStep, setActiveStep] = useState<ActiveStep>("CONNECT");
 
   useEffect(() => {
     if (activeStep == "CONNECT") {
@@ -31,7 +32,7 @@ const App: React.FC<CarbonConnectProps> = (props) => {
         isOpen={openCarbonConnect}
         title=""
         onCloseModal={() => setOpenCarbonConnect(false)}
-        onPrimaryButtonClick={(step: string) => {
+        onPrimaryButtonClick={(step: ActiveStep) => {
           setOpenCarbonConnect(false);
           setActiveStep(step);
           setOpenIntegration(true);

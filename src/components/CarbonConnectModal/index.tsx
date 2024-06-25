@@ -6,6 +6,7 @@ import Shield from "@assets/svgIcons/shield.svg";
 import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
 import { Button } from "@components/common/design-system/Button";
 import { useCarbon } from "../../context/CarbonContext";
+import { ActiveStep } from "../../typing/shared";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -14,7 +15,7 @@ export interface ModalProps {
   showSecondaryButton?: boolean;
   primaryButtonText?: string;
   secondaryButtonText?: string;
-  onPrimaryButtonClick?: (step: string) => void;
+  onPrimaryButtonClick?: (step: ActiveStep) => void;
   onSecondaryButtonClick?: () => void;
   onCloseModal?: () => void;
   children?: ReactNode;

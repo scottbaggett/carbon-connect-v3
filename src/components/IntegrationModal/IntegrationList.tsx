@@ -12,11 +12,12 @@ import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
 import { IntegrationAPIResponse } from ".";
 import { cn } from "@components/common/design-system/utils";
+import { ActiveStep } from "../../typing/shared";
 
 export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
   activeStep?: string;
-  setActiveStep?: (stepId: string) => void;
+  setActiveStep?: (stepId: ActiveStep) => void;
   onCloseModal?: () => void;
   goToConnectModal?: () => void;
 }

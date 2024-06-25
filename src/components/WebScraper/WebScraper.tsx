@@ -8,10 +8,11 @@ import {
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import WebsiteTabContent from "./WebsiteTabContent";
 import SitemapTabContent from "./SitemapTabContent";
+import { ActiveStep } from "../../typing/shared";
 
 export interface WebScraperProps {
   activeStep?: string;
-  setActiveStep?: (stepId: string) => void;
+  setActiveStep?: (stepId: ActiveStep) => void;
   onCloseModal?: () => void;
 }
 
