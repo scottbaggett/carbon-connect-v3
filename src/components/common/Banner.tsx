@@ -4,7 +4,7 @@ import { images } from "@assets/index";
 export type BannerState = {
   message: string | null;
   ctaText?: string | null;
-  type?: "WARN" | "SUCCESS" | "ERROR" | null;
+  type?: "WARN" | "SUCCESS" | "ERROR" | "INFO" | null;
   additionalInfo?: string | null;
 };
 
@@ -12,12 +12,14 @@ const BG_COLORS = {
   WARN: "surface-warning_accent_1",
   SUCCESS: "surface-success_accent_1",
   ERROR: "surface-danger_accent_1",
+  INFO: "",
 };
 
 const ICONS = {
   WARN: images.warningTick,
   SUCCESS: images.greenTick,
   ERROR: images.warningTick,
+  INFO: "",
 };
 
 const Banner = ({

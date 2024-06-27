@@ -235,9 +235,11 @@ export default function CarbonFilePicker({
       setShowAdditionalStep(true);
       setSelectedDataSource(null);
     } else {
-      // toast.info(
-      //   'You will be redirected to the service to connect your account'
-      // );
+      setBannerState({
+        message:
+          "You will be redirected to the service to connect your account",
+        type: "INFO",
+      });
       await sendOauthRequest();
     }
   };
