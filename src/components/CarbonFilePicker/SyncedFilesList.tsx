@@ -275,16 +275,28 @@ export default function SyncedFilesList({
         </div>
       </div>
       {selectedFiles.length > 0 && (
-        <DialogFooter>
+        <DialogFooter className="cc-flex cc-justify-between md:cc-flex-col md:cc-gap-2">
           <Button
             variant="primary"
             size="lg"
-            className="cc-w-full"
+            className="cc-w-[68%] md:cc-w-full"
+            onClick={() => {
+              setIsUploading({ state: true, percentage: 24 });
+              // forwardMove();
+            }}
+          >
+            Resync {selectedFiles.length} file(s)
+          </Button>
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="cc-w-[30%] cc-bg-[#FFE0E0] cc-text-[#F03D3D] md:cc-w-full"
             onClick={() => {
               setIsUploading({ state: true, percentage: 24 });
             }}
           >
-            Upload {selectedFiles.length} files
+            Delete {selectedFiles.length} file(s)
           </Button>
         </DialogFooter>
       )}
