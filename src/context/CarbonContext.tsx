@@ -31,6 +31,7 @@ type CarbonContextValues = CarbonConnectProps & {
   requestIds?: object;
   whiteLabelingData?: any;
   entryPointIntegrationObject?: ProcessedIntegration | null;
+  loading?: boolean;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -41,7 +42,6 @@ const CarbonContext: React.Context<CarbonContextValues> = createContext({
 export const CarbonProvider = ({
   orgName,
   brandIcon,
-  loadingIconColor = "#3B82F6",
   children,
   tokenFetcher,
   onSuccess = () => {},
@@ -89,7 +89,6 @@ export const CarbonProvider = ({
   navigateBackURL = null,
   backButtonText = "Go Back",
   zIndex = 1000,
-  enableToasts = true,
   embeddingModel = EmbeddingGenerators.OPENAI,
   generateSparseVectors = false,
   prependFilenameToChunks = false,
@@ -241,7 +240,6 @@ export const CarbonProvider = ({
     enabledIntegrations,
     orgName,
     brandIcon,
-    loadingIconColor,
     environment,
     entryPoint,
     tags,
@@ -270,7 +268,6 @@ export const CarbonProvider = ({
     activeStep,
     setActiveStep,
     backButtonText,
-    enableToasts,
     zIndex,
     embeddingModel,
     generateSparseVectors,

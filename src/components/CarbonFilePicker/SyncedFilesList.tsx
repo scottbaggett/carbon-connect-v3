@@ -16,6 +16,7 @@ import { IntegrationAPIResponse } from "../IntegrationModal";
 import { UserFileApi } from "../../typing/shared";
 import FileItem from "./FileItem";
 import { SyncingModes } from "./CarbonFilePicker";
+import Loader from "../common/Loader";
 
 const PER_PAGE = 20;
 
@@ -40,9 +41,8 @@ export default function SyncedFilesList({
   const [files, setFiles] = useState<UserFileApi[]>([]);
   const [hasMoreFiles, setHasMoreFiles] = useState(true);
   const [offset, setOffset] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
-  const [bannerState, setBannerState] = useState({ message: null, type: null });
+  const [filesLoading, setFilesLoading] = useState(false);
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse,
@@ -116,8 +116,8 @@ export default function SyncedFilesList({
     setFiles([]);
     setSearchValue("");
     setHasMoreFiles(true);
-    setIsLoading(true);
-    loadInitialData(selectedDataSource).then(() => setIsLoading(false));
+    setFilesLoading(true);
+    loadInitialData(selectedDataSource).then(() => setFilesLoading(false));
   }, [selectedDataSource?.id, syncedFilesRefreshes]);
 
   const filteredList = files.filter((item) =>
@@ -221,12 +221,31 @@ export default function SyncedFilesList({
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
-          {!isLoading ? (
+          {filesLoading ? (
+            <Loader />
+          ) : !files.length ? (
+            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
+              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
+                <img
+                  src={NoResultsIcon}
+                  alt="No results Icon"
+                  className="cc-w-6 cc-shrink-0"
+                />
+              </div>
+              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
+                No matching results
+              </p>
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+                Try another search, or use search options to find a file by
+                type, format or more.
+              </p>
+            </div>
+          ) : (
             <InfiniteScroll
               dataLength={files.length}
               next={loadMoreRows}
               hasMore={hasMoreFiles} // Replace with a condition based on your data source
-              loader={<p>Loading...</p>}
+              loader={<Loader />}
               scrollableTarget="scrollableTarget"
             >
               <ul className="cc-pb-2">
@@ -252,23 +271,6 @@ export default function SyncedFilesList({
                 })}
               </ul>
             </InfiniteScroll>
-          ) : (
-            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
-              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
-                <img
-                  src={NoResultsIcon}
-                  alt="No results Icon"
-                  className="cc-w-6 cc-shrink-0"
-                />
-              </div>
-              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
-                No matching results
-              </p>
-              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
-                Try another search, or use search options to find a file by
-                type, format or more.
-              </p>
-            </div>
           )}
         </div>
       </div>

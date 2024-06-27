@@ -44,6 +44,7 @@ import FreshdeskScreen from "../Screens/FreshdeskScreen";
 import SourceItemsList from "./SourceItemsList";
 import SyncedFilesList from "./SyncedFilesList";
 import Banner, { BannerState } from "../common/Banner";
+import Loader from "../common/Loader";
 
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",

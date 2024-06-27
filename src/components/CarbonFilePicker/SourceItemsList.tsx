@@ -27,8 +27,9 @@ import {
   getConnectRequestProps,
 } from "../../utils/helper-functions";
 import Banner, { BannerState } from "../common/Banner";
+import Loader from "../common/Loader";
 
-const PER_PAGE = 5;
+const PER_PAGE = 20;
 type BreadcrumbType = {
   parentId: string | null;
   name: string;
@@ -92,7 +93,6 @@ export default function SourceItemsList({
     localOffset: number = 0
   ) => {
     if (!selectedDataSource) return;
-    setItemsLoading(true);
     const requestBody: any = {
       data_source_id: selectedDataSource.id,
       pagination: {
@@ -125,7 +125,6 @@ export default function SourceItemsList({
       setCurrItems((prev) => [...prev, ...sourceItems]);
       setHasMoreItems(count > localOffset + sourceItems.length);
     }
-    setItemsLoading(false);
   };
 
   useEffect(() => {
@@ -134,7 +133,11 @@ export default function SourceItemsList({
       const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
       setCurrItems([]);
       setHasMoreItems(true);
-      lastBreadcrumb.lastSync && fetchSourceItems(lastBreadcrumb.parentId, 0);
+      setItemsLoading(true);
+      lastBreadcrumb.lastSync &&
+        fetchSourceItems(lastBreadcrumb.parentId, 0).then(() =>
+          setItemsLoading(false)
+        );
     }
   }, [JSON.stringify(breadcrumbs)]);
 
@@ -339,12 +342,31 @@ export default function SourceItemsList({
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
-          {filteredList.length > 0 ? (
+          {itemsLoading ? (
+            <Loader />
+          ) : !filteredList.length ? (
+            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
+              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
+                <img
+                  src={NoResultsIcon}
+                  alt="No results Icon"
+                  className="cc-w-6 cc-shrink-0"
+                />
+              </div>
+              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
+                No matching results
+              </p>
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+                Try another search, or use search options to find a file by
+                type, format or more.
+              </p>
+            </div>
+          ) : (
             <InfiniteScroll
               dataLength={currItems.length}
               next={loadMoreRows}
               hasMore={hasMoreItems}
-              loader={<p>Loading...</p>}
+              loader={<Loader />}
               scrollableTarget="scrollableTarget"
             >
               <ul className="cc-pb-2">
@@ -372,23 +394,6 @@ export default function SourceItemsList({
                 })}
               </ul>
             </InfiniteScroll>
-          ) : (
-            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
-              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
-                <img
-                  src={NoResultsIcon}
-                  alt="No results Icon"
-                  className="cc-w-6 cc-shrink-0"
-                />
-              </div>
-              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
-                No matching results
-              </p>
-              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
-                Try another search, or use search options to find a file by
-                type, format or more.
-              </p>
-            </div>
           )}
         </div>
       </div>
