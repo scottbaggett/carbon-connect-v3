@@ -209,7 +209,7 @@ export default function SourceItemsList({
     <>
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
-          <p className="cc-text-xl cc-font-semibold cc-flex-grow">
+          <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
             Select files to sync
           </p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
@@ -217,7 +217,7 @@ export default function SourceItemsList({
               <img
                 src={SearchIcon}
                 alt="Search Icon"
-                className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
+                className="dark:cc-invert-[1] dark:cc-hue-rotate-180 cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
               />
               <Input
                 type="text"
@@ -230,7 +230,7 @@ export default function SourceItemsList({
             <Button
               size="sm"
               variant="neutral-white"
-              className="cc-text-xs cc-rounded-xl cc-font-semibold"
+              className="cc-text-xs cc-rounded-xl cc-font-semibold dark:cc-text-dark-text-white"
               onClick={() => setShowFilePicker((prev) => !prev)}
             >
               View synced files
@@ -244,7 +244,7 @@ export default function SourceItemsList({
               <img
                 src={RefreshIcon}
                 alt="User Plus"
-                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </Button>
           </div>
@@ -260,7 +260,7 @@ export default function SourceItemsList({
                       key={crumb.parentId}
                       onClick={() => onBreadcrumbClick(index)}
                     >
-                      <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center">
+                      <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center dark:cc-text-dark-text-white">
                         <img
                           src={FolderIcon}
                           alt="Folder Icon"
@@ -285,7 +285,7 @@ export default function SourceItemsList({
               Clear selection
             </button>
           ) : (
-            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
+            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer dark:cc-text-dark-text-white">
               <Checkbox
                 className="my-0.5"
                 checked={
@@ -306,13 +306,13 @@ export default function SourceItemsList({
         </div>
         <div
           id="scrollableTarget"
-          className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl"
+          className="cc-border-t cc-flex cc-flex-col dark:cc-border-[#FFFFFF1F] cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl"
         >
-          <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
-            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
+          <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex dark:cc-bg-dark-border-color">
+            <div className="cc-px-4 cc-py-2 cc-text-xs dark:cc-text-dark-input-text cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
               FILE NAME
             </div>
-            <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
+            <div className="cc-py-2 cc-text-xs dark:cc-text-dark-input-text cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>

@@ -39,7 +39,7 @@ const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
   ];
 
   return (
-    <div className="cc-border cc-border-surface-surface_3 cc-rounded-xl cc-m-4">
+    <div className="cc-border md:cc-border-none cc-border-surface-surface_3 cc-rounded-xl cc-m-4 ">
       <FileUploader handleChange={onSubmit} multiple={true} types={fileTypes}>
         <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
           <div className="cc-mb-2" onClick={handleUploadClick}>
@@ -56,14 +56,16 @@ const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
             >
               Click to upload
             </div>
-            <div className="cc-text-high_em md:cc-block cc-hidden">
+            <div className="cc-text-high_em md:cc-block cc-hidden dark:cc-text-dark-text-white">
               You can upload up to 50 files.
             </div>
-            <div className="cc-text-high_em md:cc-hidden">
+            <div className="cc-text-high_em md:cc-hidden dark:cc-text-dark-text-white">
               &nbsp;or drag and drop up to 50 files.
             </div>
           </div>
-          <div className="cc-text-low_em cc-text-xs">max 20MB per file</div>
+          <div className="cc-text-low_em cc-text-xs dark:cc-text-dark-text-gray">
+            max 20MB per file
+          </div>
         </div>
       </FileUploader>
     </div>

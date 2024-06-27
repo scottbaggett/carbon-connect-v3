@@ -27,10 +27,10 @@ export default function DisconnectModal({
               className="cc-h-6 cc-w-6"
             />
           </div>
-          <p className="cc-text-2.5xl cc-font-medium cc-mb-1.5">
+          <p className="cc-text-2.5xl cc-font-medium cc-mb-1.5 dark:cc-text-dark-text-white">
             Are you sure want to disconnect you account?
           </p>
-          <p className="text-low-em">
+          <p className="text-low-em dark:cc-text-dark-text-white">
             Lorem ipsum dolor sit amet consectetur. Vitae nunc ultrices
             sollicitudin arcu placerat nunc aliquet pulvinar maecenas.
           </p>

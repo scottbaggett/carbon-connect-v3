@@ -42,15 +42,16 @@
     "filepond-plugin-file-validate-size": "^2.2.8",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
+    "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.3.1",
-    "react-infinite-scroll-component": "^6.1.0",
     "react-drag-drop-files": "^2.3.10",
     "react-dropzone": "^14.2.3",
     "react-file-drop": "^3.1.6",
     "react-filepond": "^7.1.2",
     "react-files": "^3.0.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-loader-spinner": "^6.1.6",
     "tailwind-merge": "^2.3.0"
   }

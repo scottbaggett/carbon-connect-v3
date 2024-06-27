@@ -43,11 +43,11 @@ export default function AccountDropdown({
             return (
               <DropdownMenuItem
                 key={dataSource.id}
-                className="cc-border-b cc-border-outline-base_em cc-bg-surface-surface_1"
+                className="cc-border-b cc-border-outline-base_em cc-bg-surface-surface_1 dark:cc-border-b-dark-border-color"
                 onClick={() => handleAccountChange(dataSource.id)}
               >
                 <div>
-                  <p className="cc-text-xs cc-font-semibold cc-text-high_em">
+                  <p className="cc-text-xs cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white">
                     {getAccountEmail(dataSource)}
                   </p>
                 </div>
@@ -88,7 +88,7 @@ export default function AccountDropdown({
             <img
               src={UserIcon}
               alt="User Icon"
-              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </Button>
         </DropdownMenuTrigger>
@@ -100,13 +100,13 @@ export default function AccountDropdown({
             variant="gray"
             className="cc-font-semibold cc-px-3 cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl cc-hidden sm:cc-flex cc-shrink-0"
           >
-            <span className="cc-flex-grow cc-text-left">
+            <span className="cc-flex-grow cc-text-left dark:cc-text-dark-text-white">
               {getAccountEmail(selectedDataSource)}
             </span>
             <img
               src={DownChevIcon}
               alt="Down Chev Icon"
-              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </Button>
         </DropdownMenuTrigger>

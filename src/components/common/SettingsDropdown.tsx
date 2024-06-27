@@ -44,7 +44,7 @@ export default function SettingsDropdown({
             <img
               src={SettingsIcon}
               alt="User Plus"
-              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </Button>
         </DropdownMenuTrigger>
@@ -54,24 +54,24 @@ export default function SettingsDropdown({
               onClick={() => {
                 !isRevokingDataSource && setShowDisconnectModal(true);
               }}
-              className="hover:cc-bg-surface-surface_1 cc-justify-between"
+              className="hover:cc-bg-surface-surface_1 cc-justify-between dark:cc-text-dark-text-white"
             >
               Disconnect account
               <img
                 src={DisconnectIcon}
                 alt="Disconnect Icon"
-                className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+                className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="hover:cc-bg-surface-surface_1 cc-justify-between"
+              className="hover:cc-bg-surface-surface_1 cc-justify-between dark:cc-text-dark-text-white"
               onClick={() => !isResyncingDataSource && resyncDataSource()}
             >
               Re-sync account
               <img
                 src={RefreshIcon}
                 alt="Refresh Icon"
-                className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+                className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </DropdownMenuItem>
           </DropdownMenuGroup>

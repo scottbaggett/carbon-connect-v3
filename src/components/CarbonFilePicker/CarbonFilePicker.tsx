@@ -14,6 +14,7 @@ import AccountDropdown from "@components/common/AccountDropdown";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import UserPlus from "@assets/svgIcons/user-plus.svg";
 import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
+import { useTheme } from "next-themes";
 import {
   BASE_URL,
   DEFAULT_CHUNK_SIZE,
@@ -94,8 +95,12 @@ export default function CarbonFilePicker({
   const [isResyncingDataSource, setIsResyncingDataSource] = useState(false);
   const [mode, setMode] = useState<SyncingModes | null>(null);
 
+  const { systemTheme } = useTheme();
+  const checkTheme = useTheme();
+
   // if user specified that they want to use file picker or if sync url is not supported
   useEffect(() => {
+    console.log(checkTheme);
     if (
       FILE_PICKER_SUPPORTED_CONNECTORS.find((c) => c == integrationName) &&
       (processedIntegration?.useCarbonFilePicker ||
@@ -322,19 +327,23 @@ export default function CarbonFilePicker({
       <div className="cc-h-[560px] cc-flex-grow cc-flex cc-flex-col cc-items-center cc-justify-center">
         <div className="cc-relative cc-h-14 cc-w-14 cc-rounded-full cc-bg-surface-surface_2 cc-mb-3 cc-p-1">
           <div
-            className="cc-absolute cc-top-0 cc-left-0 cc-right-0 cc-bottom-0 cc-rounded-full cc-transform -cc-rotate-90"
+            className="cc-absolute cc-top-0 cc-left-0 cc-right-0 cc-bottom-0 cc-rounded-full cc-transform -cc-rotate-90 dark:cc-border-dark-input-bg"
             style={{
-              background: `conic-gradient(#0BABFB 0% ${isUploading.percentage}%, transparent ${isUploading.percentage}% 100%)`,
+              background: `conic-gradient(#0BABFB 0% ${
+                isUploading.percentage
+              }%, ${systemTheme === "dark" ? "#FFFFFF33" : "transparent"}  ${
+                isUploading.percentage
+              }% 100%)`,
             }}
           />
-          <div className="cc-h-full cc-relative cc-w-full cc-bg-white cc-rounded-full cc-flex cc-items-center cc-justify-center cc-z-10">
-            <p className="cc-items-baseline cc-font-semibold cc-text-low_em cc-text-center cc-text-sm">
+          <div className="cc-h-full cc-relative cc-w-full cc-bg-white dark:cc-bg-dark-bg-black cc-rounded-full cc-flex cc-items-center cc-justify-center cc-z-10">
+            <p className="cc-items-baseline cc-font-semibold cc-text-low_em cc-text-center cc-text-sm dark:cc-text-dark-text-gray">
               {isUploading.percentage}
               <span className="cc-text-xs">%</span>
             </p>
           </div>
         </div>
-        <p className="cc-text-sm cc-text-center cc-font-semibold">
+        <p className="cc-text-sm cc-text-center cc-font-semibold dark:cc-text-dark-text-white">
           Uploading 12 files...
         </p>
       </div>
@@ -346,7 +355,7 @@ export default function CarbonFilePicker({
       <DialogHeader closeButtonClass="cc-hidden sm:cc-flex">
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
           <button
-            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0"
+            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0 "
             onClick={() => {
               if (!entryPoint) setActiveStep("INTEGRATION_LIST");
               else setActiveStep("CONNECT");
@@ -355,11 +364,11 @@ export default function CarbonFilePicker({
             <img
               src={BackIcon}
               alt="Lock"
-              className="cc-h-[18px] cc-w-[18px]"
+              className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </button>
-          <div className="cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
-            <div className="cc-h-full cc-w-full cc-bg-gray-50 cc-flex cc-items-center cc-justify-center cc-rounded-lg">
+          <div className=" dark:cc-bg-custom-gradient-dark cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
+            <div className="cc-h-full cc-w-full dark:cc-bg-[#0000007A] cc-bg-gray-50 cc-flex cc-items-center cc-justify-center cc-rounded-lg">
               <img
                 src={activeStepData?.logo}
                 alt="Github logo"
@@ -380,7 +389,7 @@ export default function CarbonFilePicker({
               <img
                 src={RefreshIcon}
                 alt="User Plus"
-                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </Button>
             {!showAdditionalStep ? (
@@ -404,17 +413,21 @@ export default function CarbonFilePicker({
       </DialogHeader>
       {!isLoading && connectedDataSources?.length === 0 ? (
         <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
-          <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
-            <img src={UserPlus} alt="User Plus" className="cc-h-6 cc-w-6" />
+          <div className="cc-p-2 cc-rounded-md dark:cc-bg-svg-background cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
+            <img
+              src={UserPlus}
+              alt="User Plus"
+              className="cc-h-6 cc-w-6 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+            />
           </div>
-          <div className="cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
+          <div className=" dark:cc-text-dark-text-white cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
             No account connected, please connect an account
           </div>
           <Button onClick={() => setStep(2)} size="md" className="cc-px-6">
             <img
               src={AddCircleIconWhite}
               alt="Add Circle Plus"
-              className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+              className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-initial dark:cc-hue-rotate-180"
             />
             Connect Account
           </Button>
