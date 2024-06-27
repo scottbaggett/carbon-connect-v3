@@ -42,6 +42,7 @@ export default function SyncedFilesList({
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
+  const [bannerState, setBannerState] = useState({ message: null, type: null });
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse,

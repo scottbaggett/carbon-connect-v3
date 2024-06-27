@@ -43,6 +43,7 @@ import FreshdeskScreen from "../Screens/FreshdeskScreen";
 
 import SourceItemsList from "./SourceItemsList";
 import SyncedFilesList from "./SyncedFilesList";
+import Banner, { BannerState } from "../common/Banner";
 
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",
@@ -93,6 +94,9 @@ export default function CarbonFilePicker({
   const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
   const [isResyncingDataSource, setIsResyncingDataSource] = useState(false);
   const [mode, setMode] = useState<SyncingModes | null>(null);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
 
   // if user specified that they want to use file picker or if sync url is not supported
   useEffect(() => {
@@ -270,7 +274,10 @@ export default function CarbonFilePicker({
     } else if (mode == SyncingModes.FILE_PICKER) {
       setShowFilePicker(!showFilePicker);
     } else {
-      // toast.error("Unable to start a file sync");
+      setBannerState({
+        type: "ERROR",
+        message: "Unable to start a file sync",
+      });
     }
   };
 
@@ -291,11 +298,17 @@ export default function CarbonFilePicker({
     );
 
     if (revokeAccessResponse.status === 200) {
-      // toast.success('Successfully disconnected account');
+      setBannerState({
+        type: "SUCCESS",
+        message: "Successfully disconnected account",
+      });
       setSelectedDataSource(null);
       setActiveStep(entryPoint ? "CONNECT" : "INTEGRATION_LIST");
     } else {
-      // toast.error('Error disconnecting account');
+      setBannerState({
+        type: "ERROR",
+        message: "Error disconnecting account",
+      });
     }
     setIsRevokingDataSource(false);
   };
@@ -319,9 +332,15 @@ export default function CarbonFilePicker({
     );
 
     if (resyncDataSourceResponse.status === 200) {
-      // toast.success("Your connection is being synced");
+      setBannerState({
+        type: "SUCCESS",
+        message: "Your connection is being synced",
+      });
     } else {
-      // toast.error("Error resyncing connection");
+      setBannerState({
+        type: "ERROR",
+        message: "Error resyncing connection",
+      });
     }
     setIsResyncingDataSource(false);
   };
@@ -411,6 +430,7 @@ export default function CarbonFilePicker({
           </>
         </div>
       </DialogHeader>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       {!isLoading && connectedDataSources?.length === 0 ? (
         <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
           <div className="cc-p-2 cc-rounded-md cc-bg-surface-surface_1 cc-inline-block cc-mb-3">

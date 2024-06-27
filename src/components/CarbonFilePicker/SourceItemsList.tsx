@@ -26,6 +26,7 @@ import {
   generateRequestId,
   getConnectRequestProps,
 } from "../../utils/helper-functions";
+import Banner, { BannerState } from "../common/Banner";
 
 const PER_PAGE = 5;
 type BreadcrumbType = {
@@ -63,6 +64,9 @@ export default function SourceItemsList({
   ]);
   const [sourceItemRefreshes, setSourceItemRefreshes] = useState(0);
   const [itemsLoading, setItemsLoading] = useState(false);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
 
   const filteredList = currItems.filter((item: any) =>
     item.name.toLowerCase().includes(serchValue.toLowerCase())
@@ -210,15 +214,22 @@ export default function SourceItemsList({
     );
 
     if (syncFilesResponse.status === 200) {
-      // toast.success('Files successfully queued for sync!');
+      setBannerState({
+        type: "SUCCESS",
+        message: "Files successfully queued for sync!",
+      });
     } else {
-      // toast.error('Files sync failed!');
+      setBannerState({
+        type: "ERROR",
+        message: "Files sync failed!",
+      });
     }
     setSelectedItems([]);
   };
 
   return (
     <>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow">
