@@ -27,12 +27,13 @@ import {
   getConnectRequestProps,
 } from "../../utils/helper-functions";
 
-const PER_PAGE = 20;
+const PER_PAGE = 5;
 type BreadcrumbType = {
   parentId: string | null;
   name: string;
   accountId: number | undefined;
   refreshes: number;
+  lastSync?: Date;
 };
 
 export default function SourceItemsList({
@@ -124,13 +125,18 @@ export default function SourceItemsList({
   };
 
   useEffect(() => {
-    setOffset(0);
-    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-    setCurrItems([]);
-    fetchSourceItems(lastBreadcrumb.parentId, 0);
+    if (breadcrumbs.length) {
+      setOffset(0);
+      const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+      setCurrItems([]);
+      setHasMoreItems(true);
+      lastBreadcrumb.lastSync && fetchSourceItems(lastBreadcrumb.parentId, 0);
+    }
   }, [JSON.stringify(breadcrumbs)]);
 
   useEffect(() => {
+    if (!selectedDataSource || selectedDataSource?.sync_status !== "READY")
+      return;
     setOffset(0);
     setParentId(null);
     setBreadcrumbs([
@@ -139,9 +145,14 @@ export default function SourceItemsList({
         name: "All Files",
         accountId: selectedDataSource?.id,
         refreshes: sourceItemRefreshes,
+        lastSync: selectedDataSource?.source_items_synced_at,
       },
     ]);
-  }, [selectedDataSource?.id, sourceItemRefreshes]);
+  }, [
+    selectedDataSource?.id,
+    sourceItemRefreshes,
+    selectedDataSource?.source_items_synced_at,
+  ]);
 
   const onItemClick = (item: UserSourceItemApi) => {
     if (itemsLoading) return;
@@ -154,6 +165,7 @@ export default function SourceItemsList({
           name: item.name,
           accountId: selectedDataSource?.id,
           refreshes: sourceItemRefreshes,
+          lastSync: selectedDataSource?.source_items_synced_at,
         },
       ]);
     }
@@ -257,7 +269,7 @@ export default function SourceItemsList({
                   <>
                     <BreadcrumbItem
                       className="cc-shrink-0"
-                      key={crumb.parentId}
+                      key={index}
                       onClick={() => onBreadcrumbClick(index)}
                     >
                       <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center">

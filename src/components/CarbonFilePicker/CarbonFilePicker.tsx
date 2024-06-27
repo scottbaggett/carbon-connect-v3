@@ -123,7 +123,16 @@ export default function CarbonFilePicker({
     );
     setConnectedDataSources(connected);
 
-    if (selectedDataSource === null && connected.length) {
+    const currDataSource = connected.find(
+      (c) => c.id == selectedDataSource?.id
+    );
+
+    if (
+      (selectedDataSource === null && connected.length) ||
+      currDataSource?.source_items_synced_at !==
+        selectedDataSource?.source_items_synced_at ||
+      currDataSource?.sync_status !== selectedDataSource?.sync_status
+    ) {
       if (connected.length === 1) {
         setSelectedDataSource(connected[0]);
       } else {
@@ -410,7 +419,11 @@ export default function CarbonFilePicker({
           <div className="cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
             No account connected, please connect an account
           </div>
-          <Button onClick={() => setStep(2)} size="md" className="cc-px-6">
+          <Button
+            onClick={() => handleAddAccountClick()}
+            size="md"
+            className="cc-px-6"
+          >
             <img
               src={AddCircleIconWhite}
               alt="Add Circle Plus"
