@@ -171,6 +171,59 @@ export default function FileSelector({
           </div>
         </div>
       )}
+      {errorMessage && (
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#E3FFEE] dark:cc-bg-[#11301F] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
+          <div className="cc-flex cc-items-center">
+            <img src={images.coreTick} alt="" className="cc-mr-[10px] " />
+            <div>
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
+                Lorem ipsum dolor sit amet.
+              </span>
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
+                Lorem ipsum dolor sit amet.
+              </span>
+            </div>
+          </div>
+          <div className="cc-flex cc-items-center">
+            <img src={images.verticleSeperate} alt="" />
+            <p
+              onClick={handleWarningMessage}
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#0ED065] cc-ml-[10px] cc-border-b-[2px] cc-border-[#2AE77F] cc-cursor-pointer hover:cc-text-[#058F43]"
+            >
+              Got it
+            </p>
+          </div>
+        </div>
+      )}
+      {errorMessage && (
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FFFDDC] dark:cc-bg-[#2C2614] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
+          <div className="cc-flex cc-items-center">
+            <img
+              src={images.folderIcon}
+              alt=""
+              className="cc-mr-[10px] cc-w-[20px] cc-h-[20px]"
+            />
+            <div>
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
+                Lorem ipsum dolor sit amet.
+              </span>
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
+                Lorem ipsum dolor sit amet.
+              </span>
+            </div>
+          </div>
+          <div className="cc-flex cc-items-center">
+            <img src={images.verticleSeperate} alt="" />
+            <p
+              onClick={handleWarningMessage}
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#FCBF04] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FFDE1E] cc-cursor-pointer hover:cc-text-[#B96904]"
+            >
+              Got it
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col ">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">

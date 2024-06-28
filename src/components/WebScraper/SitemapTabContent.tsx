@@ -130,7 +130,7 @@ export default function SitemapTabContent({
           </Button>
         </div>
         {internalStep === 2 && (
-          <div className="cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 sm:cc-mx-0 sm:cc-border sm:cc-rounded-xl dark:cc-border-[#FFFFFF1F]">
+          <div className="sm:cc-h-[369px] cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 sm:cc-mx-0 sm:cc-border sm:cc-rounded-xl dark:cc-border-[#FFFFFF1F]">
             <div className="cc-flex cc-justify-between cc-items-center cc-bg-surface-surface_1 sm:cc-flex dark:cc-bg-dark-border-color">
               <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold dark:cc-text-dark-input-text">
                 Fetched URLs
