@@ -342,7 +342,14 @@ export default function SourceItemsList({
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
-          {itemsLoading ? (
+          {selectedDataSource?.sync_status == "SYNCING" ||
+          selectedDataSource?.sync_status == "QUEUED_FOR_SYNC" ? (
+            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+                Your content is being synced.
+              </p>
+            </div>
+          ) : itemsLoading ? (
             <Loader />
           ) : !filteredList.length ? (
             <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">

@@ -141,8 +141,12 @@ export default function CarbonFilePicker({
       if (connected.length === 1) {
         setSelectedDataSource(connected[0]);
       } else {
-        const sorted = connected.sort((a, b) => b.id - a.id);
-        setSelectedDataSource(sorted[0]);
+        if (currDataSource) {
+          setSelectedDataSource(currDataSource);
+        } else {
+          const sorted = connected.sort((a, b) => b.id - a.id);
+          setSelectedDataSource(sorted[0]);
+        }
       }
     }
     setIsLoading(false);

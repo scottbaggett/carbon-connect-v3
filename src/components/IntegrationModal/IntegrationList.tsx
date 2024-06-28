@@ -90,7 +90,7 @@ function IntegrationList({
           )}
         </div>
         <ul className="cc-grid cc-grid-cols-2 cc-gap-3 sm:cc-grid-cols-3">
-          {listData &&
+          {listData?.length &&
             listData.map((integration: ProcessedIntegration) => {
               const isActive = activeIntegrations.find(
                 (int) => int.data_source_type == integration.data_source_type
