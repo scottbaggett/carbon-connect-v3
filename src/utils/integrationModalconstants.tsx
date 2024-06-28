@@ -20,6 +20,7 @@ import ZoteroLogo from "../assets/logos/zotero.svg";
 import GitbookLogo from "../assets/logos/gitbook.svg";
 import GithubLogo from "../assets/logos/github.svg";
 import SalesforceLogo from "../assets/logos/salesforce.svg";
+import SlackLogo from "../assets/logos/slack.svg";
 import { IntegrationName } from "../typing/shared";
 
 export interface IntegrationItemType {
@@ -283,6 +284,18 @@ export const INTEGRATIONS_LIST: IntegrationItemType[] = [
     logo: OutlookLogo,
     active: true,
     data_source_type: IntegrationName.OUTLOOK,
+    requiresOAuth: true,
+  },
+  {
+    id: IntegrationName.SLACK,
+    subpath: "slack",
+    name: "Slack",
+    description: "Lets your users connect their Slack accounts to Carbon.",
+    announcementName: "to connect Slack",
+    icon: <img src={SlackLogo} className="cc-w-7 cc-h-7" />,
+    logo: SlackLogo,
+    active: true,
+    data_source_type: IntegrationName.SLACK,
     requiresOAuth: true,
   },
   {

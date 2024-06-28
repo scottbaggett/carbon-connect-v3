@@ -31,8 +31,8 @@ export default function DisconnectModal({
             Are you sure want to disconnect you account?
           </p>
           <p className="text-low-em">
-            Lorem ipsum dolor sit amet consectetur. Vitae nunc ultrices
-            sollicitudin arcu placerat nunc aliquet pulvinar maecenas.
+            If you disconnect your account, you'll have to reconnect to start
+            syncing content again.
           </p>
         </div>
         <DialogFooter className="p-4 sm:cc-px-8 sm:cc-pb-8 sm:cc-pt-6">

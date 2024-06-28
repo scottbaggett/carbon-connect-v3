@@ -188,6 +188,7 @@ export default function CarbonFilePicker({
           ...(dataSourceId && { data_source_id: dataSourceId }),
           ...extraParams,
           service: processedIntegration.data_source_type,
+          connecting_new_account: mode == "CONNECT",
         },
         carbonProps
       );

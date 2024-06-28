@@ -12,7 +12,8 @@ import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
 import { IntegrationAPIResponse } from ".";
 import { cn } from "@components/common/design-system/utils";
-import { ActiveStep } from "../../typing/shared";
+import { ActiveStep, ProcessedIntegration } from "../../typing/shared";
+import { useCarbon } from "../../context/CarbonContext";
 
 export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
@@ -30,9 +31,10 @@ function IntegrationList({
   goToConnectModal,
 }: IntegrationListProps) {
   const [searchText, setSearchText] = useState<string>("");
+  const { processedIntegrations } = useCarbon();
 
-  const listData = INTEGRATIONS_LIST?.filter(
-    (ai) =>
+  const listData = processedIntegrations?.filter(
+    (ai: ProcessedIntegration) =>
       ai.name?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
       ai?.integrationsListViewTitle
         ?.toLowerCase()
@@ -88,8 +90,8 @@ function IntegrationList({
           )}
         </div>
         <ul className="cc-grid cc-grid-cols-2 cc-gap-3 sm:cc-grid-cols-3">
-          {!isEmpty(listData) &&
-            listData.map((integration) => {
+          {listData &&
+            listData.map((integration: ProcessedIntegration) => {
               const isActive = activeIntegrations.find(
                 (int) => int.data_source_type == integration.data_source_type
               );

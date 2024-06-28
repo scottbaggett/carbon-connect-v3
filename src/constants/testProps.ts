@@ -183,6 +183,9 @@ export const TEST_PROPS: CarbonConnectProps = {
       id: IntegrationName.S3,
       syncFilesOnConnection: false,
     },
+    {
+      id: IntegrationName.SLACK,
+    },
   ],
   onSuccess: (data: any) => {
     console.log("Data on Success: ", data);
