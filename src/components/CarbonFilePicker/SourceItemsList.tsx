@@ -26,6 +26,8 @@ import {
   generateRequestId,
   getConnectRequestProps,
 } from "../../utils/helper-functions";
+import Banner, { BannerState } from "../common/Banner";
+import Loader from "../common/Loader";
 
 const PER_PAGE = 20;
 type BreadcrumbType = {
@@ -33,6 +35,7 @@ type BreadcrumbType = {
   name: string;
   accountId: number | undefined;
   refreshes: number;
+  lastSync?: Date;
 };
 
 export default function SourceItemsList({
@@ -62,6 +65,9 @@ export default function SourceItemsList({
   ]);
   const [sourceItemRefreshes, setSourceItemRefreshes] = useState(0);
   const [itemsLoading, setItemsLoading] = useState(false);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
 
   const filteredList = currItems.filter((item: any) =>
     item.name.toLowerCase().includes(serchValue.toLowerCase())
@@ -87,7 +93,6 @@ export default function SourceItemsList({
     localOffset: number = 0
   ) => {
     if (!selectedDataSource) return;
-    setItemsLoading(true);
     const requestBody: any = {
       data_source_id: selectedDataSource.id,
       pagination: {
@@ -120,17 +125,25 @@ export default function SourceItemsList({
       setCurrItems((prev) => [...prev, ...sourceItems]);
       setHasMoreItems(count > localOffset + sourceItems.length);
     }
-    setItemsLoading(false);
   };
 
   useEffect(() => {
-    setOffset(0);
-    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-    setCurrItems([]);
-    fetchSourceItems(lastBreadcrumb.parentId, 0);
+    if (breadcrumbs.length) {
+      setOffset(0);
+      const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+      setCurrItems([]);
+      setHasMoreItems(true);
+      setItemsLoading(true);
+      lastBreadcrumb.lastSync &&
+        fetchSourceItems(lastBreadcrumb.parentId, 0).then(() =>
+          setItemsLoading(false)
+        );
+    }
   }, [JSON.stringify(breadcrumbs)]);
 
   useEffect(() => {
+    if (!selectedDataSource || selectedDataSource?.sync_status !== "READY")
+      return;
     setOffset(0);
     setParentId(null);
     setBreadcrumbs([
@@ -139,9 +152,14 @@ export default function SourceItemsList({
         name: "All Files",
         accountId: selectedDataSource?.id,
         refreshes: sourceItemRefreshes,
+        lastSync: selectedDataSource?.source_items_synced_at,
       },
     ]);
-  }, [selectedDataSource?.id, sourceItemRefreshes]);
+  }, [
+    selectedDataSource?.id,
+    sourceItemRefreshes,
+    selectedDataSource?.source_items_synced_at,
+  ]);
 
   const onItemClick = (item: UserSourceItemApi) => {
     if (itemsLoading) return;
@@ -154,6 +172,7 @@ export default function SourceItemsList({
           name: item.name,
           accountId: selectedDataSource?.id,
           refreshes: sourceItemRefreshes,
+          lastSync: selectedDataSource?.source_items_synced_at,
         },
       ]);
     }
@@ -198,15 +217,22 @@ export default function SourceItemsList({
     );
 
     if (syncFilesResponse.status === 200) {
-      // toast.success('Files successfully queued for sync!');
+      setBannerState({
+        type: "SUCCESS",
+        message: "Files successfully queued for sync!",
+      });
     } else {
-      // toast.error('Files sync failed!');
+      setBannerState({
+        type: "ERROR",
+        message: "Files sync failed!",
+      });
     }
     setSelectedItems([]);
   };
 
   return (
     <>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
@@ -257,7 +283,7 @@ export default function SourceItemsList({
                   <>
                     <BreadcrumbItem
                       className="cc-shrink-0"
-                      key={crumb.parentId}
+                      key={index}
                       onClick={() => onBreadcrumbClick(index)}
                     >
                       <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center dark:cc-text-dark-text-white">
@@ -316,12 +342,31 @@ export default function SourceItemsList({
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
-          {filteredList.length > 0 ? (
+          {itemsLoading ? (
+            <Loader />
+          ) : !filteredList.length ? (
+            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
+              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
+                <img
+                  src={NoResultsIcon}
+                  alt="No results Icon"
+                  className="cc-w-6 cc-shrink-0"
+                />
+              </div>
+              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
+                No matching results
+              </p>
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+                Try another search, or use search options to find a file by
+                type, format or more.
+              </p>
+            </div>
+          ) : (
             <InfiniteScroll
               dataLength={currItems.length}
               next={loadMoreRows}
               hasMore={hasMoreItems}
-              loader={<p>Loading...</p>}
+              loader={<Loader />}
               scrollableTarget="scrollableTarget"
             >
               <ul className="cc-pb-2">
@@ -349,23 +394,6 @@ export default function SourceItemsList({
                 })}
               </ul>
             </InfiniteScroll>
-          ) : (
-            <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
-              <div className="cc-p-2 cc-bg-surface-surface_2 cc-rounded-lg cc-mb-3">
-                <img
-                  src={NoResultsIcon}
-                  alt="No results Icon"
-                  className="cc-w-6 cc-shrink-0"
-                />
-              </div>
-              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
-                No matching results
-              </p>
-              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
-                Try another search, or use search options to find a file by
-                type, format or more.
-              </p>
-            </div>
           )}
         </div>
       </div>

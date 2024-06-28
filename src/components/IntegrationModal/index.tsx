@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
-import { emptyFunction } from "@utils/helper-functions";
+import { emptyFunction, findModifications } from "@utils/helper-functions";
 import IntegrationList from "@components/IntegrationModal/IntegrationList";
 import WebScraper from "@components/WebScraper/WebScraper";
 import CarbonFilePicker from "@components/CarbonFilePicker/CarbonFilePicker";
@@ -41,10 +41,14 @@ function IntegrationModal({
   activeStep,
   setActiveStep,
 }: ModalProps) {
-  const { orgName, accessToken, fetchTokens } = useCarbon();
+  const { orgName, accessToken, fetchTokens, requestIds, onSuccess } =
+    useCarbon();
   const [activeIntegrations, setActiveIntegrations] = useState<
     IntegrationAPIResponse[]
   >([]);
+
+  const requestIdsRef = useRef(requestIds);
+  const activeIntegrationsRef = useRef(activeIntegrations);
 
   const { environment = "PRODUCTION", authenticatedFetch } = useCarbon();
 
@@ -64,7 +68,23 @@ function IntegrationModal({
 
       if (userIntegrationsResponse.status === 200) {
         const responseBody = await userIntegrationsResponse.json();
-        setActiveIntegrations(responseBody["active_integrations"]);
+        if (activeIntegrations.length) {
+          const integrationModifications = findModifications(
+            responseBody["active_integrations"],
+            activeIntegrationsRef.current,
+            requestIdsRef
+          );
+
+          if (integrationModifications.length > 0) {
+            for (let i = 0; i < integrationModifications.length; i++) {
+              onSuccess && onSuccess(integrationModifications[i]);
+            }
+          }
+          activeIntegrationsRef.current = responseBody["active_integrations"];
+          setActiveIntegrations(responseBody["active_integrations"]);
+        } else {
+          setActiveIntegrations(responseBody["active_integrations"]);
+        }
         return;
       }
     } catch (error) {
@@ -79,6 +99,22 @@ function IntegrationModal({
       fetchTokens();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    if (accessToken && isOpen) {
+      const intervalId = setInterval(fetchUserIntegrations, 10000);
+      // Make sure to clear the interval when the component unmounts
+      return () => clearInterval(intervalId);
+    }
+  }, [accessToken, isOpen]);
+
+  useEffect(() => {
+    requestIdsRef.current = requestIds || {};
+  }, [requestIds]);
+
+  useEffect(() => {
+    activeIntegrationsRef.current = activeIntegrations;
+  }, [activeIntegrations]);
 
   const showActiveContent = (activeStep: string | number) => {
     switch (activeStep) {

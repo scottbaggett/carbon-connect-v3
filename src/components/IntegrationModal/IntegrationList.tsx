@@ -125,16 +125,13 @@ function IntegrationList({
                           {integration.integrationsListViewTitle ||
                             integration.name}
                         </span>
-                        {integration.online !== undefined && (
+                        {isActive ? (
                           <span
-                            className={cn(
-                              "cc-h-2 cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg",
-                              integration.online
-                                ? "cc-bg-success-600"
-                                : "cc-bg-danger-600"
-                            )}
+                            className={
+                              "cc-h-2 cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg"
+                            }
                           />
-                        )}
+                        ) : null}
                       </h2>
                       {(!integration.active || integration.additionalInfo) && (
                         <p className="cc-font-semibold dark:cc-text-dark-text-gray cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">

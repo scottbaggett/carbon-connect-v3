@@ -6,7 +6,7 @@ import {
   SYNC_SOURCE_ITEMS,
 } from "../constants/shared";
 import { useCarbon } from "../context/CarbonContext";
-import { IntegrationName } from "../typing/shared";
+import { ActionType, IntegrationName } from "../typing/shared";
 import { UserSourceItemApi } from "../typing/shared";
 import { UserFileApi } from "../typing/shared";
 import { CarbonConnectProps, ProcessedIntegration } from "../typing/shared";
@@ -208,3 +208,80 @@ export function getDataSourceDomain(dataSource: IntegrationAPIResponse) {
     return null;
   }
 }
+
+export const findModifications = (
+  newIntegrations: IntegrationAPIResponse[],
+  oldIntegrations: IntegrationAPIResponse[],
+  requestIdsRef: any
+) => {
+  const response = [];
+  try {
+    for (let i = 0; i < newIntegrations.length; i++) {
+      const newIntegration = newIntegrations[i];
+      const requestId = requestIdsRef.current
+        ? requestIdsRef.current[newIntegration.data_source_type] || null
+        : null;
+
+      const oldIntegration = oldIntegrations.find(
+        (oldIntegration) => oldIntegration.id === newIntegration.id
+      );
+      if (!oldIntegration) {
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.ADD,
+          event: ActionType.ADD,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+            request_id: requestId,
+          },
+        };
+
+        response.push(onSuccessObject);
+      } else if (
+        oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+        newIntegration?.last_sync_action === "CANCEL"
+      ) {
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.CANCEL,
+          event: ActionType.CANCEL,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+          },
+        };
+        response.push(onSuccessObject);
+      } else if (
+        oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+        newIntegration?.last_sync_action === "UPDATE"
+      ) {
+        const requestId = requestIdsRef.current
+          ? requestIdsRef.current[newIntegration.data_source_type] || null
+          : null;
+        const filesSynced =
+          oldIntegration?.files_synced_at !== newIntegration?.files_synced_at;
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.UPDATE,
+          event: ActionType.UPDATE,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+            request_id: requestId,
+            files_synced: filesSynced,
+          },
+        };
+        response.push(onSuccessObject);
+      }
+    }
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    return response;
+  }
+};

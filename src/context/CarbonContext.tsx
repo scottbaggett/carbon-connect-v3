@@ -31,6 +31,7 @@ type CarbonContextValues = CarbonConnectProps & {
   requestIds?: object;
   whiteLabelingData?: any;
   entryPointIntegrationObject?: ProcessedIntegration | null;
+  loading?: boolean;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -41,7 +42,6 @@ const CarbonContext: React.Context<CarbonContextValues> = createContext({
 export const CarbonProvider = ({
   orgName,
   brandIcon,
-  loadingIconColor = "#3B82F6",
   children,
   tokenFetcher,
   onSuccess = () => {},
@@ -89,7 +89,6 @@ export const CarbonProvider = ({
   navigateBackURL = null,
   backButtonText = "Go Back",
   zIndex = 1000,
-  enableToasts = true,
   embeddingModel = EmbeddingGenerators.OPENAI,
   generateSparseVectors = false,
   prependFilenameToChunks = false,
@@ -193,100 +192,6 @@ export const CarbonProvider = ({
     setLoading(false);
   };
 
-  // todo - handle multiple data sources - this is used for white labeling
-  const handleServiceOAuthFlow = async (service: ProcessedIntegration) => {
-    try {
-      // const alreadyActiveOAuth = getFlag(service?.data_source_type);
-      // if (alreadyActiveOAuth === 'true') {
-      //   toast.error(
-      //     `Please finish the ${service?.data_source_type} authentication before starting another.`
-      //   );
-      //   return;
-      // }
-
-      const chunkSizeValue =
-        service?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
-      const overlapSizeValue =
-        service?.overlapSize || overlapSize || DEFAULT_OVERLAP_SIZE;
-      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
-      const embeddingModelValue = embeddingModel || EmbeddingGenerators.OPENAI;
-      const generateSparseVectorsValue =
-        service?.generateSparseVectors || generateSparseVectors || false;
-      const prependFilenameToChunksValue =
-        service?.prependFilenameToChunks || prependFilenameToChunks || false;
-      const maxItemsPerChunkValue =
-        service?.maxItemsPerChunk || maxItemsPerChunk || false;
-      const syncFilesOnConnection =
-        service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT;
-      const setPageAsBoundaryValue =
-        service?.setPageAsBoundary || setPageAsBoundary || false;
-      const useOcrValue = service?.useOcr || useOcr || false;
-      const parsePdfTablesWithOcrValue =
-        service?.parsePdfTablesWithOcr || parsePdfTablesWithOcr || false;
-      const syncSourceItems = service?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
-
-      let requestId = null;
-      if (useRequestIds) {
-        requestId = generateRequestId(20);
-        setRequestIds({
-          ...requestIds,
-          [service?.data_source_type]: requestId,
-        });
-      }
-
-      const oAuthURLResponse = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/oauth_url`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Token ${accessToken}`,
-          },
-          body: JSON.stringify({
-            tags: tags,
-            service: service?.data_source_type,
-            chunk_size: chunkSizeValue,
-            chunk_overlap: overlapSizeValue,
-            skip_embedding_generation: skipEmbeddingGeneration,
-            embedding_model: embeddingModelValue,
-            generate_sparse_vectors: generateSparseVectorsValue,
-            prepend_filename_to_chunks: prependFilenameToChunksValue,
-            ...(maxItemsPerChunkValue && {
-              max_items_per_chunk: maxItemsPerChunkValue,
-            }),
-            sync_files_on_connection: syncFilesOnConnection,
-            set_page_as_boundary: setPageAsBoundaryValue,
-            connecting_new_account: true,
-            ...(requestId && { request_id: requestId }),
-            use_ocr: useOcrValue,
-            parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
-            sync_source_items: syncSourceItems,
-          }),
-        }
-      );
-
-      if (oAuthURLResponse?.status === 200) {
-        // setFlag(service?.data_source_type, true);
-        onSuccess &&
-          onSuccess({
-            status: 200,
-            data: { request_id: requestId },
-            integration: service?.data_source_type,
-            action: ActionType.INITIATE,
-            event: ActionType.INITIATE,
-          });
-        const oAuthURLResponseData = await oAuthURLResponse.json();
-
-        window.open(oAuthURLResponseData.oauth_url, "_blank");
-      }
-    } catch (err) {
-      console.error(
-        "[CarbonContext.js] Error in handleServiceOAuthFlow: ",
-        err
-      );
-    }
-  };
-
   useEffect(() => {
     let tempIntegrations = [];
     // merge the integration data like logos etc with the options provided as props
@@ -335,7 +240,6 @@ export const CarbonProvider = ({
     enabledIntegrations,
     orgName,
     brandIcon,
-    loadingIconColor,
     environment,
     entryPoint,
     tags,
@@ -351,7 +255,6 @@ export const CarbonProvider = ({
     overlapSize,
     processedIntegrations,
     entryPointIntegrationObject,
-    handleServiceOAuthFlow,
     whiteLabelingData,
     tosURL,
     privacyPolicyURL,
@@ -365,7 +268,6 @@ export const CarbonProvider = ({
     activeStep,
     setActiveStep,
     backButtonText,
-    enableToasts,
     zIndex,
     embeddingModel,
     generateSparseVectors,

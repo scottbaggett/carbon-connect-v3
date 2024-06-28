@@ -44,6 +44,8 @@ import FreshdeskScreen from "../Screens/FreshdeskScreen";
 
 import SourceItemsList from "./SourceItemsList";
 import SyncedFilesList from "./SyncedFilesList";
+import Banner, { BannerState } from "../common/Banner";
+import Loader from "../common/Loader";
 
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",
@@ -94,6 +96,9 @@ export default function CarbonFilePicker({
   const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
   const [isResyncingDataSource, setIsResyncingDataSource] = useState(false);
   const [mode, setMode] = useState<SyncingModes | null>(null);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
 
   const { systemTheme } = useTheme();
   const checkTheme = useTheme();
@@ -128,7 +133,16 @@ export default function CarbonFilePicker({
     );
     setConnectedDataSources(connected);
 
-    if (selectedDataSource === null && connected.length) {
+    const currDataSource = connected.find(
+      (c) => c.id == selectedDataSource?.id
+    );
+
+    if (
+      (selectedDataSource === null && connected.length) ||
+      currDataSource?.source_items_synced_at !==
+        selectedDataSource?.source_items_synced_at ||
+      currDataSource?.sync_status !== selectedDataSource?.sync_status
+    ) {
       if (connected.length === 1) {
         setSelectedDataSource(connected[0]);
       } else {
@@ -227,9 +241,11 @@ export default function CarbonFilePicker({
       setShowAdditionalStep(true);
       setSelectedDataSource(null);
     } else {
-      // toast.info(
-      //   'You will be redirected to the service to connect your account'
-      // );
+      setBannerState({
+        message:
+          "You will be redirected to the service to connect your account",
+        type: "INFO",
+      });
       await sendOauthRequest();
     }
   };
@@ -266,7 +282,10 @@ export default function CarbonFilePicker({
     } else if (mode == SyncingModes.FILE_PICKER) {
       setShowFilePicker(!showFilePicker);
     } else {
-      // toast.error("Unable to start a file sync");
+      setBannerState({
+        type: "ERROR",
+        message: "Unable to start a file sync",
+      });
     }
   };
 
@@ -287,11 +306,17 @@ export default function CarbonFilePicker({
     );
 
     if (revokeAccessResponse.status === 200) {
-      // toast.success('Successfully disconnected account');
+      setBannerState({
+        type: "SUCCESS",
+        message: "Successfully disconnected account",
+      });
       setSelectedDataSource(null);
       setActiveStep(entryPoint ? "CONNECT" : "INTEGRATION_LIST");
     } else {
-      // toast.error('Error disconnecting account');
+      setBannerState({
+        type: "ERROR",
+        message: "Error disconnecting account",
+      });
     }
     setIsRevokingDataSource(false);
   };
@@ -315,9 +340,15 @@ export default function CarbonFilePicker({
     );
 
     if (resyncDataSourceResponse.status === 200) {
-      // toast.success("Your connection is being synced");
+      setBannerState({
+        type: "SUCCESS",
+        message: "Your connection is being synced",
+      });
     } else {
-      // toast.error("Error resyncing connection");
+      setBannerState({
+        type: "ERROR",
+        message: "Error resyncing connection",
+      });
     }
     setIsResyncingDataSource(false);
   };
@@ -411,6 +442,7 @@ export default function CarbonFilePicker({
           </>
         </div>
       </DialogHeader>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       {!isLoading && connectedDataSources?.length === 0 ? (
         <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
           <div className="cc-p-2 cc-rounded-md dark:cc-bg-svg-background cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
@@ -423,7 +455,11 @@ export default function CarbonFilePicker({
           <div className=" dark:cc-text-dark-text-white cc-text-base cc-font-semibold cc-mb-6 cc-text-center cc-max-w-[206px]">
             No account connected, please connect an account
           </div>
-          <Button onClick={() => setStep(2)} size="md" className="cc-px-6">
+          <Button
+            onClick={() => handleAddAccountClick()}
+            size="md"
+            className="cc-px-6"
+          >
             <img
               src={AddCircleIconWhite}
               alt="Add Circle Plus"

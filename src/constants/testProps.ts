@@ -185,10 +185,10 @@ export const TEST_PROPS: CarbonConnectProps = {
     },
   ],
   onSuccess: (data: any) => {
-    console.log("Data on Success Dropbox: ", data);
+    console.log("Data on Success: ", data);
   },
   onError: (error: any) => {
-    console.log("Data on Error Dropbox: ", error);
+    console.log("Data on Error: ", error);
   },
   primaryBackgroundColor: "#525252",
   // entryPoint={IntegrationName.CONFLUENCE}
