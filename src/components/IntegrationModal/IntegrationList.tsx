@@ -33,13 +33,11 @@ function IntegrationList({
   const [searchText, setSearchText] = useState<string>("");
   const { processedIntegrations } = useCarbon();
 
-  const listData = processedIntegrations?.filter(
-    (ai: ProcessedIntegration) =>
-      ai.name?.toLowerCase()?.includes(searchText?.toLowerCase()) ||
-      ai?.integrationsListViewTitle
-        ?.toLowerCase()
-        ?.includes(searchText?.toLowerCase())
-  );
+  const listData = processedIntegrations
+    ?.sort((a, b) => a.id.localeCompare(b.id))
+    .filter((ai: ProcessedIntegration) =>
+      ai.name?.toLowerCase()?.includes(searchText?.toLowerCase())
+    );
 
   return (
     <>

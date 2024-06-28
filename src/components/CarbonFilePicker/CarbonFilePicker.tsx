@@ -248,7 +248,7 @@ export default function CarbonFilePicker({
       setBannerState({
         message:
           "You will be redirected to the service to connect your account",
-        type: "INFO",
+        type: "WARN",
       });
       await sendOauthRequest();
     }

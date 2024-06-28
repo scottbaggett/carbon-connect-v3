@@ -4,22 +4,32 @@ import { images } from "@assets/index";
 export type BannerState = {
   message: string | null;
   ctaText?: string | null;
-  type?: "WARN" | "SUCCESS" | "ERROR" | "INFO" | null;
+  type?: "WARN" | "SUCCESS" | "ERROR" | null;
   additionalInfo?: string | null;
 };
 
 const BG_COLORS = {
-  WARN: "surface-warning_accent_1",
-  SUCCESS: "surface-success_accent_1",
-  ERROR: "surface-danger_accent_1",
-  INFO: "",
+  ERROR: "#FEF2F2",
+  SUCCESS: "#E3FFEE",
+  WARN: "#FFFDDC",
+};
+
+const BG_COLORS_DARK = {
+  ERROR: "#301C1C",
+  SUCCESS: "#11301F",
+  WARN: "#2C2614",
 };
 
 const ICONS = {
-  WARN: images.warningTick,
-  SUCCESS: images.greenTick,
   ERROR: images.warningTick,
-  INFO: "",
+  SUCCESS: images.coreTick,
+  WARN: images.folderIcon,
+};
+
+const ctaClasses = {
+  ERROR: "cc-text-[#F03D3D] cc-border-[#FF7373] hover:cc-text-[#BA1B1B]",
+  SUCCESS: "cc-text-[#0ED065] cc-border-[#2AE77F] hover:cc-text-[#058F43]",
+  WARN: "cc-text-[#FCBF04] cc-border-[#FFDE1E] hover:cc-text-[#B96904]",
 };
 
 const Banner = ({
@@ -38,24 +48,20 @@ const Banner = ({
   // }, [bannerState]);
 
   const bgColor = BG_COLORS[bannerState.type || "SUCCESS"];
+  const bgColorDark = BG_COLORS_DARK[bannerState.type || "SUCCESS"];
   const icon = ICONS[bannerState.type || "SUCCESS"];
 
   return bannerState.message ? (
     <div
-      className={`cc-flex cc-justify-between cc-items-center cc-bg-${bgColor} cc-p-[8px_24px_8px_16px]`}
+      className={`cc-flex cc-justify-between cc-items-center cc-bg-[${bgColor}] dark:cc-bg-[${bgColorDark}] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]`}
     >
       <div className="cc-flex cc-items-center">
-        <img
-          src={icon}
-          alt={bannerState.type || ""}
-          className="cc-mr-[10px]"
-          height={"15px"}
-        />
+        <img src={icon} alt="" className="cc-mr-[10px]" />
         <div>
-          <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] cc-mr-[10px]">
+          <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
             {bannerState.message}
           </span>
-          <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A]">
+          <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
             {bannerState.additionalInfo}
           </span>
         </div>
@@ -70,7 +76,9 @@ const Banner = ({
               type: null,
             })
           }
-          className={`cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer`}
+          className={`cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-ml-[10px] cc-border-b-[2px] cc-cursor-pointer ${
+            ctaClasses[bannerState.type || "SUCCESS"]
+          }`}
         >
           {bannerState.ctaText || "Got It"}
         </p>
