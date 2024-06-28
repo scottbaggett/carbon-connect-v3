@@ -97,6 +97,7 @@ function IntegrationList({
               const isActive = activeIntegrations.find(
                 (int) => int.data_source_type == integration.data_source_type
               );
+              console.log(isActive, integration.id);
               return (
                 <li
                   key={integration.id}
@@ -128,7 +129,7 @@ function IntegrationList({
                         {isActive ? (
                           <span
                             className={
-                              "cc-h-2 cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg"
+                              "cc-h-2 cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg cc-bg-success-600"
                             }
                           />
                         ) : null}
