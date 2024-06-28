@@ -42,7 +42,7 @@ function WebScraper({
             <img
               src={BackIcon}
               alt="Lock"
-              className="cc-h-[18px] cc-w-[18px]"
+              className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </button>
           <DialogTitle className="cc-flex-grow cc-text-left">

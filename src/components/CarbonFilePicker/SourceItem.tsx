@@ -24,7 +24,8 @@ export default function SourceItem({
   return (
     <li
       key={item.id}
-      className="cc-flex sm:cc-px-4 cc-transition-all cc-font-semibold cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
+      onClick={onSelect}
+      className="cc-flex sm:cc-px-4 cc-transition-all cc-font-semibold dark:hover:cc-bg-[#464646]/25  cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2 cc-border-b cc-border-outline-base_em cc-py-3">
         {item.is_selectable ? (
@@ -52,8 +53,10 @@ export default function SourceItem({
           className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap"
           onClick={() => onItemClick(item)}
         >
-          <p className="cc-flex-grow">{item.name}</p>
-          <p className="cc-w-full cc-shrink-0 cc-text-left cc-text-xs cc-text-low_em sm:cc-text-high_em sm:cc-w-[200px] sm:text-sm sm:cc-text-right sm:cc-text-sm cc-truncate">
+          <p className="cc-flex-grow dark:cc-text-dark-text-white">
+            {item.name}
+          </p>
+          <p className="cc-w-full cc-shrink-0 cc-text-left cc-text-xs cc-text-low_em sm:cc-text-high_em sm:cc-w-[200px] sm:text-sm sm:cc-text-right sm:cc-text-sm cc-truncate dark:cc-text-dark-text-white">
             {(itemType === "FOLDER" || itemType === "FILE") &&
               formatDate(item.created_at)}
           </p>

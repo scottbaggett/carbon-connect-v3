@@ -148,14 +148,14 @@ export default function FileSelector({
   return (
     <>
       {errorMessage && (
-        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FEF2F2] cc-p-[8px_24px_8px_16px]">
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FEF2F2] dark:cc-bg-[#301C1C] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
           <div className="cc-flex cc-items-center">
             <img src={images.warningTick} alt="" className="cc-mr-[10px]" />
             <div>
-              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] cc-mr-[10px]">
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
                 File size is too large for 23 files
               </span>
-              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A]">
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
                 max 20 MB per file allowed
               </span>
             </div>
@@ -164,27 +164,82 @@ export default function FileSelector({
             <img src={images.verticleSeperate} alt="" />
             <p
               onClick={handleWarningMessage}
-              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer"
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer hover:cc-text-[#BA1B1B]"
             >
               Got it
             </p>
           </div>
         </div>
       )}
+      {errorMessage && (
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#E3FFEE] dark:cc-bg-[#11301F] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
+          <div className="cc-flex cc-items-center">
+            <img src={images.coreTick} alt="" className="cc-mr-[10px] " />
+            <div>
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
+                Lorem ipsum dolor sit amet.
+              </span>
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
+                Lorem ipsum dolor sit amet.
+              </span>
+            </div>
+          </div>
+          <div className="cc-flex cc-items-center">
+            <img src={images.verticleSeperate} alt="" />
+            <p
+              onClick={handleWarningMessage}
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#0ED065] cc-ml-[10px] cc-border-b-[2px] cc-border-[#2AE77F] cc-cursor-pointer hover:cc-text-[#058F43]"
+            >
+              Got it
+            </p>
+          </div>
+        </div>
+      )}
+      {errorMessage && (
+        <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FFFDDC] dark:cc-bg-[#2C2614] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
+          <div className="cc-flex cc-items-center">
+            <img
+              src={images.folderIcon}
+              alt=""
+              className="cc-mr-[10px] cc-w-[20px] cc-h-[20px]"
+            />
+            <div>
+              <span className="cc-text-[14px] cc-leading-[24px] cc-font-bold cc-text-[#000000] dark:cc-text-dark-text-white cc-mr-[10px]">
+                Lorem ipsum dolor sit amet.
+              </span>
+              <span className="md:cc-block cc-text-[14px] cc-leading-[24px] cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
+                Lorem ipsum dolor sit amet.
+              </span>
+            </div>
+          </div>
+          <div className="cc-flex cc-items-center">
+            <img src={images.verticleSeperate} alt="" />
+            <p
+              onClick={handleWarningMessage}
+              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#FCBF04] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FFDE1E] cc-cursor-pointer hover:cc-text-[#B96904]"
+            >
+              Got it
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col ">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
-          <p className="cc-text-xl cc-font-semibold cc-flex-grow">{headName}</p>
+          <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
+            {headName}
+          </p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
             <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
               <img
                 src={SearchIcon}
                 alt="Search Icon"
-                className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
+                className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
               <Input
                 type="text"
                 placeholder="Search"
-                className="cc-h-8 cc-text-xs cc-pl-7"
+                className="cc-h-8 cc-text-xs cc-pl-7 dark:cc-bg-svg-background dark:placeholder:cc-text-dark-input-text"
                 value={serchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
@@ -195,20 +250,11 @@ export default function FileSelector({
               className="cc-text-xs cc-rounded-xl cc-font-semibold md:cc-hidden"
             >
               {isAddIcon ? (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M6.00008 11.8332C9.22174 11.8332 11.8334 9.2215 11.8334 5.99984C11.8334 2.77818 9.22174 0.166504 6.00008 0.166504C2.77842 0.166504 0.166748 2.77818 0.166748 5.99984C0.166748 9.2215 2.77842 11.8332 6.00008 11.8332ZM5.41675 8.9165V6.58317H3.08341V5.4165H5.41675V3.08317H6.58341V5.4165H8.91675V6.58317H6.58341V8.9165H5.41675Z"
-                    fill="black"
-                  />
-                </svg>
+                <img
+                  src={AddCircleIconBlack}
+                  alt="Add Circle Plus"
+                  className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+                />
               ) : null}
 
               {addViewCtaText}
@@ -222,7 +268,7 @@ export default function FileSelector({
                 onClick={handleRefresh}
                 src={RefreshIcon}
                 alt="User Plus"
-                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </Button>
             {/* <Button
@@ -244,7 +290,7 @@ export default function FileSelector({
             <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
               <BreadcrumbList className="cc-flex-nowrap">
                 <BreadcrumbItem className="cc-shrink-0 cc-flex cc-justify-between md:cc-w-full">
-                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center">
+                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center dark:cc-text-dark-text-white">
                     <img
                       src={FolderIcon}
                       alt="Folder Icon"
@@ -282,7 +328,7 @@ export default function FileSelector({
                 ) : null}
 
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-shrink-0">
+                  <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-shrink-0 dark:cc-text-dark-text-white">
                     {navigationHeadingSecond}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
@@ -290,7 +336,9 @@ export default function FileSelector({
                   <BreadcrumbSeparator className="cc-shrink-0" />
                 ) : null}
                 <BreadcrumbItem className="cc-shrink-0">
-                  <BreadcrumbPage>{navigationHeadingThird}</BreadcrumbPage>
+                  <BreadcrumbPage className="dark:cc-text-dark-text-white">
+                    {navigationHeadingThird}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -303,7 +351,7 @@ export default function FileSelector({
               Clear selection
             </button>
           ) : (
-            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
+            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer dark:cc-text-dark-text-white">
               <Checkbox
                 className="my-0.5"
                 checked={selectedFiles.length === fileList.length}
@@ -316,17 +364,17 @@ export default function FileSelector({
             </label>
           )}
         </div>
-        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl">
-          <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
-            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
+        <div className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em dark:cc-border-[#FFFFFF1F] cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl">
+          <div className="cc-bg-surface-surface_1 dark:cc-bg-dark-border-color cc-hidden sm:cc-flex ">
+            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow dark:cc-text-dark-input-text">
               FILE NAME
             </div>
 
-            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px]">
+            <div className="dark:cc-text-dark-input-text cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px]">
               STATUS
             </div>
 
-            <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
+            <div className="cc-py-2 cc-text-xs dark:cc-text-dark-input-text cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
@@ -392,7 +440,7 @@ export default function FileSelector({
       </div>
 
       {selectedFiles.length > 0 && (
-        <DialogFooter className="cc-flex cc-justify-between md:cc-flex-col md:cc-gap-2">
+        <DialogFooter className="cc-flex cc-justify-between md:cc-flex-col md:cc-gap-2 dark:cc-bg-dark-bg-black">
           <Button
             variant="primary"
             size="lg"

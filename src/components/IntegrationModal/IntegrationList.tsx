@@ -57,7 +57,7 @@ function IntegrationList({
             <img
               src={BackIcon}
               alt="Lock"
-              className="cc-h-[18px] cc-w-[18px]"
+              className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </Button>
           <DialogTitle className="cc-flex-grow sm:cc-text-left">
@@ -69,14 +69,14 @@ function IntegrationList({
         <div className="cc-relative cc-mb-6">
           <Input
             placeholder="Search Integrations"
-            className="cc-pl-10"
+            className="cc-pl-10 dark:cc-bg-dark-input-bg dark:placeholder:cc-text-dark-input-text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
           <img
             src={SearchIcon}
             alt="search Icon"
-            className="cc-h-5 cc-w-5 cc-absolute cc-left-[14px] cc-transform -cc-translate-y-1/2 cc-top-1/2 cc-pointer-events-none"
+            className="dark:cc-invert-[1] dark:cc-hue-rotate-180 cc-h-5 cc-w-5 cc-absolute cc-left-[14px] cc-transform -cc-translate-y-1/2 cc-top-1/2 cc-pointer-events-none "
           />
           {searchText !== "" && (
             <Button
@@ -85,7 +85,11 @@ function IntegrationList({
               variant="neutral-white"
               className="cc-absolute cc-border-none cc-right-2 cc-transform -cc-translate-y-1/2 cc-top-1/2 cc-px-[0_!important] cc-w-6 cc-bg-transparent"
             >
-              <img src={CrossIcon} alt="Cross Icon" className="cc-h-3 cc-w-3" />
+              <img
+                src={CrossIcon}
+                alt="Cross Icon"
+                className="cc-h-3 cc-w-3 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+              />
             </Button>
           )}
         </div>
@@ -98,10 +102,10 @@ function IntegrationList({
               return (
                 <li
                   key={integration.id}
-                  className={`cc-border cc-rounded-xl cc-h-fit cc-items-center cc-p-2 sm:cc-p-3 cc-transition-all ${
+                  className={`cc-border cc-rounded-xl cc-h-fit dark:cc-text-dark-text-white  dark:cc-bg-dark-bg-black dark:cc-border-[#FFFFFF1F]  cc-items-center cc-p-2 sm:cc-p-3 cc-transition-all ${
                     !integration.active
                       ? "cc-bg-gray-200 cc-cursor-not-allowed"
-                      : "cc-bg-white cc-cursor-pointer hover:cc-bg-surface-surface_1 hover:cc-border-outline-med_em"
+                      : "cc-bg-white cc-cursor-pointer hover:cc-bg-surface-surface_1 dark:hover:cc-bg-dark-surface_1 dark:hover:cc-border-dark-outline-med_em hover:cc-border-outline-med_em"
                   }`}
                   onClick={() => setActiveStep(integration?.id)}
                 >
@@ -126,13 +130,13 @@ function IntegrationList({
                         {isActive ? (
                           <span
                             className={
-                              "cc-h-2 cc-inline-block cc-w-2 cc-border cc-border-white cc-rounded-lg cc-bg-success-600"
+                              "cc-h-2 cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg"
                             }
                           />
                         ) : null}
                       </h2>
                       {(!integration.active || integration.additionalInfo) && (
-                        <p className="cc-font-semibold cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
+                        <p className="cc-font-semibold dark:cc-text-dark-text-gray cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
                           {integration.additionalInfo || "Coming Soon"}
                         </p>
                       )}

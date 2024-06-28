@@ -101,7 +101,7 @@ export default function WebsiteTabContent({
                     <img
                       src={images.left_icon}
                       alt="tabler_sitemap"
-                      className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none"
+                      className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none dark:cc-invert-[1] dark:cc-hue-rotate-180"
                     />
                     <Input
                       type="text"
@@ -111,7 +111,7 @@ export default function WebsiteTabContent({
                       value="https://"
                     />
                   </div>
-                  <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em" />
+                  <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em dark:cc-bg-dark-input-bg " />
                   <Input
                     type="text"
                     className="cc-rounded-l-none"
@@ -149,7 +149,7 @@ export default function WebsiteTabContent({
                     <img
                       src={images.trash_2}
                       alt=""
-                      className="cc-cursor-pointer"
+                      className="cc-cursor-pointer dark:cc-invert-[1] dark:cc-hue-rotate-180"
                       onClick={() => deleteWebsiteListData(index)}
                     />
                   </Button>
@@ -174,7 +174,7 @@ export default function WebsiteTabContent({
                 </Button>
                 <Button
                   size="lg"
-                  variant="neutral-white"
+                  variant="neutral-white-fix"
                   onClick={() => {
                     setWebsiteDataList((prev) => [...prev, initialData]);
                   }}
@@ -192,7 +192,7 @@ export default function WebsiteTabContent({
         </div>
       </div>
       <DialogFooter>
-        <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+        <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold dark:cc-text-dark-text-gray">
           <img
             src={images.info_fill}
             alt="info_fill"
@@ -238,11 +238,19 @@ function FilterPopover({
           className="cc-gap-2 cc-font-semibold cc-relative"
         >
           {initialData.selectedFilter !== null && (
-            <div className="cc-absolute -cc-right-0.5 -cc-top-0.5 cc-border-2 cc-border-white cc-h-2.5 cc-w-2.5 cc-rounded-full cc-bg-surface-info_main "></div>
+            <div className="cc-absolute -cc-right-0.5 -cc-top-0.5 cc-border-2 cc-border-white cc-h-2.5 cc-w-2.5 cc-rounded-full cc-bg-surface-info_main dark:cc-border-dark-bg-black "></div>
           )}
-          <img src={images.filter} alt="" className="cc-mr-2" />
+          <img
+            src={images.filter}
+            alt=""
+            className="cc-mr-2 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+          />
           Configure
-          <img src={DownChevIcon} alt="" />
+          <img
+            src={DownChevIcon}
+            alt=""
+            className="dark:cc-invert-[1] dark:cc-hue-rotate-180"
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="cc-p-2">
@@ -340,7 +348,7 @@ function MobileWebsiteUrlDropdown({
                 <img
                   src={images.trash_2}
                   alt=""
-                  className="cc-w-[18px] cc-h-[18px"
+                  className="cc-w-[18px] cc-h-[18px dark:cc-invert-[1] dark:cc-hue-rotate-180"
                 />
               </DropdownMenuItem>
             )}
@@ -393,7 +401,7 @@ function ConfigureForm({
             />
             <span
               className={cn(
-                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em`,
+                `dark:after:cc-bg-dark-bg-black cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray `,
                 urlData.selectedFilter === "recursionDepth"
                   ? "cc-custom-radio-checked"
                   : ""
@@ -441,7 +449,7 @@ function ConfigureForm({
             />
             <span
               className={cn(
-                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em`,
+                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray `,
                 urlData.selectedFilter === "maxPageToScrape"
                   ? "cc-custom-radio-checked"
                   : ""
@@ -469,7 +477,7 @@ function ConfigureForm({
       </div>
       <Button
         size="md"
-        variant={buttonVariant}
+        variant="neutral-white-fix"
         className="cc-font-semibold cc-w-full cc-mt-3"
         onClick={() => {
           updateWebsiteListData(index, {

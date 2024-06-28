@@ -61,7 +61,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "cc-z-50 cc-min-w-[8rem] cc-overflow-hidden cc-rounded-xl cc-font-semibold cc-text-xs cc-border cc-bg-white cc-py-1 cc-text-high_em cc-shadow-e3 data-[state=open]:cc-animate-in data-[state=closed]:cc-animate-out data-[state=closed]:cc-fade-out-0 data-[state=open]:cc-fade-in-0 data-[state=closed]:cc-zoom-out-95 data-[state=open]:cc-zoom-in-95 data-[side=bottom]:cc-slide-in-from-top-2 data-[side=left]:cc-slide-in-from-right-2 data-[side=right]:cc-slide-in-from-left-2 data-[side=top]:cc-slide-in-from-bottom-2",
+        "cc-z-50 cc-min-w-[8rem] cc-overflow-hidden cc-rounded-xl cc-font-semibold cc-text-xs cc-border cc-bg-white cc-py-1 cc-text-high_em cc-shadow-e3 data-[state=open]:cc-animate-in data-[state=closed]:cc-animate-out data-[state=closed]:cc-fade-out-0 data-[state=open]:cc-fade-in-0 data-[state=closed]:cc-zoom-out-95 data-[state=open]:cc-zoom-in-95 data-[side=bottom]:cc-slide-in-from-top-2 data-[side=left]:cc-slide-in-from-right-2 data-[side=right]:cc-slide-in-from-left-2 data-[side=top]:cc-slide-in-from-bottom-2 dark:cc-bg-dark-bg-black dark:cc-border-dark-border-color ",
         className
       )}
       {...props}
@@ -79,7 +79,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "cc-relative cc-flex cc-cursor-default cc-select-none cc-items-center cc-rounded-sm cc-px-4 cc-py-2 cc-text-sm cc-outline-none cc-transition-colors focus:cc-bg-accent data-[disabled]:cc-pointer-events-none data-[disabled]:cc-opacity-50",
+      "cc-relative cc-flex cc-cursor-default cc-select-none cc-items-center cc-rounded-sm cc-px-4 cc-py-2 cc-text-sm cc-outline-none cc-transition-colors focus:cc-bg-accent data-[disabled]:cc-pointer-events-none data-[disabled]:cc-opacity-50 ",
       inset && "cc-pl-8",
       className
     )}

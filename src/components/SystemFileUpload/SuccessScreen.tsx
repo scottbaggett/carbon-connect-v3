@@ -7,13 +7,13 @@ interface Props {
 
 const SuccessScreen = ({ addMoreFiles }: Props) => {
   return (
-    <div className="cc-border cc-border-surface-surface_3 cc-rounded-xl cc-m-4">
+    <div className="cc-border cc-border-surface-surface_3 cc-rounded-xl cc-m-4 md:cc-border-none">
       <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
         <div className="cc-mb-2">
           <img src={images.greenTick} alt="Green Tick" className="" />
         </div>
         <div className="cc-flex cc-text-base cc-font-semibold cc-mb-1 cc-text-center cc-max-w-[346px]">
-          <div className="cc-text-base cc-text-[#100C20]">
+          <div className="cc-text-base cc-text-[#100C20] dark:cc-text-dark-text-white">
             All files submitted successfully.
           </div>
         </div>

@@ -27,10 +27,10 @@ export default function DisconnectModal({
               className="cc-h-6 cc-w-6"
             />
           </div>
-          <p className="cc-text-2.5xl cc-font-medium cc-mb-1.5">
+          <p className="cc-text-2.5xl cc-font-medium cc-mb-1.5 dark:cc-text-dark-text-white">
             Are you sure want to disconnect you account?
           </p>
-          <p className="text-low-em">
+          <p className="text-low-em dark:cc-text-dark-text-white">
             If you disconnect your account, you'll have to reconnect to start
             syncing content again.
           </p>

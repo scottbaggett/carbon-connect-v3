@@ -230,13 +230,15 @@ export default function SyncedFilesList({
       <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
-          <p className="cc-text-xl cc-font-semibold cc-flex-grow">All Files</p>
+          <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
+            All Files
+          </p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
             <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
               <img
                 src={SearchIcon}
                 alt="Search Icon"
-                className="cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
+                className="dark:cc-invert-[1] dark:cc-hue-rotate-180 cc-h-4 cc-w-4 cc-absolute cc-top-1/2 cc-transform -cc-translate-y-1/2 cc-left-2 cc-pointer-events-none"
               />
               <Input
                 type="text"
@@ -255,7 +257,7 @@ export default function SyncedFilesList({
               <img
                 src={RefreshIcon}
                 alt="User Plus"
-                className="cc-h-[18px] cc-w-[18px] cc-shrink-0"
+                className="cc-h-[18px] cc-w-[18px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
             </Button>
             {mode ? (
@@ -268,7 +270,7 @@ export default function SyncedFilesList({
                 <img
                   src={AddCircleIconBlack}
                   alt="Add Circle Plus"
-                  className="cc-h-[14px] cc-w-[14px] cc-shrink-0"
+                  className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
                 />
                 Add more files
               </Button>
@@ -284,7 +286,7 @@ export default function SyncedFilesList({
               Clear selection
             </button>
           ) : (
-            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer">
+            <label className="cc-flex cc-gap-2 cc-text-sm cc-font-semibold cc-cursor-pointer dark:cc-text-dark-text-white">
               <Checkbox
                 className="my-0.5"
                 checked={
@@ -301,18 +303,18 @@ export default function SyncedFilesList({
         </div>
         <div
           id="scrollableTarget"
-          className="cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl"
+          className=" dark:cc-border-[#FFFFFF1F] cc-border-t cc-flex cc-flex-col cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 cc-px-4 sm:cc-mx-0 sm:cc-px-0 cc-flex-grow sm:cc-border sm:cc-rounded-xl"
         >
-          <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex">
-            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow">
+          <div className="cc-bg-surface-surface_1 cc-hidden sm:cc-flex dark:cc-bg-dark-border-color">
+            <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow dark:cc-text-dark-input-text">
               FILE NAME
             </div>
             {filteredList[0]?.sync_status && (
-              <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px]">
+              <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-flex-grow cc-text-right sm:cc-w-[100px] dark:cc-text-dark-input-text">
                 STATUS
               </div>
             )}
-            <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px]">
+            <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-shrink-0 cc-text-right sm:cc-w-[228px] dark:cc-text-dark-input-text">
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
@@ -324,13 +326,13 @@ export default function SyncedFilesList({
                 <img
                   src={NoResultsIcon}
                   alt="No results Icon"
-                  className="cc-w-6 cc-shrink-0"
+                  className="cc-w-6 cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
                 />
               </div>
-              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px]">
+              <p className="cc-text-base cc-font-medium cc-mb-1 cc-max-w-[282px] dark:cc-text-dark-text-white">
                 No matching results
               </p>
-              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px]">
+              <p className="cc-text-low_em cc-font-medium cc-max-w-[282px] dark:cc-text-dark-text-white">
                 Try another search, or use search options to find a file by
                 type, format or more.
               </p>

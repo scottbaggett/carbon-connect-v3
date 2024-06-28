@@ -100,17 +100,17 @@ export default function SitemapTabContent({
               <img
                 src={images.left_icon}
                 alt="tabler_sitemap"
-                className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none"
+                className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none dark:cc-invert-[1] dark:cc-hue-rotate-180"
               />
               <Input
                 type="text"
-                className="cc-w-[100px_!important] cc-pl-8 cc-rounded-r-none"
+                className="cc-w-[100px_!important] cc-pl-8 cc-rounded-r-none "
                 placeholder="Enter URL"
                 disabled={true}
                 value="https://"
               />
             </div>
-            <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em" />
+            <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em dark:cc-bg-dark-input-bg" />
             <Input
               type="text"
               className="cc-rounded-l-none"
@@ -130,12 +130,12 @@ export default function SitemapTabContent({
           </Button>
         </div>
         {internalStep === 2 && (
-          <div className="cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 sm:cc-mx-0 sm:cc-border sm:cc-rounded-xl">
-            <div className="cc-flex cc-justify-between cc-items-center cc-bg-surface-surface_1 sm:cc-flex">
-              <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold">
+          <div className="sm:cc-h-[369px] cc-border-t cc-flex-grow cc-border-outline-low_em cc-overflow-y-auto cc-overflow-x-hidden -cc-mx-4 sm:cc-mx-0 sm:cc-border sm:cc-rounded-xl dark:cc-border-[#FFFFFF1F]">
+            <div className="cc-flex cc-justify-between cc-items-center cc-bg-surface-surface_1 sm:cc-flex dark:cc-bg-dark-border-color">
+              <div className="cc-px-4 cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold dark:cc-text-dark-input-text">
                 Fetched URLs
               </div>
-              <div className="cc-py-2 cc-text-xs cc-text-disabledtext cc-capitalize cc-font-bold cc-text-right cc-mr-4">
+              <div className="cc-py-2 cc-text-xs cc-text-disabledtext dark:cc-text-dark-text-white cc-capitalize cc-font-bold cc-text-right cc-mr-4">
                 {selectedFiles.length === fileList.length ? (
                   <button
                     onClick={() => setSelectedFiles([])}
@@ -207,11 +207,11 @@ export default function SitemapTabContent({
       )}
       {internalStep === 2 && selectedFiles.length > 0 && (
         <DialogFooter>
-          <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+          <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold dark:cc-text-dark-text-white">
             <img
               src={images.info_fill}
               alt="info_fill"
-              className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
+              className="cc-h-5 cc-w-5 cc-flex cc-mr-2 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
             Select a max of 50 links to sync.
           </div>
@@ -240,7 +240,8 @@ function SitemapItem({ item, isChecked, onSelect }: SitemapItemProps) {
   return (
     <li
       key={item.id}
-      className="cc-flex cc-transition-all sm:cc-px-4 cc-font-semibold cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
+      onClick={onSelect}
+      className="cc-flex cc-transition-all sm:cc-px-4 cc-font-semibold cc-text-high_em cc-text-sm dark:cc-text-dark-text-white dark:hover:cc-bg-[#464646] hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-py-3 cc-border-b cc-border-outline-base_em cc-w-full">
         <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2">

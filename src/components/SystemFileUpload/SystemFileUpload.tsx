@@ -16,7 +16,11 @@ import FileSelector from "@components/CarbonFilePicker/FileSelector";
 import SuccessScreen from "./SuccessScreen";
 
 import FileExtension from "@components/SystemFileUpload/FileExtension/FileExtension";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import {
+  CircularProgressbar,
+  buildStyles,
+  CircularProgressbarWithChildren,
+} from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
 import { ActiveStep } from "../../typing/shared";
 
@@ -51,6 +55,15 @@ export default function SystemFileUpload({
     state: boolean;
     percentage: number;
   }>({ state: false, percentage: 0 });
+  const deleteRef = useRef<HTMLDivElement | null>(null);
+  const handleOutside = (event: MouseEvent) => {
+    if (
+      deleteRef.current &&
+      !deleteRef.current.contains(event.target as Node)
+    ) {
+      setOpenDropdown(null);
+    }
+  };
 
   const handleItemClick = (id: number) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -103,6 +116,13 @@ export default function SystemFileUpload({
     return (bytes / 1024).toFixed(2) + " KB";
   };
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+    };
+  }, []);
+
   useEffect(() => {}, [file]);
 
   return (
@@ -110,7 +130,7 @@ export default function SystemFileUpload({
       <DialogHeader closeButtonClass="cc-hidden sm:cc-flex">
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
           <button
-            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0"
+            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0 "
             onClick={() => {
               if (step > 1) {
                 // setStep((prev) => prev - 1);
@@ -123,10 +143,10 @@ export default function SystemFileUpload({
             <img
               src={BackIcon}
               alt="Lock"
-              className="cc-h-[18px] cc-w-[18px]"
+              className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </button>
-          <div className="md:cc-hidden cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
+          <div className="dark:cc-shadow-[0px_3px_4px_-2px_#0000007A] dark:cc-border-dark-border-color md:cc-hidden cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
             <div className="cc-h-full cc-w-full cc-bg-gray-50 cc-flex cc-items-center cc-justify-center cc-rounded-lg">
               <img
                 src={activeStepData?.logo}
@@ -141,7 +161,7 @@ export default function SystemFileUpload({
         </div>
         {step === 2 ? (
           <div
-            className="cc-text-[#0BABFB]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-4 cc-border-[#0BABFB] md:cc-hidden"
+            className="cc-text-[#0BABFB] md:cc-ml-[-34px] hover:cc-text-[#067BF9]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-[2px] cc-border-[#0BABFB] "
             onClick={() => {
               setStep(1);
             }}
@@ -159,30 +179,29 @@ export default function SystemFileUpload({
         <>
           <div className="cc-flex cc-flex-col cc-h-full cc-grow cc-overflow-hidden">
             <div className="cc-hidden md:cc-block">
-              <ClickToUpload onSubmit={handleFileUpload} />
+              {/* <ClickToUpload onSubmit={handleFileUpload} /> */}
             </div>
             <div className=" cc-overflow-scroll">
-              <div className="cc-flex cc-w-full  cc-flex-wrap cc-p-2.5  cc-gap-[10px]  cc-pb-[90px]">
+              <div className="cc-flex cc-w-full  cc-flex-wrap cc-p-2.5  cc-gap-[10px]  cc-pb-[90px] ">
                 {file.map((data, index) => (
                   <div
                     key={index}
-                    className="uploadFileWrapper cc-cursor-pointer group cc-relative  cc-flex cc-border cc-border-solid cc-border-[#0000001F] cc-p-[16px] cc-rounded-xl cc-items-center cc-w-[368px] cc-justify-between hover:cc-shadow-[0_3px_4px_-2px_#00000029]"
+                    className="uploadFileWrapper md:cc-w-full dark:cc-border-dark-input-bg cc-cursor-pointer group cc-relative  cc-flex cc-border cc-border-solid cc-border-[#0000001F] cc-p-[16px] cc-rounded-xl cc-items-center cc-w-[368px] cc-justify-between dark:hover:cc-shadow-[0px_3px_4px_-2px_#FFFFFF29] hover:cc-shadow-[0_3px_4px_-2px_#00000029]"
                   >
                     <FileExtension fileName={data.type} />
                     <div>
-                      <div className="cc-w-[201px] cc-whitespace-nowrap cc-text-ellipsis cc-overflow-hidden cc-text-[#100C20] cc-font-semibold cc-text-base">
+                      <div className="cc-w-[201px] cc-whitespace-nowrap cc-text-ellipsis cc-overflow-hidden cc-text-[#100C20] cc-font-semibold cc-text-base dark:cc-text-dark-text-white">
                         {data.name}
                       </div>
-                      <div className="cc-text-xs cc-font-medium cc-text-[#0000007A]">
+                      <div className="cc-text-xs cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
                         {convertBytesToKB(data.size)}
                       </div>
                     </div>
                     <div>
                       {uploading && (
                         <div className="cc-w-[48] cc-h-[48] md:cc-w-[40px] md:cc-h-[40px]">
-                          <CircularProgressbar
+                          <CircularProgressbarWithChildren
                             value={uploadProgress}
-                            text={`${Math.round(uploadProgress)}%`}
                             styles={buildStyles({
                               textSize: "23px",
                               pathColor: `#0BABFB, ${uploadProgress / 100})`,
@@ -190,7 +209,11 @@ export default function SystemFileUpload({
                               trailColor: "#d6d6d6",
                               backgroundColor: "#3e98c7",
                             })}
-                          />
+                          >
+                            <div className=" cc-text-[10px] cc-text-[#8C8A94] cc-font-medium cc-absolute cc-top-2/4 cc-left-1/2 cc-translate-x-[-50%] cc-translate-y-[-50%]">{`${Math.round(
+                              uploadProgress
+                            )}%`}</div>
+                          </CircularProgressbarWithChildren>
                         </div>
                       )}
                       {uploadSuccess && (
@@ -210,13 +233,16 @@ export default function SystemFileUpload({
                     </div>
                     <div className="cc-hidden md:cc-block ">
                       <img
-                        className="cc-hidden md:cc-block cc-cursor-pointer"
+                        className="cc-hidden md:cc-block cc-cursor-pointer dark:cc-invert-[1] dark:cc-hue-rotate-180"
                         onClick={() => handleItemClick(index)}
                         src={images.menudot}
                         alt=""
                       />
                       {openDropdown === index && (
-                        <div className="mobileCta cc-absolute cc-flex cc-w-[157px]  cc-py-[8px] cc-px-[20px] cc-bg-[#FFFFFF] cc-border-[1px] cc-border-[#F3F3F4] cc-border-solid cc-rounded-[12px] cc-shadow-[0px_8px_24px_-4px_#0000001F] cc-right-[0] cc-top-[61px] cc-z-[2]  cc-justify-between cc-items-center">
+                        <div
+                          ref={deleteRef}
+                          className="mobileCta cc-absolute cc-flex cc-w-[157px]  cc-py-[8px] cc-px-[20px] cc-bg-[#FFFFFF] cc-border-[1px] cc-border-[#F3F3F4] cc-border-solid cc-rounded-[12px] cc-shadow-[0px_8px_24px_-4px_#0000001F] cc-right-[0] cc-top-[61px] cc-z-[2]  cc-justify-between cc-items-center"
+                        >
                           <p className="cc-text-[14px] cc-leading-[24px] cc-text-[#100C20] cc-font-semibold">
                             Delete
                           </p>
@@ -233,7 +259,7 @@ export default function SystemFileUpload({
               </div>
             </div>
           </div>
-          <div className=" cc-fixed cc-bottom-[0px] cc-w-full ">
+          <div className=" cc-fixed cc-bottom-[0px] cc-w-full dark:cc-bg-dark-bg-black">
             <DialogFooter>
               <Button
                 variant="primary"
