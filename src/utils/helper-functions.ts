@@ -285,3 +285,10 @@ export const findModifications = (
     return response;
   }
 };
+
+export const pluralize = (str: string, value: number) => {
+  if (value == 0 || value > 1) {
+    return str + "s";
+  }
+  return str;
+};

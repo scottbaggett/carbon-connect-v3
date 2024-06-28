@@ -13,10 +13,12 @@ import { Checkbox } from "@components/common/design-system/Checkbox";
 import { useCarbon } from "../../context/CarbonContext";
 import { BASE_URL, ENV } from "../../constants/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
-import { UserFileApi } from "../../typing/shared";
+import { ProcessedIntegration, UserFileApi } from "../../typing/shared";
 import FileItem from "./FileItem";
 import { SyncingModes } from "./CarbonFilePicker";
 import Loader from "../common/Loader";
+import { pluralize } from "../../utils/helper-functions";
+import Banner, { BannerState } from "../common/Banner";
 
 const PER_PAGE = 20;
 
@@ -25,11 +27,13 @@ export default function SyncedFilesList({
   selectedDataSource,
   handleUploadFilesClick,
   mode,
+  processedIntegration,
 }: {
   setIsUploading: (val: { state: boolean; percentage: number }) => void;
   selectedDataSource: IntegrationAPIResponse | null;
   handleUploadFilesClick: () => void;
   mode: SyncingModes | null;
+  processedIntegration: ProcessedIntegration | null;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
@@ -37,12 +41,17 @@ export default function SyncedFilesList({
     authenticatedFetch,
     environment = ENV.PRODUCTION,
     accessToken,
+    sendDeletionWebhooks,
   } = useCarbon();
   const [files, setFiles] = useState<UserFileApi[]>([]);
   const [hasMoreFiles, setHasMoreFiles] = useState(true);
   const [offset, setOffset] = useState(0);
   const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
   const [filesLoading, setFilesLoading] = useState(false);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
+  const [actionInProgress, setActionInProgress] = useState(false);
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse,
@@ -124,8 +133,101 @@ export default function SyncedFilesList({
     item.name.toLowerCase().includes(serchValue.toLowerCase())
   );
 
+  const handleDeleteFiles = async () => {
+    setActionInProgress(true);
+    if (selectedFiles.length > 50) {
+      setBannerState({
+        message: "You can only select up to 50 files to delete",
+        type: "ERROR",
+      });
+      return;
+    }
+    const requestBody = {
+      filters: {
+        ids: selectedFiles,
+      },
+      send_webhook:
+        sendDeletionWebhooks ||
+        processedIntegration?.sendDeletionWebhooks ||
+        false,
+    };
+    const deleteFileResponse = await authenticatedFetch(
+      `${BASE_URL[environment]}/delete_files_v2`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+    if (deleteFileResponse.status === 200) {
+      const newFiles = [
+        ...files.filter((file) => !selectedFiles.find((f) => f == file.id)),
+      ];
+      setFiles(newFiles);
+      setSelectedFiles([]);
+      setBannerState({
+        message: "Your files have been queued for deletion!",
+        type: "SUCCESS",
+      });
+    } else {
+      setBannerState({ message: "Error deleting files", type: "ERROR" });
+      console.error("Error deleting files: ", deleteFileResponse.error);
+    }
+    setActionInProgress(false);
+  };
+
+  const resyncFile = async (fileId: number) => {
+    const requestBody = { file_id: fileId };
+    return await authenticatedFetch(`${BASE_URL[environment]}/resync_file`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+  };
+
+  const handleResyncFiles = () => {
+    setActionInProgress(true);
+    if (selectedFiles.length > 20) {
+      setBannerState({
+        message: "You can only select up to 20 files to resync",
+        type: "ERROR",
+      });
+      return;
+    }
+    const promises: any = [];
+    for (let fileId of selectedFiles) {
+      promises.push(resyncFile(fileId));
+    }
+    Promise.all(promises).then(function (values) {
+      let successCount = 0;
+      let failedCount = 0;
+      for (let value of values) {
+        if (value.status == 200) {
+          successCount += 1;
+        } else {
+          failedCount += 1;
+        }
+      }
+      const state = failedCount > 0 ? "ERROR" : "SUCCESS";
+      setBannerState({
+        message: "Finished queuing files for resync",
+        type: state,
+        additionalInfo: `${successCount} succeeded, ${failedCount} failed`,
+      });
+      setSelectedFiles([]);
+      setActionInProgress(false);
+    });
+  };
+
   return (
     <>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow">All Files</p>
@@ -144,13 +246,6 @@ export default function SyncedFilesList({
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </label>
-            {/* <Button
-              size="sm"
-              variant="neutral-white"
-              className="cc-text-xs cc-rounded-xl cc-font-semibold"
-            >
-              View synced files
-            </Button> */}
             <Button
               size="sm"
               variant="gray"
@@ -280,23 +375,22 @@ export default function SyncedFilesList({
             variant="primary"
             size="lg"
             className="cc-w-[68%] md:cc-w-full"
-            onClick={() => {
-              setIsUploading({ state: true, percentage: 24 });
-              // forwardMove();
-            }}
+            onClick={() => handleResyncFiles()}
+            disabled={actionInProgress}
           >
-            Resync {selectedFiles.length} file(s)
+            Resync {selectedFiles.length}{" "}
+            {pluralize("file", selectedFiles.length)}
           </Button>
 
           <Button
             variant="secondary"
             size="lg"
             className="cc-w-[30%] cc-bg-[#FFE0E0] cc-text-[#F03D3D] md:cc-w-full"
-            onClick={() => {
-              setIsUploading({ state: true, percentage: 24 });
-            }}
+            onClick={() => handleDeleteFiles()}
+            disabled={actionInProgress}
           >
-            Delete {selectedFiles.length} file(s)
+            Delete {selectedFiles.length}{" "}
+            {pluralize("file", selectedFiles.length)}
           </Button>
         </DialogFooter>
       )}

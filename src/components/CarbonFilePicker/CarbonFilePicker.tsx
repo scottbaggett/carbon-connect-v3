@@ -546,6 +546,7 @@ export default function CarbonFilePicker({
           selectedDataSource={selectedDataSource}
           handleUploadFilesClick={handleUploadFilesClick}
           mode={mode}
+          processedIntegration={processedIntegration}
         />
       )}
       {/* {step === 1 && (
