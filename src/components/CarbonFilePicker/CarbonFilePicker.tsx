@@ -105,7 +105,6 @@ export default function CarbonFilePicker({
 
   // if user specified that they want to use file picker or if sync url is not supported
   useEffect(() => {
-    console.log(checkTheme);
     if (
       FILE_PICKER_SUPPORTED_CONNECTORS.find((c) => c == integrationName) &&
       (processedIntegration?.useCarbonFilePicker ||

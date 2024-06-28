@@ -24,7 +24,6 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   const checking = useTheme();
 
   useEffect(() => {
-    console.log(checking);
     if (activeStep == "CONNECT") {
       setOpenIntegration(false);
       setOpenCarbonConnect(true);
@@ -32,6 +31,7 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   }, [activeStep]);
 
   return (
+    // @ts-ignore
     <ThemeProvider attribute="class" defaultTheme="system">
       <CarbonProvider {...finalProps}>
         <CarbonConnectModal
