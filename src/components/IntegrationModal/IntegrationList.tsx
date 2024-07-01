@@ -109,10 +109,10 @@ function IntegrationList({
                   onClick={() => setActiveStep(integration?.id)}
                 >
                   <div className="cc-grid cc-grid-cols-[40px,calc(100%_-_52px)] sm:cc-grid-cols-[56px,calc(100%_-_68px)] cc-gap-3 cc-items-center cc-justify-start">
-                    <div className="cc-flex cc-aspect-square cc-items-center cc-justify-center cc-border-2 cc-rounded-md cc-shadow-e2 cc-border-white cc-shrink-0">
+                    <div className="cc-flex cc-aspect-square cc-items-center cc-justify-center cc-border-2  cc-rounded-md cc-shadow-e2 cc-border-white cc-shrink-0">
                       <div
                         className={cn(
-                          `cc-flex  cc-items-center cc-justify-center cc-h-full cc-w-full cc-rounded-md`,
+                          `cc-flex  cc-items-center cc-justify-center cc-h-full cc-w-full cc-rounded-md cc-bg-gray-50`,
                           integration?.iconBgColor &&
                             "cc-bg-" + integration?.iconBgColor
                         )}

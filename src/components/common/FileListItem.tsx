@@ -44,7 +44,7 @@ export default function FileListItem({
       onClick={onSelect}
       className="cc-flex sm:cc-px-4 cc-transition-all cc-font-semibold cc-text-high_em cc-text-sm dark:hover:cc-bg-[#464646]/25 hover:cc-bg-gray-25 cc-cursor-pointer"
     >
-      <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2 cc-border-b cc-border-outline-base_em cc-py-3">
+      <div className="cc-gap-2  cc-flex cc-items-start cc-w-full sm:cc-px-2 cc-border-b cc-border-outline-base_em cc-py-3">
         <Checkbox
           className="cc-my-0.5"
           checked={isChecked}
@@ -64,8 +64,9 @@ export default function FileListItem({
             className="cc-w-5 cc-shrink-0"
           />
         )}
-        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
-          <p className="cc-flex-grow dark:cc-text-dark-text-white">
+
+        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap cc-justify-between cc-items-start">
+          <p className="cc-w-[350px] cc-max-w-[350px] cc-break-words  dark:cc-text-dark-text-white">
             {item.name}
           </p>
           <>

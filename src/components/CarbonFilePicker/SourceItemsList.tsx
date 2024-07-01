@@ -275,8 +275,8 @@ export default function SourceItemsList({
             </Button>
           </div>
         </div>
-        <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3 cc-gap-5 sm:cc-gap-3">
-          <div className="cc-overflow-auto cc-pb-4 sm:cc-pb-0 cc-px-4 -cc-mx-4 cc-flex-grow">
+        <div className="cc-flex cc-flex-col sm:cc-flex-row cc-text-sm cc-font-semibold cc-mb-3  sm:cc-gap-3">
+          <div className="cc-overflow-auto cc-pb-4 sm:cc-pb-0 cc-px-4 -cc-mx-4 cc-flex-grow ">
             <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
               <BreadcrumbList className="cc-flex-nowrap">
                 {breadcrumbs.map((crumb, index) => (

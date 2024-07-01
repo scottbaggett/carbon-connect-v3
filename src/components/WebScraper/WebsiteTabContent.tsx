@@ -382,7 +382,7 @@ function ConfigureForm({
       <div className="cc-flex cc-justify-between cc-items-center cc-py-2">
         <div className="cc-flex">
           <label>
-            <input
+            {/* <input
               type="radio"
               name="tab"
               checked={urlData.selectedFilter === "recursionDepth"}
@@ -398,13 +398,10 @@ function ConfigureForm({
                 })
               }
               className="cc-hidden"
-            />
+            /> */}
             <span
               className={cn(
-                `dark:after:cc-bg-dark-bg-black cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray `,
-                urlData.selectedFilter === "recursionDepth"
-                  ? "cc-custom-radio-checked"
-                  : ""
+                `dark:after:cc-bg-dark-bg-black cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray before:cc-hidden `
               )}
             >
               Recursion depth
@@ -430,7 +427,7 @@ function ConfigureForm({
       <div className="cc-flex cc-justify-between cc-items-center cc-py-2">
         <div className="cc-flex">
           <label>
-            <input
+            {/* <input
               type="radio"
               name="tab"
               checked={urlData.selectedFilter === "maxPageToScrape"}
@@ -446,13 +443,10 @@ function ConfigureForm({
                 })
               }
               className="cc-hidden"
-            />
+            /> */}
             <span
               className={cn(
-                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray `,
-                urlData.selectedFilter === "maxPageToScrape"
-                  ? "cc-custom-radio-checked"
-                  : ""
+                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray before:cc-hidden`
               )}
             >
               Max pages to scrape

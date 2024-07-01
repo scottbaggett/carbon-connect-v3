@@ -46,7 +46,8 @@ import deleteIcon from './svgIcons/deleteIcon.svg';
 import menudot from './svgIcons/menuDots.svg';
 import deleteIconBlack from './svgIcons/deleteIcon_black.svg';
 import folderIcon from './svgIcons/folderIcon.svg';
-import coreTick from './svgIcons/coreTick.svg'
+import coreTick from './svgIcons/coreTick.svg';
+import infoClear from './svgIcons/info_color.svg';
 
 
 
@@ -121,6 +122,7 @@ export const images = {
   menudot,
   deleteIconBlack,
   folderIcon,
-  coreTick
+  coreTick,
+  infoClear
 
 };

@@ -1,5 +1,6 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+
   darkMode: "media", // or 'media' or 'class'
   prefix: "cc-",
   theme: {
@@ -48,6 +49,7 @@ module.exports = {
         "svg-background": "var(--svg-dark-color)",
         "custom-gradient-dark":
           "linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), linear-gradient(0deg, rgba(31, 123, 245, 0.1), rgba(31, 123, 245, 0.1))",
+        justifyStart: "flex-start",
       },
       fontFamily: {
         manrope: ["Manrope", "sans-serif"],
