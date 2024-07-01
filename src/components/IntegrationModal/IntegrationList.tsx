@@ -97,7 +97,6 @@ function IntegrationList({
               const isActive = activeIntegrations.find(
                 (int) => int.data_source_type == integration.data_source_type
               );
-              console.log(isActive, integration.id);
               return (
                 <li
                   key={integration.id}

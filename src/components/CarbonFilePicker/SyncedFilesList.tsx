@@ -140,6 +140,7 @@ export default function SyncedFilesList({
         message: "You can only select up to 50 files to delete",
         type: "ERROR",
       });
+      setActionInProgress(false);
       return;
     }
     const requestBody = {
@@ -198,6 +199,7 @@ export default function SyncedFilesList({
         message: "You can only select up to 20 files to resync",
         type: "ERROR",
       });
+      setActionInProgress(false);
       return;
     }
     const promises: any = [];

@@ -39,13 +39,13 @@ const Banner = ({
   bannerState: BannerState;
   setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
 }) => {
-  // useEffect(() => {
-  //   const interval = setInterval(
-  //     () => setBannerState({ message: null, type: null, ctaText: null }),
-  //     5000
-  //   );
-  //   return () => clearInterval(interval);
-  // }, [bannerState]);
+  useEffect(() => {
+    const interval = setInterval(
+      () => setBannerState({ message: null, type: null, ctaText: null }),
+      5000
+    );
+    return () => clearInterval(interval);
+  }, [bannerState]);
 
   const bgColor = BG_COLORS[bannerState.type || "SUCCESS"];
   const bgColorDark = BG_COLORS_DARK[bannerState.type || "SUCCESS"];
