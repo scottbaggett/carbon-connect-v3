@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { emptyFunction } from "@utils/helper-functions";
 import {
   DialogHeader,
@@ -8,7 +8,14 @@ import {
 import BackIcon from "@assets/svgIcons/back-icon.svg";
 import WebsiteTabContent from "./WebsiteTabContent";
 import SitemapTabContent from "./SitemapTabContent";
-import { ActiveStep } from "../../typing/shared";
+import {
+  ActiveStep,
+  ProcessedIntegration,
+  WebScraperIntegration,
+} from "../../typing/shared";
+import { useCarbon } from "../../context/CarbonContext";
+import { images } from "../../assets";
+import Banner, { BannerState } from "../common/Banner";
 
 export interface WebScraperProps {
   activeStep?: string;
@@ -26,6 +33,23 @@ function WebScraper({
   onCloseModal,
 }: WebScraperProps) {
   const [activeTab, setActiveTab] = useState<string>("website");
+  const [service, setService] = useState<WebScraperIntegration | undefined>(
+    undefined
+  );
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
+  const { processedIntegrations } = useCarbon();
+
+  useEffect(() => {
+    setService(
+      processedIntegrations?.find(
+        (integration) => integration.id === "WEB_SCRAPER"
+      )
+    );
+  }, [processedIntegrations]);
+
+  const sitemapEnabled = service ? service?.sitemapEnabled ?? true : false;
 
   return (
     <>
@@ -50,11 +74,20 @@ function WebScraper({
           </DialogTitle>
         </div>
       </DialogHeader>
-      {activeTab === "website" && (
-        <WebsiteTabContent setActiveTab={setActiveTab} />
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
+      {activeTab === "website" && service && (
+        <WebsiteTabContent
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+          service={service}
+          setBannerState={setBannerState}
+        />
       )}
       {activeTab === "sitemap" && (
-        <SitemapTabContent setActiveTab={setActiveTab} />
+        <SitemapTabContent
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+        />
       )}
     </>
   );

@@ -121,3 +121,9 @@ export const LOCAL_FILE_TYPES = [
 export const DEFAULT_CHUNK_SIZE = 1500;
 
 export const DEFAULT_OVERLAP_SIZE = 20;
+
+export const MAX_PAGES_TO_SCRAPE = 100;
+
+export const MAX_RECURSION_DEPTH = 10;
+
+export const DEFAULT_RECURSION_DEPTH = 3;

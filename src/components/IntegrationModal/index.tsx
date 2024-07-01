@@ -132,9 +132,6 @@ function IntegrationModal({
       case IntegrationName.WEB_SCRAPER:
         return (
           <WebScraper
-            // activeStepData={integrationsList.find(
-            //   (item) => item.id === activeStep
-            // )}
             activeStep={activeStep}
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}

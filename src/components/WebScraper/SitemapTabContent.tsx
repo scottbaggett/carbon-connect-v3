@@ -68,8 +68,10 @@ const fileList: UrlType[] = [
 
 export default function SitemapTabContent({
   setActiveTab,
+  sitemapEnabled,
 }: {
   setActiveTab: (val: string) => void;
+  sitemapEnabled: boolean;
 }) {
   const [internalStep, setInternalStep] = useState<number>(1);
   const [url, setUrl] = useState<string>("");
@@ -78,7 +80,11 @@ export default function SitemapTabContent({
   if (internalStep === 3) {
     return (
       <div className="cc-flex-grow cc-p-4 cc-overflow-auto cc-flex cc-flex-col">
-        <WebScraperTabs activeTab="sitemap" setActiveTab={setActiveTab} />
+        <WebScraperTabs
+          activeTab="sitemap"
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+        />
         <SuccessState
           heading="Scraping request initiated successfully."
           action={() => setInternalStep(1)}
@@ -90,7 +96,11 @@ export default function SitemapTabContent({
   return (
     <>
       <div className="cc-flex-grow cc-p-4 cc-overflow-auto cc-flex cc-flex-col">
-        <WebScraperTabs activeTab="sitemap" setActiveTab={setActiveTab} />
+        <WebScraperTabs
+          activeTab="sitemap"
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+        />
         <div
           key={0}
           className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10 cc-mb-3"

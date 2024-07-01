@@ -13,15 +13,13 @@ const tabValues = [
 export default function WebScraperTabs({
   activeTab,
   setActiveTab,
+  sitemapEnabled,
 }: {
   activeTab: string;
   setActiveTab: (val: string) => void;
+  sitemapEnabled?: boolean;
 }) {
-  if (tabValues.length === 0) {
-    return null;
-  }
-
-  if (tabValues.length === 1) {
+  if (!sitemapEnabled) {
     return (
       <div className="cc-flex cc-justify-start cc-items-center cc-mb-6">
         <div className="cc-mr-2">

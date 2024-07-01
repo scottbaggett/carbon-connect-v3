@@ -141,7 +141,7 @@ export const TEST_PROPS: CarbonConnectProps = {
       // cssClassesToSkip: ["some"],
       // htmlTagsToSkip: ["script"],
       generateSparseVectors: false,
-      sitemapEnabled: false,
+      // sitemapEnabled: false,
     },
     {
       id: IntegrationName.ZENDESK,
