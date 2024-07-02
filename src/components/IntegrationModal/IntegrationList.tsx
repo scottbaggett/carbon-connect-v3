@@ -44,6 +44,9 @@ function IntegrationList({
     .filter((ai: ProcessedIntegration) =>
       ai.name?.toLowerCase()?.includes(searchText?.toLowerCase())
     );
+  const handleClass = () => {
+    console.log("class is true");
+  };
 
   return (
     <>
@@ -64,7 +67,10 @@ function IntegrationList({
               className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </Button>
-          <DialogTitle className="cc-flex-grow sm:cc-text-left">
+          <DialogTitle
+            justifyModification={true}
+            className="cc-flex-grow sm:cc-text-left"
+          >
             Integration
           </DialogTitle>
         </div>
@@ -111,10 +117,13 @@ function IntegrationList({
                       ? "cc-bg-gray-200 cc-cursor-not-allowed"
                       : "cc-bg-white cc-cursor-pointer hover:cc-bg-surface-surface_1 dark:hover:cc-bg-dark-surface_1 dark:hover:cc-border-dark-outline-med_em hover:cc-border-outline-med_em"
                   }`}
-                  onClick={() => setActiveStep(integration?.id)}
+                  onClick={() => {
+                    setActiveStep(integration?.id);
+                    handleClass();
+                  }}
                 >
                   <div className="cc-grid cc-grid-cols-[40px,calc(100%_-_52px)] sm:cc-grid-cols-[56px,calc(100%_-_68px)] cc-gap-3 cc-items-center cc-justify-start">
-                    <div className="cc-flex cc-aspect-square cc-items-center cc-justify-center cc-border-2  cc-rounded-md cc-shadow-e2 cc-border-white cc-shrink-0">
+                    <div className="cc-flex cc-aspect-square cc-items-center cc-justify-center cc-border-2  cc-rounded-md cc-shadow-e2 cc-border-white cc-shrink-0 dark:cc-bg-dark-text-white dark:cc-shadow-[0px_3px_4px_-2px_#0000007A]">
                       <div
                         className={cn(
                           `cc-flex  cc-items-center cc-justify-center cc-h-full cc-w-full cc-rounded-md cc-bg-gray-50`,

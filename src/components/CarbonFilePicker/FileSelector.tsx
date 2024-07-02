@@ -199,7 +199,7 @@ export default function FileSelector({
         <div className="cc-flex cc-justify-between cc-items-center cc-bg-[#FFFDDC] dark:cc-bg-[#2C2614] cc-p-[8px_24px_8px_16px] md:cc-p-[4px_24px_4px_24px]">
           <div className="cc-flex cc-items-center">
             <img
-              src={images.folderIcon}
+              src={images.infoClear}
               alt=""
               className="cc-mr-[10px] cc-w-[20px] cc-h-[20px]"
             />

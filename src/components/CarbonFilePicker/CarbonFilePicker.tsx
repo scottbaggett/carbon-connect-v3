@@ -102,7 +102,6 @@ export default function CarbonFilePicker({
   });
 
   const { systemTheme } = useTheme();
-  const checkTheme = useTheme();
 
   // if user specified that they want to use file picker or if sync url is not supported
   useEffect(() => {
@@ -414,7 +413,10 @@ export default function CarbonFilePicker({
               />
             </div>
           </div>
-          <DialogTitle className="cc-flex-grow cc-text-left">
+          <DialogTitle
+            justifyModification={false}
+            className="cc-flex-grow cc-text-left "
+          >
             {activeStepData?.name}
           </DialogTitle>
           {/* {step > 1 && ( */}

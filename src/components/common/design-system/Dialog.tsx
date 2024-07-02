@@ -12,6 +12,12 @@ const DialogPortal = DialogPrimitive.Portal;
 
 const DialogClose = DialogPrimitive.Close;
 
+type DialogTitleProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Title
+> & {
+  justifyModification?: boolean;
+};
+
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -98,17 +104,22 @@ DialogFooter.displayName = "DialogFooter";
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
+  DialogTitleProps
+>(({ className, justifyModification, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "cc-text-xl cc-font-semibold cc-leading-none  cc-tracking-tight md:cc-mr-[34px] cc-h-10 cc-flex md:cc-justify-center cc-items-center md:cc-text-center",
+      `cc-text-xl cc-font-semibold cc-leading-none  cc-tracking-tight  cc-h-10 cc-flex ${
+        justifyModification ? "md:cc-justify-center" : "md:cc-justify-start"
+      } cc-items-center md:cc-text-center`,
       className
     )}
     {...props}
   />
 ));
+
+console.log(DialogPrimitive.Title.displayName);
+
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
 const DialogDescription = React.forwardRef<
