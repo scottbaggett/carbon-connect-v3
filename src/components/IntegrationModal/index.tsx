@@ -10,6 +10,8 @@ import { useCarbon } from "../../context/CarbonContext";
 import { BASE_URL } from "../../constants/shared";
 import { ActiveStep, IntegrationName } from "../../typing/shared";
 import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
+import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
+import LocalFilesScreen from "../SystemFileUpload/LocalFilesScreen";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -41,8 +43,14 @@ function IntegrationModal({
   activeStep,
   setActiveStep,
 }: ModalProps) {
-  const { orgName, accessToken, fetchTokens, requestIds, onSuccess } =
-    useCarbon();
+  const {
+    orgName,
+    accessToken,
+    fetchTokens,
+    requestIds,
+    onSuccess,
+    processedIntegrations,
+  } = useCarbon();
   const [activeIntegrations, setActiveIntegrations] = useState<
     IntegrationAPIResponse[]
   >([]);
@@ -116,7 +124,7 @@ function IntegrationModal({
     activeIntegrationsRef.current = activeIntegrations;
   }, [activeIntegrations]);
 
-  const showActiveContent = (activeStep: string | number) => {
+  const showActiveContent = (activeStep: ActiveStep) => {
     switch (activeStep) {
       case "INTEGRATION_LIST":
         return (
@@ -140,15 +148,24 @@ function IntegrationModal({
 
       case IntegrationName.LOCAL_FILES:
         return (
+          <LocalFilesScreen
+            setActiveStep={setActiveStep}
+            activeStepData={INTEGRATIONS_LIST.find(
+              (item) => item.id === IntegrationName.LOCAL_FILES
+            )}
+          />
+        );
+
+      case "FILE_UPLOAD":
+        return (
           <SystemFileUpload
             activeStepData={INTEGRATIONS_LIST.find(
-              (item) => item.id === activeStep
+              (item) => item.id === IntegrationName.LOCAL_FILES
             )}
             setActiveStep={setActiveStep}
             onCloseModal={onCloseModal}
           />
         );
-        break;
       default:
         return (
           <CarbonFilePicker

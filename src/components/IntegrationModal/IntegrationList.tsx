@@ -12,8 +12,14 @@ import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
 import { IntegrationAPIResponse } from ".";
 import { cn } from "@components/common/design-system/utils";
-import { ActiveStep, ProcessedIntegration } from "../../typing/shared";
+import {
+  ActiveStep,
+  IntegrationName,
+  ProcessedIntegration,
+  WebScraperIntegration,
+} from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
+import { MAX_PAGES_TO_SCRAPE } from "../../constants/shared";
 
 export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
@@ -133,11 +139,19 @@ function IntegrationList({
                           />
                         ) : null}
                       </h2>
-                      {(!integration.active || integration.additionalInfo) && (
+                      {integration.id == IntegrationName.LOCAL_FILES ? (
                         <p className="cc-font-semibold dark:cc-text-dark-text-gray cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
-                          {integration.additionalInfo || "Coming Soon"}
+                          {integration.additionalInfo}
                         </p>
-                      )}
+                      ) : null}
+                      {integration.id == IntegrationName.WEB_SCRAPER ? (
+                        <p className="cc-font-semibold dark:cc-text-dark-text-gray cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
+                          {`max ${
+                            (integration as WebScraperIntegration)
+                              .maxPagesToScrape || MAX_PAGES_TO_SCRAPE
+                          } links to sync`}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </li>

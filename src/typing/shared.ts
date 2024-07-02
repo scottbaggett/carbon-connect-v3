@@ -262,4 +262,8 @@ export type UserSourceItemApi = {
   is_selectable: boolean;
 };
 
-export type ActiveStep = IntegrationName | "INTEGRATION_LIST" | "CONNECT";
+export type ActiveStep =
+  | IntegrationName
+  | "INTEGRATION_LIST"
+  | "CONNECT"
+  | "FILE_UPLOAD";

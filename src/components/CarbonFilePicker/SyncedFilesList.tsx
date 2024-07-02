@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactText, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";
@@ -11,9 +11,14 @@ import AddCircleIconBlack from "@assets/svgIcons/add-circle-icon-black.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 
 import { useCarbon } from "../../context/CarbonContext";
-import { BASE_URL, ENV } from "../../constants/shared";
+import { BASE_URL, ENV, LOCAL_FILE_TYPES } from "../../constants/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
-import { ProcessedIntegration, UserFileApi } from "../../typing/shared";
+import {
+  ActiveStep,
+  IntegrationName,
+  ProcessedIntegration,
+  UserFileApi,
+} from "../../typing/shared";
 import FileItem from "./FileItem";
 import { SyncingModes } from "./CarbonFilePicker";
 import Loader from "../common/Loader";
@@ -23,17 +28,17 @@ import Banner, { BannerState } from "../common/Banner";
 const PER_PAGE = 20;
 
 export default function SyncedFilesList({
-  setIsUploading,
   selectedDataSource,
   handleUploadFilesClick,
   mode,
   processedIntegration,
+  setActiveStep,
 }: {
-  setIsUploading: (val: { state: boolean; percentage: number }) => void;
   selectedDataSource: IntegrationAPIResponse | null;
   handleUploadFilesClick: () => void;
   mode: SyncingModes | null;
-  processedIntegration: ProcessedIntegration | null;
+  processedIntegration: ProcessedIntegration;
+  setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
@@ -42,7 +47,9 @@ export default function SyncedFilesList({
     environment = ENV.PRODUCTION,
     accessToken,
     sendDeletionWebhooks,
+    showFilesTab,
   } = useCarbon();
+
   const [files, setFiles] = useState<UserFileApi[]>([]);
   const [hasMoreFiles, setHasMoreFiles] = useState(true);
   const [offset, setOffset] = useState(0);
@@ -52,9 +59,17 @@ export default function SyncedFilesList({
     message: null,
   });
   const [actionInProgress, setActionInProgress] = useState(false);
+  const isLocalFiles = processedIntegration.id == IntegrationName.LOCAL_FILES;
+  const shouldShowFilesTab = showFilesTab || processedIntegration?.showFilesTab;
+
+  useEffect(() => {
+    if (!shouldShowFilesTab) {
+      setActiveStep("FILE_UPLOAD");
+    }
+  }, [processedIntegration]);
 
   const getUserFiles = async (
-    selectedDataSource: IntegrationAPIResponse,
+    selectedDataSource: IntegrationAPIResponse | null,
     offset: number
   ) => {
     const requestBody = {
@@ -62,9 +77,13 @@ export default function SyncedFilesList({
         offset: offset,
         limit: PER_PAGE,
       },
-      filters: {
-        organization_user_data_source_id: [selectedDataSource.id],
-      },
+      filters: selectedDataSource
+        ? {
+            organization_user_data_source_id: [selectedDataSource.id],
+          }
+        : {
+            source: LOCAL_FILE_TYPES,
+          },
       order_by: "created_at",
       order_dir: "desc",
     };
@@ -92,7 +111,7 @@ export default function SyncedFilesList({
   };
 
   const loadInitialData = async (
-    selectedDataSource: IntegrationAPIResponse
+    selectedDataSource: IntegrationAPIResponse | null
   ) => {
     const { count, userFiles } = await getUserFiles(selectedDataSource, 0);
     setFiles([...userFiles]);
@@ -106,7 +125,7 @@ export default function SyncedFilesList({
   };
 
   const loadMoreRows = async () => {
-    if (!selectedDataSource) return;
+    if (!selectedDataSource && !isLocalFiles) return;
     const { count, userFiles } = await getUserFiles(selectedDataSource, offset);
     const newFiles = [...files, ...userFiles];
     setFiles(newFiles);
@@ -120,7 +139,7 @@ export default function SyncedFilesList({
   };
 
   useEffect(() => {
-    if (!selectedDataSource) return;
+    if (!selectedDataSource && !isLocalFiles) return;
     setOffset(0);
     setFiles([]);
     setSearchValue("");
@@ -226,6 +245,8 @@ export default function SyncedFilesList({
       setActionInProgress(false);
     });
   };
+
+  if (isLocalFiles && !shouldShowFilesTab) return null;
 
   return (
     <>

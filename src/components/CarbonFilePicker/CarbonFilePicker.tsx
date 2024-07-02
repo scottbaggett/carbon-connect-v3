@@ -50,6 +50,7 @@ import Loader from "../common/Loader";
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",
   SYNC_URL = "SYNC_URL",
+  UPLOAD = "UPLOAd",
 }
 
 export default function CarbonFilePicker({
@@ -59,7 +60,7 @@ export default function CarbonFilePicker({
   activeIntegrations,
 }: {
   activeStepData?: IntegrationItemType;
-  setActiveStep: (val: ActiveStep) => void;
+  setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
   onCloseModal: () => void;
   activeIntegrations: IntegrationAPIResponse[];
 }) {
@@ -385,6 +386,8 @@ export default function CarbonFilePicker({
     );
   }
 
+  if (!processedIntegration) return null;
+
   return (
     <>
       <DialogHeader closeButtonClass="cc-hidden sm:cc-flex">
@@ -559,11 +562,11 @@ export default function CarbonFilePicker({
         //   />
         // ))
         <SyncedFilesList
-          setIsUploading={setIsUploading}
           selectedDataSource={selectedDataSource}
           handleUploadFilesClick={handleUploadFilesClick}
           mode={mode}
           processedIntegration={processedIntegration}
+          setActiveStep={setActiveStep}
         />
       )}
       {/* {step === 1 && (

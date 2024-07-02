@@ -22,7 +22,12 @@ import {
   CircularProgressbarWithChildren,
 } from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
-import { ActiveStep } from "../../typing/shared";
+import {
+  ActiveStep,
+  IntegrationName,
+  LocalFilesIntegration,
+} from "../../typing/shared";
+import { useCarbon } from "../../context/CarbonContext";
 
 export interface UploadFileData {
   lastModified: number;
@@ -30,6 +35,9 @@ export interface UploadFileData {
   type: string;
   size: number;
 }
+
+const ONE_MB = 1000000;
+const DEFAULT_SIZE_MB = 20;
 
 export default function SystemFileUpload({
   activeStepData,
@@ -50,6 +58,40 @@ export default function SystemFileUpload({
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [filesConfig, setFilesConfig] = useState<
+    LocalFilesIntegration | null | undefined
+  >(null);
+  const [allowedMaxFileSize, setAllowedMaxFileSize] = useState(DEFAULT_SIZE_MB);
+  const [allowedMaxFilesCount, setAllowedMaxFilesCount] = useState(10);
+
+  const {
+    showFilesTab,
+    processedIntegrations,
+    whiteLabelingData,
+    maxFileSize = DEFAULT_SIZE_MB * ONE_MB,
+  } = useCarbon();
+
+  const shouldShowFilesTab = showFilesTab || filesConfig?.showFilesTab;
+
+  useEffect(() => {
+    const newFilesConfig = processedIntegrations?.find(
+      (integration) => integration.id === IntegrationName.LOCAL_FILES
+    ) as LocalFilesIntegration;
+    const defaultLimit = DEFAULT_SIZE_MB * ONE_MB;
+    const orgLevelLimit =
+      whiteLabelingData?.custom_limits?.file_size_limit || defaultLimit;
+    const ccLimit = newFilesConfig?.maxFileSize || maxFileSize;
+
+    const maxAllowedLimit = Math.min(orgLevelLimit, ccLimit);
+
+    if (newFilesConfig) {
+      setAllowedMaxFileSize(Math.floor(maxAllowedLimit / ONE_MB));
+      setAllowedMaxFilesCount(
+        newFilesConfig.maxFilesCount ? newFilesConfig.maxFilesCount : 10
+      );
+      setFilesConfig(newFilesConfig);
+    }
+  }, [processedIntegrations, whiteLabelingData]);
 
   const [isUploading, setIsUploading] = useState<{
     state: boolean;
