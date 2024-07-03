@@ -19,7 +19,7 @@ import Banner, { BannerState } from "../common/Banner";
 
 export interface WebScraperProps {
   activeStep?: string;
-  setActiveStep?: (stepId: ActiveStep) => void;
+  setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
   onCloseModal?: () => void;
 }
 
@@ -29,7 +29,7 @@ export type FilterData = {
 
 function WebScraper({
   activeStep = "",
-  setActiveStep = emptyFunction,
+  setActiveStep,
   onCloseModal,
 }: WebScraperProps) {
   const [activeTab, setActiveTab] = useState<string>("website");
@@ -39,7 +39,7 @@ function WebScraper({
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
   });
-  const { processedIntegrations } = useCarbon();
+  const { processedIntegrations, entryPoint } = useCarbon();
 
   useEffect(() => {
     setService(
@@ -61,7 +61,9 @@ function WebScraper({
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
           <button
             className="cc-pr-1 cc-h-10 cc-w-auto"
-            onClick={() => setActiveStep("INTEGRATION_LIST")}
+            onClick={() =>
+              setActiveStep(entryPoint ? "CONNECT" : "INTEGRATION_LIST")
+            }
           >
             <img
               src={BackIcon}

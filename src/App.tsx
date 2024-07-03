@@ -16,12 +16,28 @@ import "react-circular-progressbar/dist/styles.css";
 import { ThemeProvider } from "next-themes";
 
 const App: React.FC<CarbonConnectProps> = (props) => {
-  const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
-  const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
+  const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(
+    finalProps.open ?? false
+  );
+  const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState<ActiveStep>("CONNECT");
 
   const checking = useTheme();
+
+  const manageModalOpenState = (modalOpenState: boolean) => {
+    if (finalProps.alwaysOpen) return;
+    if (!modalOpenState) {
+      if (
+        finalProps.entryPoint === IntegrationName.LOCAL_FILES ||
+        finalProps.entryPoint === IntegrationName.WEB_SCRAPER
+      )
+        setActiveStep(finalProps.entryPoint);
+      else setActiveStep("CONNECT");
+    }
+    if (finalProps.setOpen) finalProps.setOpen(modalOpenState);
+    setOpenCarbonConnect(modalOpenState);
+  };
 
   useEffect(() => {
     if (activeStep == "CONNECT") {
@@ -30,14 +46,17 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     }
   }, [activeStep]);
 
+  useEffect(() => {
+    setOpenCarbonConnect(finalProps.open || false);
+  }, [finalProps.open]);
+
   return (
     // @ts-ignore
     <ThemeProvider attribute="class" defaultTheme="system">
       <CarbonProvider {...finalProps}>
         <CarbonConnectModal
           isOpen={openCarbonConnect}
-          title=""
-          onCloseModal={() => setOpenCarbonConnect(false)}
+          manageModalOpenState={manageModalOpenState}
           onPrimaryButtonClick={(step: ActiveStep) => {
             setOpenCarbonConnect(false);
             setActiveStep(step);

@@ -4,8 +4,6 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import AuthForm from "../common/AuthForm";
-import FileSelector from "./FileSelector";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Button } from "@components/common/design-system/Button";
 import { IntegrationItemType } from "@utils/integrationModalconstants";
@@ -17,13 +15,8 @@ import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
 import { useTheme } from "next-themes";
 import {
   BASE_URL,
-  DEFAULT_CHUNK_SIZE,
-  DEFAULT_OVERLAP_SIZE,
   ENV,
   FILE_PICKER_SUPPORTED_CONNECTORS,
-  onSuccessEvents,
-  SYNC_FILES_ON_CONNECT,
-  SYNC_SOURCE_ITEMS,
   SYNC_URL_SUPPORTED_CONNECTORS,
   TWO_STEP_CONNECTORS,
 } from "../../constants/shared";
@@ -537,21 +530,6 @@ export default function CarbonFilePicker({
           mode={mode}
           processedIntegration={processedIntegration}
           setActiveStep={setActiveStep}
-        />
-      )}
-      {step === 2 && (
-        <FileSelector
-          headName="Select repos to sync"
-          navigationHeadingFirst="All Repos"
-          navigationHeadingSecond="Awesome-Algorithms"
-          navigationHeadingThird="Contoso Project"
-          forwardMard={true}
-          isAddIcon={false}
-          addViewCtaText="View synced files"
-          isDeleteCta={false}
-          isErrorMessage={false}
-          forwardMove={() => {}}
-          setIsUploading={setIsUploading}
         />
       )}
     </>
