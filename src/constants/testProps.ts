@@ -43,9 +43,8 @@ export const TEST_PROPS: CarbonConnectProps = {
     appDescription: "Chatbot for Rubber",
     // appId: '378476476985508433',
   },
-  maxFileSize: 100000000,
+  maxFileSize: 10000000,
   // maxItemsPerChunk={1}
-  // allowMultipleFiles={false}
   // embeddingModel={EmbeddingGenerators.OPENAI_ADA_LARGE_1024}
   generateSparseVectors: false,
   prependFilenameToChunks: true,
@@ -96,8 +95,7 @@ export const TEST_PROPS: CarbonConnectProps = {
       chunkSize: 400,
       overlapSize: 20,
       // maxFileSize: 1000000000,
-      allowMultipleFiles: true,
-      maxFilesCount: 50,
+      maxFilesCount: 1000,
       skipEmbeddingGeneration: false,
       prependFilenameToChunks: true,
       generateSparseVectors: false,
@@ -194,7 +192,6 @@ export const TEST_PROPS: CarbonConnectProps = {
     console.log("Data on Error: ", error);
   },
   primaryBackgroundColor: "#525252",
-  entryPoint: IntegrationName.WEB_SCRAPER,
   // navigateBackURL: "https://carbon.ai",
   open: true,
 };

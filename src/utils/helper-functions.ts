@@ -2,11 +2,18 @@ import { IntegrationAPIResponse } from "../components/IntegrationModal";
 import {
   DEFAULT_CHUNK_SIZE,
   DEFAULT_OVERLAP_SIZE,
+  DEFAULT_SIZE_MB,
+  ONE_MB,
   SYNC_FILES_ON_CONNECT,
   SYNC_SOURCE_ITEMS,
 } from "../constants/shared";
 import { useCarbon } from "../context/CarbonContext";
-import { ActionType, IntegrationName } from "../typing/shared";
+import {
+  ActionType,
+  Formats,
+  IntegrationName,
+  LocalFilesIntegration,
+} from "../typing/shared";
 import { UserSourceItemApi } from "../typing/shared";
 import { UserFileApi } from "../typing/shared";
 import { CarbonConnectProps, ProcessedIntegration } from "../typing/shared";

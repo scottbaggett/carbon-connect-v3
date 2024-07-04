@@ -127,3 +127,10 @@ export const MAX_PAGES_TO_SCRAPE = 100;
 export const MAX_RECURSION_DEPTH = 10;
 
 export const DEFAULT_RECURSION_DEPTH = 3;
+
+export const ONE_MB = 1000000;
+export const DEFAULT_SIZE_MB = 20;
+export const DEFAULT_FILE_SIZE = DEFAULT_SIZE_MB * ONE_MB;
+
+export const DEFAULT_MAX_FILES = 10;
+export const MAX_FILES_LIMIT = 50;

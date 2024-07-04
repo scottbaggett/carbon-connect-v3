@@ -155,17 +155,6 @@ function IntegrationModal({
             )}
           />
         );
-
-      case "FILE_UPLOAD":
-        return (
-          <SystemFileUpload
-            activeStepData={INTEGRATIONS_LIST.find(
-              (item) => item.id === IntegrationName.LOCAL_FILES
-            )}
-            setActiveStep={setActiveStep}
-            onCloseModal={onCloseModal}
-          />
-        );
       default:
         return (
           <CarbonFilePicker

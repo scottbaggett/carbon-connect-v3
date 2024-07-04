@@ -1,12 +1,25 @@
 import React from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, FileRejection } from "react-dropzone";
 import { images } from "@assets/index";
+import { getSupportedFileTypes } from "../../utils/files";
+import { ONE_MB } from "../../constants/shared";
+import { BannerState } from "../common/Banner";
 
 interface Props {
   onSubmit: (files: File[]) => void;
+  maxFileSize: number;
+  maxFiles: number;
+  allowedFileExtensions: string[];
+  setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
 }
 
-const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
+const ClickToUpload: React.FC<Props> = ({
+  onSubmit,
+  maxFileSize,
+  maxFiles,
+  allowedFileExtensions,
+  setBannerState,
+}) => {
   const {
     getRootProps,
     getInputProps,
@@ -14,37 +27,19 @@ const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
     acceptedFiles,
     fileRejections,
   } = useDropzone({
-    accept: {
-      "image/jpeg": [".jpeg", ".jpg"],
-      "image/png": [".png"],
-      "application/pdf": [".pdf"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-        ".xlsx",
-      ],
-      "text/csv": [".csv"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
-      "text/plain": [".txt"],
-      "text/markdown": [".md"],
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        [".pptx"],
-      "application/json": [".json"],
-      "audio/mpeg": [".mp3"],
-      "video/mp4": [".mp4"],
-      "audio/aac": [".aac"],
-      "audio/wav": [".wav"],
-      "audio/flac": [".flac"],
-      "audio/x-pcm": [".pcm"],
-      "audio/mp4": [".m4a"],
-      "audio/ogg": [".ogg"],
-      "audio/opus": [".opus"],
-      "image/webp": [".webp"],
-    },
-    maxFiles: 50,
-
-    onDrop: (acceptedFiles: File[]) => {
+    accept: getSupportedFileTypes(allowedFileExtensions),
+    maxFiles: maxFiles,
+    multiple: maxFiles > 1,
+    maxSize: maxFileSize * ONE_MB,
+    onDrop: (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (acceptedFiles.length > 0) {
         onSubmit(acceptedFiles);
+      }
+      if (fileRejections.length > 0) {
+        setBannerState({
+          type: "ERROR",
+          message: `${fileRejections.length} file(s) didn't meet constraints`,
+        });
       }
     },
   });
@@ -73,14 +68,16 @@ const ClickToUpload: React.FC<Props> = ({ onSubmit }) => {
             Click to upload
           </div>
           <div className="cc-text-high_em md:cc-block cc-hidden dark:cc-text-dark-text-white">
-            You can upload up to 50 files or entire folders.
+            You can upload up to {maxFiles} file
+            {maxFiles > 1 && "s or entire folders"}.
           </div>
           <div className="cc-text-high_em md:cc-hidden dark:cc-text-dark-text-white">
-            &nbsp;or drag and drop up to 50 files or folders.
+            &nbsp;or drag and drop up to {maxFiles} file
+            {maxFiles > 1 && "s or folders"}.
           </div>
         </div>
         <div className="cc-text-low_em cc-text-xs dark:cc-text-dark-text-gray">
-          max 20MB per file
+          max {maxFileSize}MB per file
         </div>
       </div>
     </div>

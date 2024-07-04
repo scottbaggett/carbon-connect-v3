@@ -530,6 +530,8 @@ export default function CarbonFilePicker({
           mode={mode}
           processedIntegration={processedIntegration}
           setActiveStep={setActiveStep}
+          bannerState={bannerState}
+          setBannerState={setBannerState}
         />
       )}
     </>

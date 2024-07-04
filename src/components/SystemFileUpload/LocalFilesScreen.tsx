@@ -7,12 +7,17 @@ import BackIcon from "@assets/svgIcons/back-icon.svg";
 
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Button } from "@components/common/design-system/Button";
-import { IntegrationItemType } from "@utils/integrationModalconstants";
+import {
+  IntegrationItemType,
+  INTEGRATIONS_LIST,
+} from "@utils/integrationModalconstants";
 
 import { ActiveStep, IntegrationName } from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
 import { SyncingModes } from "../CarbonFilePicker/CarbonFilePicker";
+import SystemFileUpload from "./SystemFileUpload";
+import { BannerState } from "../common/Banner";
 
 export default function LocalFilesScreen({
   setActiveStep,
@@ -22,6 +27,10 @@ export default function LocalFilesScreen({
   activeStepData?: IntegrationItemType;
 }) {
   const { entryPoint, processedIntegrations } = useCarbon();
+  const [activeScreen, setActiveScreen] = useState<"FILES" | "UPLOAD">("FILES");
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
 
   const localIntegration = processedIntegrations?.find(
     (int) => int.id == IntegrationName.LOCAL_FILES
@@ -29,7 +38,17 @@ export default function LocalFilesScreen({
 
   if (!localIntegration) return null;
 
-  return (
+  return activeScreen == "UPLOAD" ? (
+    <SystemFileUpload
+      activeStepData={INTEGRATIONS_LIST.find(
+        (item) => item.id === IntegrationName.LOCAL_FILES
+      )}
+      setActiveStep={setActiveStep}
+      bannerState={bannerState}
+      setBannerState={setBannerState}
+      setScreen={setActiveScreen}
+    />
+  ) : (
     <>
       <DialogHeader closeButtonClass="cc-hidden sm:cc-flex">
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
@@ -76,9 +95,11 @@ export default function LocalFilesScreen({
       <SyncedFilesList
         setActiveStep={setActiveStep}
         mode={SyncingModes.UPLOAD}
-        handleUploadFilesClick={() => setActiveStep("FILE_UPLOAD")}
+        handleUploadFilesClick={() => setActiveScreen("UPLOAD")}
         processedIntegration={localIntegration}
         selectedDataSource={null}
+        bannerState={bannerState}
+        setBannerState={setBannerState}
       />
     </>
   );

@@ -175,7 +175,6 @@ export type BaseIntegration = {
 
 export type LocalFilesIntegration = BaseIntegration & {
   maxFileSize: number;
-  allowMultipleFiles: boolean;
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
   filePickerMode?: FilePickerMode;
@@ -213,7 +212,6 @@ export type CarbonConnectProps = {
   primaryTextColor?: string;
   secondaryBackgroundColor?: string;
   secondaryTextColor?: string;
-  allowMultipleFiles?: boolean;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>> | null;
   chunkSize?: number;
@@ -236,7 +234,7 @@ export type CarbonConnectProps = {
   parsePdfTablesWithOcr?: boolean;
   sendDeletionWebhooks?: boolean;
   fileSyncConfig?: FileSyncConfig;
-  theme?: 'dark' | 'light';
+  theme?: "dark" | "light";
 };
 
 export type ProcessedIntegration = IntegrationItemType & Integration;
@@ -274,3 +272,7 @@ export type ActiveStep =
   | "INTEGRATION_LIST"
   | "CONNECT"
   | "FILE_UPLOAD";
+
+export type Formats = {
+  [index: string]: string[];
+};

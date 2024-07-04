@@ -33,12 +33,16 @@ export default function SyncedFilesList({
   mode,
   processedIntegration,
   setActiveStep,
+  bannerState,
+  setBannerState,
 }: {
   selectedDataSource: IntegrationAPIResponse | null;
   handleUploadFilesClick: () => void;
   mode: SyncingModes | null;
   processedIntegration: ProcessedIntegration;
   setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
+  bannerState: BannerState;
+  setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [serchValue, setSearchValue] = useState<string>("");
@@ -55,9 +59,6 @@ export default function SyncedFilesList({
   const [offset, setOffset] = useState(0);
   const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
   const [filesLoading, setFilesLoading] = useState(false);
-  const [bannerState, setBannerState] = useState<BannerState>({
-    message: null,
-  });
   const [actionInProgress, setActionInProgress] = useState(false);
   const isLocalFiles = processedIntegration.id == IntegrationName.LOCAL_FILES;
   const shouldShowFilesTab = showFilesTab || processedIntegration?.showFilesTab;

@@ -15,11 +15,17 @@ import { cn } from "@components/common/design-system/utils";
 import {
   ActiveStep,
   IntegrationName,
+  LocalFilesIntegration,
   ProcessedIntegration,
   WebScraperIntegration,
 } from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
-import { MAX_PAGES_TO_SCRAPE } from "../../constants/shared";
+import {
+  DEFAULT_FILE_SIZE,
+  MAX_PAGES_TO_SCRAPE,
+  ONE_MB,
+} from "../../constants/shared";
+import { getFileSizeLimit } from "../../utils/files";
 
 export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
@@ -37,7 +43,11 @@ function IntegrationList({
   goToConnectModal,
 }: IntegrationListProps) {
   const [searchText, setSearchText] = useState<string>("");
-  const { processedIntegrations } = useCarbon();
+  const {
+    processedIntegrations,
+    whiteLabelingData,
+    maxFileSize = DEFAULT_FILE_SIZE,
+  } = useCarbon();
 
   const listData = processedIntegrations
     ?.sort((a, b) => a.id.localeCompare(b.id))
@@ -150,7 +160,13 @@ function IntegrationList({
                       </h2>
                       {integration.id == IntegrationName.LOCAL_FILES ? (
                         <p className="cc-font-semibold dark:cc-text-dark-text-gray cc-text-xs cc-text-low_em cc-mt-1 cc-truncate">
-                          {integration.additionalInfo}
+                          {`max ${
+                            getFileSizeLimit(
+                              integration as LocalFilesIntegration,
+                              whiteLabelingData,
+                              maxFileSize
+                            ) / ONE_MB
+                          }MB per file`}
                         </p>
                       ) : null}
                       {integration.id == IntegrationName.WEB_SCRAPER ? (

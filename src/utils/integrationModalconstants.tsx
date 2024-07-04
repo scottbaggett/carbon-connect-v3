@@ -69,7 +69,6 @@ export const INTEGRATIONS_LIST: IntegrationItemType[] = [
     active: true,
     data_source_type: IntegrationName.LOCAL_FILES,
     requiresOAuth: false,
-    additionalInfo: "max 20MB per file",
   },
   {
     id: IntegrationName.WEB_SCRAPER,
@@ -83,7 +82,6 @@ export const INTEGRATIONS_LIST: IntegrationItemType[] = [
     active: true,
     data_source_type: IntegrationName.WEB_SCRAPER,
     requiresOAuth: false,
-    additionalInfo: "max 50 links to sync",
   },
   {
     id: IntegrationName.GITHUB,
