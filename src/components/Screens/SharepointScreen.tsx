@@ -4,7 +4,11 @@ import InfoFill from "@assets/svgIcons/info_fill.svg";
 import UserPlus from "@assets/svgIcons/user-plus.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
-import { ActionType, ProcessedIntegration } from "../../typing/shared";
+import {
+  ActionType,
+  IntegrationName,
+  ProcessedIntegration,
+} from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import {
   generateRequestId,
@@ -13,13 +17,13 @@ import {
 import { BASE_URL, ENV } from "../../constants/shared";
 import Banner, { BannerState } from "../common/Banner";
 
-export default function FreshdeskScreen({
+export default function SharepointScreen({
   processedIntegration,
 }: {
   processedIntegration: ProcessedIntegration;
 }) {
-  const [freshdeskdomain, setFreshdeskdomain] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [microsoftTenant, setMicrosoftTenant] = useState("");
+  const [sharepointSiteName, setSharepointSiteName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
@@ -37,32 +41,37 @@ export default function FreshdeskScreen({
     accessToken,
   } = carbonProps;
 
-  const connectFreshdesk = async () => {
+  const fetchOauthURL = async () => {
     try {
-      if (!freshdeskdomain) {
+      if (!microsoftTenant) {
         setBannerState({
           type: "ERROR",
-          message: "Please enter your freshdesk domain",
+          message: "Please enter a tenant value.",
         });
+        return;
       }
-      if (!apiKey) {
+
+      if (!sharepointSiteName) {
         setBannerState({
           type: "ERROR",
-          message: "Please enter an API key",
+          message: "Please enter a sitename value.",
         });
         return;
       }
 
       setIsLoading(true);
+      const oauthWindow = window.open("", "_blank");
 
-      onSuccess &&
-        onSuccess({
-          status: 200,
-          data: null,
-          action: ActionType.INITIATE,
-          event: ActionType.INITIATE,
-          integration: processedIntegration.id,
+      if (!oauthWindow) {
+        setBannerState({
+          type: "ERROR",
+          message: "Failed to start Oauth flow",
         });
+        return;
+      }
+
+      oauthWindow?.document.write("Loading...");
+
       setIsLoading(true);
 
       let requestId = null;
@@ -74,23 +83,20 @@ export default function FreshdeskScreen({
         });
       }
 
-      const domain = freshdeskdomain
-        .replace("https://www.", "")
-        .replace("http://www.", "")
-        .replace("https://", "")
-        .replace("http://", "")
-        .replace(/\/$/, "")
-        .trim();
-
       const requestObject = getConnectRequestProps(
         processedIntegration,
         requestId,
-        { api_key: apiKey, domain: domain },
+        {
+          microsoft_tenant: microsoftTenant,
+          sharepoint_site_name: sharepointSiteName,
+          service: processedIntegration.data_source_type,
+          connecting_new_account: true,
+        },
         carbonProps
       );
 
       const response = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/freshdesk`,
+        `${BASE_URL[environment]}/integrations/oauth_url`,
         {
           method: "POST",
           headers: {
@@ -101,49 +107,42 @@ export default function FreshdeskScreen({
         }
       );
 
-      const responseData = await response.json();
+      const oAuthURLResponseData = await response.json();
 
       if (response.status === 200) {
-        setBannerState({
-          type: "SUCCESS",
-          message: "Freshdesk sync initiated.",
-        });
-        setApiKey("");
-        setFreshdeskdomain("");
-      } else {
-        setBannerState({
-          type: "ERROR",
-          message: responseData.detail,
-        });
-        onError &&
-          onError({
-            status: 400,
-            data: [{ message: responseData.detail }],
-            action: ActionType.ERROR,
-            event: ActionType.ERROR,
-            integration: processedIntegration.id,
+        onSuccess &&
+          onSuccess({
+            status: 200,
+            data: { request_id: requestId },
+            action: ActionType.INITIATE,
+            event: ActionType.INITIATE,
+            integration: IntegrationName.SHAREPOINT,
           });
+        setMicrosoftTenant("");
+        setSharepointSiteName("");
+
+        oauthWindow.location.href = oAuthURLResponseData.oauth_url;
+      } else {
+        oauthWindow.document.body.innerHTML = oAuthURLResponseData.detail;
       }
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
       setBannerState({
         type: "ERROR",
-        message: "Error connecting your Freshdesk. Please try again.",
+        message: "Error getting oAuth URL. Please try again.",
       });
       setIsLoading(false);
       onError &&
         onError({
           status: 400,
-          data: [
-            { message: "Error connecting your Freshdesk. Please try again." },
-          ],
+          data: [{ message: "Error getting oAuth URL. Please try again." }],
           action: ActionType.ERROR,
           event: ActionType.ERROR,
-          integration: processedIntegration.id,
+          integration: IntegrationName.SHAREPOINT,
         });
     }
   };
+
   return (
     <>
       <Banner bannerState={bannerState} setBannerState={setBannerState} />
@@ -156,29 +155,25 @@ export default function FreshdeskScreen({
           />
         </div>
         <div className="cc-text-base cc-font-semibold cc-mb-5 dark:cc-text-dark-text-white">
-          Please enter {processedIntegration.name}{" "}
+          Please enter the {processedIntegration.name}{" "}
           <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md dark:cc-text-[#88E7FC] dark:cc-bg-[#10284D]">
             domain
-          </span>
-          and
-          <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md dark:cc-text-[#88E7FC] dark:cc-bg-[#10284D]">
-            api key
           </span>
           of the acount you wish to connect.
         </div>
         <Input
           type="text"
-          placeholder="domain.freshdesk.com"
-          value={freshdeskdomain}
-          onChange={(e) => setFreshdeskdomain(e.target.value)}
+          placeholder="Your Tenant Name"
+          value={microsoftTenant}
+          onChange={(e) => setMicrosoftTenant(e.target.value)}
           className="cc-mb-4"
         />
         <Input
-          type="password"
-          placeholder="API key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className="cc-mb-32"
+          type="text"
+          placeholder="Your Site Name"
+          value={sharepointSiteName}
+          onChange={(e) => setSharepointSiteName(e.target.value)}
+          className="cc-mb-4"
         />
       </div>
       <DialogFooter>
@@ -199,7 +194,7 @@ export default function FreshdeskScreen({
           variant="primary"
           size="lg"
           className="cc-w-full"
-          onClick={() => connectFreshdesk()}
+          onClick={() => fetchOauthURL()}
           disabled={isLoading}
         >
           Submit

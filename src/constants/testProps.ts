@@ -194,7 +194,7 @@ export const TEST_PROPS: CarbonConnectProps = {
     console.log("Data on Error: ", error);
   },
   primaryBackgroundColor: "#525252",
-  // entryPoint={IntegrationName.CONFLUENCE}
-  //   open: showDataSourcesModal,
-  //   setOpen: () => toggleDataSourcesModal(true),
+  entryPoint: IntegrationName.WEB_SCRAPER,
+  // navigateBackURL: "https://carbon.ai",
+  open: true,
 };

@@ -263,6 +263,12 @@ export type UserSourceItemApi = {
   is_selectable: boolean;
 };
 
+export type GithubRepoItem = {
+  id: string;
+  name: string;
+  url: string;
+};
+
 export type ActiveStep =
   | IntegrationName
   | "INTEGRATION_LIST"

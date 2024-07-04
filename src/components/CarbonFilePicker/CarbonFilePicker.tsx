@@ -4,8 +4,6 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import AuthForm from "../common/AuthForm";
-import FileSelector from "./FileSelector";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Button } from "@components/common/design-system/Button";
 import { IntegrationItemType } from "@utils/integrationModalconstants";
@@ -17,13 +15,8 @@ import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
 import { useTheme } from "next-themes";
 import {
   BASE_URL,
-  DEFAULT_CHUNK_SIZE,
-  DEFAULT_OVERLAP_SIZE,
   ENV,
   FILE_PICKER_SUPPORTED_CONNECTORS,
-  onSuccessEvents,
-  SYNC_FILES_ON_CONNECT,
-  SYNC_SOURCE_ITEMS,
   SYNC_URL_SUPPORTED_CONNECTORS,
   TWO_STEP_CONNECTORS,
 } from "../../constants/shared";
@@ -39,13 +32,19 @@ import {
   getConnectRequestProps,
   getDataSourceDomain,
 } from "../../utils/helper-functions";
-import GithubScreen from "../Screens/FreshdeskScreen";
 import FreshdeskScreen from "../Screens/FreshdeskScreen";
 
 import SourceItemsList from "./SourceItemsList";
 import SyncedFilesList from "./SyncedFilesList";
 import Banner, { BannerState } from "../common/Banner";
 import Loader from "../common/Loader";
+import SalesforceScreen from "../Screens/SalesforceScreen";
+import GitbookScreen from "../Screens/GitbookScreen";
+import ConfluenceScreen from "../Screens/ConfluenceScreen";
+import S3Screen from "../Screens/S3Screen";
+import ZendeskScreen from "../Screens/ZendeskScreen";
+import SharepointScreen from "../Screens/SharepointScreen";
+import GithubScreen from "../Screens/GithubScreen";
 
 export enum SyncingModes {
   FILE_PICKER = "FILE_PICKER",
@@ -93,13 +92,14 @@ export default function CarbonFilePicker({
     useState<ProcessedIntegration | null>(null);
   const [showAdditionalStep, setShowAdditionalStep] = useState(false);
   const [showFilePicker, setShowFilePicker] = useState(false);
-  const [filePickerRefreshes, setFilePickerRefreshes] = useState(0);
   const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
   const [isResyncingDataSource, setIsResyncingDataSource] = useState(false);
   const [mode, setMode] = useState<SyncingModes | null>(null);
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
   });
+  const [pauseDataSourceSelection, setPauseDataSourceSelection] =
+    useState(false);
 
   const { systemTheme } = useTheme();
 
@@ -131,6 +131,9 @@ export default function CarbonFilePicker({
       (integration) => integration.data_source_type === activeStepData?.id
     );
     setConnectedDataSources(connected);
+    if (pauseDataSourceSelection) {
+      return;
+    }
 
     const currDataSource = connected.find(
       (c) => c.id == selectedDataSource?.id
@@ -154,7 +157,7 @@ export default function CarbonFilePicker({
       }
     }
     setIsLoading(false);
-  }, [JSON.stringify(activeIntegrations)]);
+  }, [JSON.stringify(activeIntegrations), pauseDataSourceSelection]);
 
   // show file selector by default if
   useEffect(() => {
@@ -452,7 +455,9 @@ export default function CarbonFilePicker({
         </div>
       </DialogHeader>
       <Banner bannerState={bannerState} setBannerState={setBannerState} />
-      {!isLoading && connectedDataSources?.length === 0 ? (
+      {!isLoading &&
+      connectedDataSources?.length === 0 &&
+      !showAdditionalStep ? (
         <div className="cc-h-full cc-flex cc-flex-col cc-items-center cc-justify-center cc-p-4 sm:cc-h-[500px]">
           <div className="cc-p-2 cc-rounded-md dark:cc-bg-svg-background cc-bg-surface-surface_1 cc-inline-block cc-mb-3">
             <img
@@ -478,49 +483,39 @@ export default function CarbonFilePicker({
           </Button>
         </div>
       ) : showAdditionalStep && processedIntegration ? (
-        // (integrationName === 'ZENDESK' && (
-        //   <ZendeskScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        // (integrationName === 'CONFLUENCE' && (
-        //   <ConfluenceScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        // (integrationName === 'SHAREPOINT' && (
-        //   <SharepointScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        // (integrationName == 'S3' && (
-        //   <S3Screen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        integrationName == "FRESHDESK" && (
+        (integrationName == IntegrationName.FRESHDESK && (
           <FreshdeskScreen processedIntegration={processedIntegration} />
-        )
+        )) ||
+        (integrationName == IntegrationName.SALESFORCE && (
+          <SalesforceScreen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.GITBOOK && (
+          <GitbookScreen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.CONFLUENCE && (
+          <ConfluenceScreen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.S3 && (
+          <S3Screen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.ZENDESK && (
+          <ZendeskScreen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.SHAREPOINT && (
+          <SharepointScreen processedIntegration={processedIntegration} />
+        )) ||
+        (integrationName == IntegrationName.GITHUB && (
+          <GithubScreen
+            processedIntegration={processedIntegration}
+            setActiveStep={setActiveStep}
+            activeIntegrations={activeIntegrations}
+            setShowFilePicker={setShowFilePicker}
+            setShowAdditinalStep={setShowAdditionalStep}
+            setSelectedDataSource={setSelectedDataSource}
+            dataSource={selectedDataSource}
+            setPauseDataSourceSelection={setPauseDataSourceSelection}
+          />
+        ))
       ) : showFilePicker ? (
         <SourceItemsList
           setIsUploading={setIsUploading}
@@ -529,68 +524,12 @@ export default function CarbonFilePicker({
           processedIntegration={processedIntegration}
         />
       ) : (
-        // (integrationName == 'GITBOOK' && (
-        //   <GitbookScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        // (integrationName == 'SALESFORCE' && (
-        //   <SalesforceScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //   />
-        // )) ||
-        // (integrationName == 'GITHUB' && (
-        //   <GithubScreen
-        //     buttonColor={
-        //       integrationData?.branding?.header?.primaryButtonColor
-        //     }
-        //     labelColor={
-        //       integrationData?.branding?.header?.primaryLabelColor
-        //     }
-        //     activeIntegrations={activeIntegrations}
-        //     setActiveStep={setActiveStep}
-        //     pauseDataSourceSelection={pauseDataSourceSelection}
-        //     setPauseDataSourceSelection={setPauseDataSourceSelection}
-        //   />
-        // ))
         <SyncedFilesList
           selectedDataSource={selectedDataSource}
           handleUploadFilesClick={handleUploadFilesClick}
           mode={mode}
           processedIntegration={processedIntegration}
           setActiveStep={setActiveStep}
-        />
-      )}
-      {/* {step === 1 && (
-        <AuthForm
-          onSubmit={() => {
-            setStep(2);
-          }}
-        />
-      )} */}
-      {step === 2 && (
-        <FileSelector
-          headName="Select repos to sync"
-          navigationHeadingFirst="All Repos"
-          navigationHeadingSecond="Awesome-Algorithms"
-          navigationHeadingThird="Contoso Project"
-          forwardMard={true}
-          isAddIcon={false}
-          addViewCtaText="View synced files"
-          isDeleteCta={false}
-          isErrorMessage={false}
-          forwardMove={() => {}}
-          setIsUploading={setIsUploading}
         />
       )}
     </>

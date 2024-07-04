@@ -15,10 +15,26 @@ import { ENV } from "./constants/shared";
 import "react-circular-progressbar/dist/styles.css";
 
 const App: React.FC<CarbonConnectProps> = (props) => {
-  const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(true);
-  const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
+  const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(
+    finalProps.open ?? false
+  );
+  const [openIntegration, setOpenIntegration] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState<ActiveStep>("CONNECT");
+
+  const manageModalOpenState = (modalOpenState: boolean) => {
+    if (finalProps.alwaysOpen) return;
+    if (!modalOpenState) {
+      if (
+        finalProps.entryPoint === IntegrationName.LOCAL_FILES ||
+        finalProps.entryPoint === IntegrationName.WEB_SCRAPER
+      )
+        setActiveStep(finalProps.entryPoint);
+      else setActiveStep("CONNECT");
+    }
+    if (finalProps.setOpen) finalProps.setOpen(modalOpenState);
+    setOpenCarbonConnect(modalOpenState);
+  };
 
   useEffect(() => {
     if (activeStep == "CONNECT") {
@@ -39,14 +55,17 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     document.querySelector("html")?.setAttribute("data-mode", newMode);
   }, [props.theme]);
 
+  useEffect(() => {
+    setOpenCarbonConnect(finalProps.open || false);
+  }, [finalProps.open]);
+
   return (
     // @ts-ignore
     <>
       <CarbonProvider {...finalProps}>
         <CarbonConnectModal
           isOpen={openCarbonConnect}
-          title=""
-          onCloseModal={() => setOpenCarbonConnect(false)}
+          manageModalOpenState={manageModalOpenState}
           onPrimaryButtonClick={(step: ActiveStep) => {
             setOpenCarbonConnect(false);
             setActiveStep(step);

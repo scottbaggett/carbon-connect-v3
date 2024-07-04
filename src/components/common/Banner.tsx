@@ -23,7 +23,7 @@ const BG_COLORS_DARK = {
 const ICONS = {
   ERROR: images.warningTick,
   SUCCESS: images.coreTick,
-  WARN: images.folderIcon,
+  WARN: images.infoClear,
 };
 
 const ctaClasses = {

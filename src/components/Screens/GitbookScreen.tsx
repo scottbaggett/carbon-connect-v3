@@ -4,7 +4,11 @@ import InfoFill from "@assets/svgIcons/info_fill.svg";
 import UserPlus from "@assets/svgIcons/user-plus.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
-import { ActionType, ProcessedIntegration } from "../../typing/shared";
+import {
+  ActionType,
+  IntegrationName,
+  ProcessedIntegration,
+} from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import {
   generateRequestId,
@@ -13,13 +17,13 @@ import {
 import { BASE_URL, ENV } from "../../constants/shared";
 import Banner, { BannerState } from "../common/Banner";
 
-export default function FreshdeskScreen({
+export default function GitbookScreen({
   processedIntegration,
 }: {
   processedIntegration: ProcessedIntegration;
 }) {
-  const [freshdeskdomain, setFreshdeskdomain] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [gbToken, setGBToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
@@ -37,31 +41,29 @@ export default function FreshdeskScreen({
     accessToken,
   } = carbonProps;
 
-  const connectFreshdesk = async () => {
+  const connectGitbook = async () => {
     try {
-      if (!freshdeskdomain) {
+      if (!organization) {
         setBannerState({
+          message: "Please enter your organization's name.",
           type: "ERROR",
-          message: "Please enter your freshdesk domain",
-        });
-      }
-      if (!apiKey) {
-        setBannerState({
-          type: "ERROR",
-          message: "Please enter an API key",
         });
         return;
       }
-
-      setIsLoading(true);
-
+      if (!gbToken) {
+        setBannerState({
+          message: "Please enter your access token.",
+          type: "ERROR",
+        });
+        return;
+      }
       onSuccess &&
         onSuccess({
           status: 200,
           data: null,
           action: ActionType.INITIATE,
           event: ActionType.INITIATE,
-          integration: processedIntegration.id,
+          integration: IntegrationName.GITBOOK,
         });
       setIsLoading(true);
 
@@ -74,23 +76,15 @@ export default function FreshdeskScreen({
         });
       }
 
-      const domain = freshdeskdomain
-        .replace("https://www.", "")
-        .replace("http://www.", "")
-        .replace("https://", "")
-        .replace("http://", "")
-        .replace(/\/$/, "")
-        .trim();
-
       const requestObject = getConnectRequestProps(
         processedIntegration,
         requestId,
-        { api_key: apiKey, domain: domain },
+        { organization: organization, access_token: gbToken },
         carbonProps
       );
 
       const response = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/freshdesk`,
+        `${BASE_URL[environment]}/integrations/gitbook`,
         {
           method: "POST",
           headers: {
@@ -104,46 +98,40 @@ export default function FreshdeskScreen({
       const responseData = await response.json();
 
       if (response.status === 200) {
-        setBannerState({
-          type: "SUCCESS",
-          message: "Freshdesk sync initiated.",
-        });
-        setApiKey("");
-        setFreshdeskdomain("");
+        setBannerState({ message: "Gitbook sync initiated.", type: "SUCCESS" });
+        setGBToken("");
+        setOrganization("");
       } else {
-        setBannerState({
-          type: "ERROR",
-          message: responseData.detail,
-        });
+        setBannerState({ type: "ERROR", message: responseData.detail });
         onError &&
           onError({
             status: 400,
             data: [{ message: responseData.detail }],
             action: ActionType.ERROR,
             event: ActionType.ERROR,
-            integration: processedIntegration.id,
+            integration: IntegrationName.GITBOOK,
           });
       }
       setIsLoading(false);
     } catch (error) {
-      console.error(error);
       setBannerState({
         type: "ERROR",
-        message: "Error connecting your Freshdesk. Please try again.",
+        message: "Error connecting your Gitbook. Please try again.",
       });
       setIsLoading(false);
       onError &&
         onError({
           status: 400,
           data: [
-            { message: "Error connecting your Freshdesk. Please try again." },
+            { message: "Error connecting your Gitbook. Please try again." },
           ],
           action: ActionType.ERROR,
           event: ActionType.ERROR,
-          integration: processedIntegration.id,
+          integration: IntegrationName.GITBOOK,
         });
     }
   };
+
   return (
     <>
       <Banner bannerState={bannerState} setBannerState={setBannerState} />
@@ -158,26 +146,26 @@ export default function FreshdeskScreen({
         <div className="cc-text-base cc-font-semibold cc-mb-5 dark:cc-text-dark-text-white">
           Please enter {processedIntegration.name}{" "}
           <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md dark:cc-text-[#88E7FC] dark:cc-bg-[#10284D]">
-            domain
+            Organization name
           </span>
           and
           <span className="cc-px-2 cc-mx-1 cc-bg-surface-info_accent_1 cc-text-info_em cc-rounded-md dark:cc-text-[#88E7FC] dark:cc-bg-[#10284D]">
-            api key
+            access token
           </span>
           of the acount you wish to connect.
         </div>
         <Input
           type="text"
-          placeholder="domain.freshdesk.com"
-          value={freshdeskdomain}
-          onChange={(e) => setFreshdeskdomain(e.target.value)}
+          placeholder="Organization"
+          value={organization}
+          onChange={(e) => setOrganization(e.target.value)}
           className="cc-mb-4"
         />
         <Input
           type="password"
-          placeholder="API key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="Token"
+          value={gbToken}
+          onChange={(e) => setGBToken(e.target.value)}
           className="cc-mb-32"
         />
       </div>
@@ -199,7 +187,7 @@ export default function FreshdeskScreen({
           variant="primary"
           size="lg"
           className="cc-w-full"
-          onClick={() => connectFreshdesk()}
+          onClick={() => connectGitbook()}
           disabled={isLoading}
         >
           Submit

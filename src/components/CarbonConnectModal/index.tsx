@@ -12,29 +12,14 @@ import { useTheme } from "next-themes";
 import Loader from "../common/Loader";
 export interface ModalProps {
   isOpen: boolean;
-  title: string;
-  description?: string;
-  showSecondaryButton?: boolean;
-  primaryButtonText?: string;
-  secondaryButtonText?: string;
   onPrimaryButtonClick?: (step: ActiveStep) => void;
-  onSecondaryButtonClick?: () => void;
-  onCloseModal?: () => void;
-  children?: ReactNode;
-  customClassName?: string;
-  wrapperId?: string;
-  showCross?: boolean;
-  showButtons?: boolean;
-  primaryButtonDisabled?: boolean;
+  manageModalOpenState: (arg: boolean) => void;
 }
 
 function CarbonConnectModal({
   isOpen = false,
-  onPrimaryButtonClick = emptyFunction,
-  onSecondaryButtonClick = emptyFunction,
-  onCloseModal = emptyFunction,
-  customClassName = "",
-  wrapperId = "react-portal-carbonconnect-modal-container",
+  onPrimaryButtonClick = () => {},
+  manageModalOpenState,
 }: ModalProps) {
   const {
     whiteLabelingData,
@@ -46,11 +31,10 @@ function CarbonConnectModal({
     entryPoint,
     primaryTextColor,
     loading,
+    primaryBackgroundColor,
+    alwaysOpen,
+    navigateBackURL,
   } = useCarbon();
-
-  const handleCloseModal = () => {
-    onCloseModal();
-  };
 
   const handlePrimaryButtonClick = () => {
     if (entryPointIntegrationObject?.active) {
@@ -60,10 +44,6 @@ function CarbonConnectModal({
     }
   };
 
-  const handleSecondaryButtonClick = () => {
-    onSecondaryButtonClick();
-    handleCloseModal();
-  };
   const isWhiteLabeledOrg = Boolean(whiteLabelingData?.remove_branding);
   const isWhiteLabeledEntryPoint = Boolean(
     entryPoint &&
@@ -71,8 +51,16 @@ function CarbonConnectModal({
       whiteLabelingData?.integrations?.[entryPoint]
   );
 
+  const navigateBack = () => {
+    if (navigateBackURL) window.open(navigateBackURL, "_self");
+    else manageModalOpenState(false);
+  };
+
   return (
-    <Dialog open={isOpen}>
+    <Dialog
+      onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
+      open={alwaysOpen ? true : isOpen}
+    >
       <DialogContent className="sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]">
         {loading ? (
           <Loader />
@@ -192,14 +180,17 @@ function CarbonConnectModal({
               <Button
                 size="lg"
                 onClick={() => handlePrimaryButtonClick()}
-                style={{ color: primaryTextColor }}
+                style={{
+                  color: primaryTextColor,
+                  // backgroundColor: primaryBackgroundColor,
+                }}
               >
                 Connect
               </Button>
               <Button
                 variant="neutral-white-fix"
                 size="lg"
-                onClick={() => handleSecondaryButtonClick()}
+                onClick={() => navigateBack()}
               >
                 Go back
               </Button>

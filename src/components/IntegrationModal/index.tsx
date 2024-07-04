@@ -33,7 +33,7 @@ export type IntegrationAPIResponse = {
   last_sync_action: string;
   source_items_synced_at: Date;
   files_synced_at: Date;
-  data_source_metadata: object;
+  data_source_metadata: any;
 };
 
 function IntegrationModal({

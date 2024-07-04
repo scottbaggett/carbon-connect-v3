@@ -24,7 +24,6 @@ export default function SourceItem({
   return (
     <li
       key={item.id}
-      onClick={onSelect}
       className="cc-flex sm:cc-px-4 cc-transition-all cc-font-semibold dark:hover:cc-bg-[#464646]/25  cc-text-high_em cc-text-sm hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-gap-2 cc-flex cc-items-start cc-w-full sm:cc-px-2 cc-border-b cc-border-outline-base_em cc-py-3">
