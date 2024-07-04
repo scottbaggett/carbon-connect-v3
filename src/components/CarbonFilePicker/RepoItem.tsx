@@ -39,8 +39,8 @@ export default function RepoItem({
           className="cc-w-5 cc-shrink-0"
         />
 
-        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
-          <p className="cc-flex-grow dark:cc-text-dark-text-white">
+        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap cc-items-start">
+          <p className="cc-flex-grow dark:cc-text-dark-text-white cc-w-[350px] cc-max-w-[350px] cc-break-words">
             {item.name}
           </p>
           <p className="cc-w-full cc-shrink-0 cc-text-left cc-text-xs cc-text-low_em sm:cc-text-high_em sm:cc-w-[200px] sm:text-sm sm:cc-text-right sm:cc-text-sm cc-truncate dark:cc-text-dark-text-white">
