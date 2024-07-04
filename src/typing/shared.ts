@@ -236,6 +236,7 @@ export type CarbonConnectProps = {
   parsePdfTablesWithOcr?: boolean;
   sendDeletionWebhooks?: boolean;
   fileSyncConfig?: FileSyncConfig;
+  theme?: 'dark' | 'light';
 };
 
 export type ProcessedIntegration = IntegrationItemType & Integration;

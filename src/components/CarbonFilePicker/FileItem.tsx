@@ -42,8 +42,10 @@ export default function FileItem({
             className="cc-w-5 cc-shrink-0"
           />
         )}
-        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
-          <p className="cc-flex-grow">{item.name}</p>
+        <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap cc-items-start">
+          <p className="cc-flex-grow cc-w-[350px] cc-max-w-[350px] cc-break-words ">
+            {item.name}
+          </p>
           <>
             {item.sync_status && item.sync_status === "READY" && (
               <div className="cc-bg-surface-success_accent_1 cc-text-success_high_em cc-py-[3px] cc-text-xs cc-px-2 cc-rounded-lg">

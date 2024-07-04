@@ -1,7 +1,8 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
 
-  darkMode: "media", // or 'media' or 'class'
+  darkMode: ["selector", '[data-mode="dark"]'], // or 'media' or 'class'
   prefix: "cc-",
   theme: {
     extend: {
@@ -14,6 +15,7 @@ module.exports = {
         white: "#FFFFFF",
         "surface-info_main": "#0BABFB",
         "surface-white": "#FFFFFF",
+
         "surface-surface_1": "rgba(0, 0, 0, 0.04)",
         "dark-surface_1": "rgba(255,255,255, 0.04)",
         "surface-surface_2": "rgba(0, 0, 0, 0.07)",
@@ -40,13 +42,13 @@ module.exports = {
         "gradient-blue":
           "linear-gradient(0deg, rgba(31, 123, 245, 0.10) 0%, rgba(31, 123, 245, 0.10) 100%), var(--color-white-20, rgba(255, 255, 255, 0.20)",
         "focus-primary": "#D9D6FE",
-        "dark-text-white": "var(--dark-text-white)",
-        "dark-bg-black": "var(--dark-bg-black)",
-        "dark-text-gray": "var(--dark-text-gray)",
-        "dark-border-color": "var(--dark-border-color)",
-        "dark-input-bg": "var(--input-background-color)",
-        "dark-input-text": "var(--input-text-color)",
-        "svg-background": "var(--svg-dark-color)",
+        "dark-text-white": "#fff",
+        "dark-bg-black": "#0c0c0c",
+        "dark-text-gray": "#ffffff7a",
+        "dark-border-color": "#ffffff12",
+        "dark-input-bg": "#ffffff33",
+        "dark-input-text": "#ffffff52",
+        "svg-background": "#1f1f1f",
         "custom-gradient-dark":
           "linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), linear-gradient(0deg, rgba(31, 123, 245, 0.1), rgba(31, 123, 245, 0.1))",
         justifyStart: "flex-start",

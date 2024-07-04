@@ -135,7 +135,7 @@ function IntegrationList({
                       </div>
                     </div>
                     <div className="cc-flex-grow">
-                      <h2 className="cc-text-base cc-font-semibold cc-items-center cc-justify-center cc-truncate">
+                      <h2 className="cc-text-base cc-font-semibold cc-items-center cc-flex cc-truncate">
                         <span className="cc-mr-1 cc-inline-block">
                           {integration.integrationsListViewTitle ||
                             integration.name}

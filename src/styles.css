@@ -21,18 +21,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
-  /* --dark-text-white: #fff;
-  --dark-bg-black: #000; */
-}
-
-.dark {
-  --dark-text-white: #fff;
-  --dark-bg-black: #0c0c0c;
-  --dark-text-gray: #ffffff7a;
-  --dark-border-color: #ffffff12;
-  --input-background-color: #ffffff33;
-  --input-text-color: #ffffff52;
-  --svg-dark-color: #1f1f1f;
   --invert-dark: invert(1);
   --hue-dark: hue-rotate(180);
   --customGradient: background:(
@@ -40,6 +28,9 @@ body {
     linear-gradient(0deg, rgba(31, 123, 245, 0.1), rgba(31, 123, 245, 0.1))
   );
 }
+
+
+
 
 .dark .searchSvg {
   fill: #ffffffc2;

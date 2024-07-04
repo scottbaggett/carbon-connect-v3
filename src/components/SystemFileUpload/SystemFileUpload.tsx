@@ -22,6 +22,7 @@ import {
   CircularProgressbarWithChildren,
 } from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
+
 import {
   ActiveStep,
   IntegrationName,
@@ -113,21 +114,6 @@ export default function SystemFileUpload({
   const handleFileUpload = (selectedFiles: File[]): void => {
     const fileList = Array.from(selectedFiles);
     setFile(fileList);
-
-    const firstFile = fileList[0];
-    if (firstFile.webkitRelativePath) {
-      const pathParts = firstFile.webkitRelativePath.split("/");
-
-      if (pathParts.length > 1) {
-        setFolderName(pathParts[0]);
-        setStep(2);
-      } else {
-        setFolderName(null);
-      }
-    } else {
-      setFolderName(null);
-    }
-
     setStep(2);
     uploadFiles(fileList);
   };
