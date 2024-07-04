@@ -36,6 +36,20 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     setOpenCarbonConnect(modalOpenState);
   };
 
+  const manageModalOpenState = (modalOpenState: boolean) => {
+    if (finalProps.alwaysOpen) return;
+    if (!modalOpenState) {
+      if (
+        finalProps.entryPoint === IntegrationName.LOCAL_FILES ||
+        finalProps.entryPoint === IntegrationName.WEB_SCRAPER
+      )
+        setActiveStep(finalProps.entryPoint);
+      else setActiveStep("CONNECT");
+    }
+    if (finalProps.setOpen) finalProps.setOpen(modalOpenState);
+    setOpenCarbonConnect(modalOpenState);
+  };
+
   useEffect(() => {
     if (activeStep == "CONNECT") {
       setOpenIntegration(false);
@@ -54,6 +68,10 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     const newMode = props.theme === "dark" ? "dark" : "light";
     document.querySelector("html")?.setAttribute("data-mode", newMode);
   }, [props.theme]);
+
+  useEffect(() => {
+    setOpenCarbonConnect(finalProps.open || false);
+  }, [finalProps.open]);
 
   useEffect(() => {
     setOpenCarbonConnect(finalProps.open || false);
