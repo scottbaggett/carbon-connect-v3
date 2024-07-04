@@ -164,7 +164,7 @@ export default function FileSelector({
             <img src={images.verticleSeperate} alt="" />
             <p
               onClick={handleWarningMessage}
-              className="cc-text-[14px] cc-leading-[24px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer hover:cc-text-[#BA1B1B]"
+              className="cc-text-[14px] cc-leading-[20px] cc-font-semibold cc-text-[#F03D3D] cc-ml-[10px] cc-border-b-[2px] cc-border-[#FF7373] cc-cursor-pointer hover:cc-text-[#BA1B1B]"
             >
               Got it
             </p>
