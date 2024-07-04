@@ -45,7 +45,7 @@ const ClickToUpload: React.FC<Props> = ({
   });
 
   return (
-    <div className="cc-border md:cc-border-none cc-border-surface-surface_3 cc-rounded-xl cc-m-4">
+    <div className="cc-border md:cc-border-none cc-border-surface-surface_3 cc-rounded-xl cc-m-4 md:cc-mt-[107px]">
       <div
         {...getRootProps({
           className:
@@ -60,7 +60,7 @@ const ClickToUpload: React.FC<Props> = ({
             className="cc-h-[42px] cc-w-[42px] cc-cursor-pointer"
           />
         </div>
-        <div className="cc-flex cc-text-base cc-font-semibold cc-mb-1 cc-text-center cc-max-w-[346px]">
+        <div className="cc-flex cc-text-base cc-font-semibold cc-mb-1 cc-text-center ">
           <div
             className="cc-text-info_em cc-cursor-pointer cc-text-medium md:cc-hidden"
             onClick={() => getInputProps().onClick}

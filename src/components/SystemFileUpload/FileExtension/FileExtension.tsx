@@ -15,6 +15,8 @@ const getFileIcon = (fileName: string): string => {
   switch (image) {
     case "":
       return images.folderIcon;
+    case "html":
+      return images.html;
     case "zip":
       return images.folderIcon;
 
