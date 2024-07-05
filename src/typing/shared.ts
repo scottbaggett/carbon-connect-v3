@@ -206,7 +206,7 @@ export type CarbonConnectProps = {
   tags?: Record<string, TagValue>;
   maxFileSize?: number;
   environment?: keyof typeof BASE_URL;
-  entryPoint?: string | null;
+  entryPoint?: IntegrationName | "INTEGRATIONS_LIST";
   enabledIntegrations?: Integration[];
   primaryBackgroundColor?: string;
   primaryTextColor?: string;

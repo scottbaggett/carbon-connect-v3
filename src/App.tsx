@@ -42,8 +42,9 @@ const App: React.FC<CarbonConnectProps> = (props) => {
       setOpenCarbonConnect(true);
     }
   }, [activeStep]);
+
   useEffect(() => {
-    if (!props.theme) {
+    if (!finalProps.theme) {
       const newTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
@@ -51,13 +52,9 @@ const App: React.FC<CarbonConnectProps> = (props) => {
       document.querySelector("html")?.setAttribute("data-mode", newTheme);
       return;
     }
-    const newMode = props.theme === "dark" ? "dark" : "light";
+    const newMode = finalProps.theme === "dark" ? "dark" : "light";
     document.querySelector("html")?.setAttribute("data-mode", newMode);
-  }, [props.theme]);
-
-  useEffect(() => {
-    setOpenCarbonConnect(finalProps.open || false);
-  }, [finalProps.open]);
+  }, [finalProps.theme]);
 
   useEffect(() => {
     setOpenCarbonConnect(finalProps.open || false);

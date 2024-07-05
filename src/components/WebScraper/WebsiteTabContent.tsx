@@ -141,7 +141,6 @@ export default function WebsiteTabContent({
       const cssSelectorsToSkip = service?.cssSelectorsToSkip || [];
 
       setSubmitting(true);
-      console.log(websiteDataList);
 
       let validData = websiteDataList.filter((urlData) =>
         isValidHttpUrl("https://" + urlData.url)

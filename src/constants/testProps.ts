@@ -49,7 +49,7 @@ export const TEST_PROPS: CarbonConnectProps = {
   generateSparseVectors: false,
   prependFilenameToChunks: true,
   maxItemsPerChunk: 1,
-  // entryPoint: IntegrationName.CONFLUENCE,
+  entryPoint: IntegrationName.GITHUB,
   // showFilesTab={false}
   setPageAsBoundary: false,
   useRequestIds: true,
@@ -194,4 +194,5 @@ export const TEST_PROPS: CarbonConnectProps = {
   primaryBackgroundColor: "#525252",
   // navigateBackURL: "https://carbon.ai",
   open: true,
+  // theme: "dark",
 };

@@ -19,9 +19,6 @@ import {
 import { generateRequestId } from "../utils/helper-functions";
 import { INTEGRATIONS_LIST } from "../utils/integrationModalconstants";
 
-const DEFAULT_CHUNK_SIZE = 1500;
-const DEFAULT_OVERLAP_SIZE = 20;
-
 type CarbonContextValues = CarbonConnectProps & {
   accessToken?: string | null;
   authenticatedFetch?: any;
@@ -49,7 +46,7 @@ export const CarbonProvider = ({
   tags = {},
   maxFileSize = 20000000,
   environment = ENV.PRODUCTION,
-  entryPoint = null,
+  entryPoint,
   enabledIntegrations = [
     {
       id: IntegrationName.LOCAL_FILES,
@@ -292,7 +289,7 @@ export const CarbonProvider = ({
 export const useCarbon = () => {
   const context = useContext(CarbonContext);
   if (context === undefined) {
-    throw new Error("useCarbon must be used within an CarbonProvider");
+    throw new Error("useCarbon must be used within CarbonProvider");
   }
   return context;
 };

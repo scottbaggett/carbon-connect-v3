@@ -57,11 +57,13 @@ export default function FileItem({
                 Error
               </div>
             )}
-            {item.sync_status && item.sync_status === "SYNCING" && (
-              <div className="cc-bg-surface-warning_accent_1 cc-text-warning-600 cc-py-[3px] cc-text-xs cc-px-2 cc-rounded-lg">
-                Syncing
-              </div>
-            )}
+            {item.sync_status &&
+              (item.sync_status === "SYNCING" ||
+                item.sync_status === "QUEUED_FOR_SYNC") && (
+                <div className="cc-bg-surface-warning_accent_1 cc-text-warning-600 cc-py-[3px] cc-text-xs cc-px-2 cc-rounded-lg">
+                  Syncing
+                </div>
+              )}
           </>
           <p className="cc-w-full cc-shrink-0 cc-text-left cc-text-xs cc-text-low_em sm:cc-text-high_em sm:cc-w-[200px] sm:text-sm sm:cc-text-right sm:cc-text-sm cc-truncate dark:cc-text-dark-text-white">
             {(itemType === "FOLDER" || itemType === "FILE") &&
