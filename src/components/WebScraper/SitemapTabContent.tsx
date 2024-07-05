@@ -21,61 +21,202 @@ import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomShee
 import { DialogFooter } from "@components/common/design-system/Dialog";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 import SuccessState from "@components/common/SuccessState";
-
-type UrlType = {
-  id: string;
-  url: string;
-};
-
-const fileList: UrlType[] = [
-  {
-    id: "italic.com1",
-    url: "https://italic.com/sitemap-main.xml",
-  },
-  {
-    id: "italic.com2",
-    url: "https://italic.com/sitemap-images.xml",
-  },
-  {
-    id: "italic.com3",
-    url: "https://italic.com/guides/sitemap.xml",
-  },
-  {
-    id: "italic.com4",
-    url: "https://italic.com",
-  },
-  {
-    id: "italic.com5",
-    url: "https://italic.com/careers",
-  },
-  {
-    id: "italic.com6",
-    url: "https://italic.com/how-it-works",
-  },
-  {
-    id: "italic.com7",
-    url: "https://italic.com/membership",
-  },
-  {
-    id: "italic.com8",
-    url: "https://italic.com/sitemap-main.xml",
-  },
-  {
-    id: "italic.com9",
-    url: "https://italic.com/sitemap-images.xml",
-  },
-];
+import Banner, { BannerState } from "../common/Banner";
+import { useCarbon } from "../../context/CarbonContext";
+import {
+  BASE_URL,
+  DEFAULT_CHUNK_SIZE,
+  DEFAULT_OVERLAP_SIZE,
+  DEFAULT_RECURSION_DEPTH,
+  ENV,
+  MAX_PAGES_TO_SCRAPE,
+} from "../../constants/shared";
+import { isValidHttpUrl, removeHttp } from "../../utils/helper-functions";
+import Loader from "../common/Loader";
+import {
+  ActionType,
+  IntegrationName,
+  ProcessedIntegration,
+  WebScraperIntegration,
+} from "../../typing/shared";
 
 export default function SitemapTabContent({
   setActiveTab,
   sitemapEnabled,
+  processedIntegration,
 }: {
   setActiveTab: (val: string) => void;
   sitemapEnabled: boolean;
+  processedIntegration: WebScraperIntegration | undefined;
 }) {
   const [internalStep, setInternalStep] = useState<number>(1);
   const [url, setUrl] = useState<string>("");
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
+  const [sitemapUrls, setSitemapUrls] = useState([]);
+  const [bannerState, setBannerState] = useState<BannerState>({
+    message: null,
+  });
+  const [urlsLoading, setUrlsLoading] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const {
+    authenticatedFetch,
+    environment = ENV.PRODUCTION,
+    accessToken,
+    chunkSize,
+    overlapSize,
+    generateSparseVectors,
+    prependFilenameToChunks,
+    maxItemsPerChunk,
+    embeddingModel,
+    tags,
+    onSuccess,
+    onError,
+  } = useCarbon();
+
+  const handleFetchSitemapUrls = async () => {
+    setSelectedUrls([]);
+    setSitemapUrls([]);
+    const finalUrl = "https://" + url;
+    try {
+      if (!isValidHttpUrl(finalUrl)) {
+        setBannerState({ message: "Please enter a valid URL", type: "ERROR" });
+        return;
+      }
+      setUrlsLoading(true);
+      const response = await authenticatedFetch(
+        `${BASE_URL[environment]}/process_sitemap?url=${finalUrl}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const responseData = await response.json();
+        setSitemapUrls(responseData.urls);
+        setInternalStep(2);
+      } else {
+        throw new Error("Error fetching sitemap. Please try again.");
+      }
+    } catch (error) {
+      setBannerState({
+        type: "ERROR",
+        message: "Error fetching sitemap. Please try again.",
+      });
+    }
+    setUrlsLoading(false);
+  };
+
+  const submitScrapeRequest = async () => {
+    const finalUrl = "https://" + url;
+    try {
+      if (isSubmitting === true) {
+        return;
+      }
+      setIsSubmitting(true);
+      const chunkSizeValue =
+        processedIntegration?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
+      const overlapSizeValue =
+        processedIntegration?.overlapSize ||
+        overlapSize ||
+        DEFAULT_OVERLAP_SIZE;
+      const skipEmbeddingGeneration =
+        processedIntegration?.skipEmbeddingGeneration || false;
+      const enableAutoSync = processedIntegration?.enableAutoSync ?? false;
+      const generateSparseVectorsValue =
+        processedIntegration?.generateSparseVectors ??
+        generateSparseVectors ??
+        false;
+      const prependFilenameToChunksValue =
+        processedIntegration?.prependFilenameToChunks ??
+        prependFilenameToChunks ??
+        false;
+      const maxItemsPerChunkValue =
+        processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
+      const embeddingModelValue = embeddingModel || null;
+      const recursionDepth =
+        processedIntegration?.recursionDepth ?? DEFAULT_RECURSION_DEPTH;
+      const maxPagesToScrape =
+        processedIntegration?.maxPagesToScrape || MAX_PAGES_TO_SCRAPE;
+
+      const htmlTagsToSkip = processedIntegration?.htmlTagsToSkip || [];
+      const cssClassesToSkip = processedIntegration?.cssClassesToSkip || [];
+      const cssSelectorsToSkip = processedIntegration?.cssSelectorsToSkip || [];
+
+      const urlsToScrape =
+        selectedUrls.length == sitemapUrls.length ? [] : selectedUrls;
+
+      const requestObject = {
+        url: finalUrl,
+        tags: tags,
+        recursion_depth: recursionDepth,
+        max_pages_to_scrape: maxPagesToScrape,
+        chunk_size: chunkSizeValue,
+        chunk_overlap: overlapSizeValue,
+        skip_embedding_generation: skipEmbeddingGeneration,
+        enable_auto_sync: enableAutoSync,
+        generate_sparse_vectors: generateSparseVectorsValue,
+        prepend_filename_to_chunks: prependFilenameToChunksValue,
+        html_tags_to_skip: htmlTagsToSkip,
+        css_classes_to_skip: cssClassesToSkip,
+        css_selectors_to_skip: cssSelectorsToSkip,
+        ...(maxItemsPerChunkValue && {
+          max_items_per_chunk: maxItemsPerChunkValue,
+        }),
+        ...(embeddingModelValue && { embedding_model: embeddingModelValue }),
+        urls_to_scrape: urlsToScrape,
+      };
+
+      const uploadResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/scrape_sitemap`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestObject),
+        }
+      );
+      const responseData = await uploadResponse.json();
+      if (uploadResponse.status === 200) {
+        setSelectedUrls([]);
+        setSitemapUrls([]);
+        setUrl("");
+        onSuccess &&
+          onSuccess({
+            status: 200,
+            data: {
+              data_source_external_id: null,
+              sync_status: null,
+              files: [responseData],
+            },
+            action: ActionType.UPDATE,
+            event: ActionType.UPDATE,
+            integration: IntegrationName.WEB_SCRAPER,
+          });
+        setInternalStep(3);
+      }
+    } catch (e) {
+      setBannerState({
+        type: "ERROR",
+        message: "Error initiating scraping. Please try again.",
+      });
+      onError &&
+        onError({
+          status: 400,
+          data: [{ message: "Error initiating scraping. Please try again." }],
+          action: ActionType.UPDATE,
+          event: ActionType.UPDATE,
+          integration: IntegrationName.WEB_SCRAPER,
+        });
+    }
+    setIsSubmitting(false);
+  };
 
   if (internalStep === 3) {
     return (
@@ -95,6 +236,7 @@ export default function SitemapTabContent({
 
   return (
     <>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-flex-grow cc-p-4 cc-overflow-auto cc-flex cc-flex-col">
         <WebScraperTabs
           activeTab="sitemap"
@@ -126,15 +268,15 @@ export default function SitemapTabContent({
               className="cc-rounded-l-none"
               placeholder="Enter URL"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => setUrl(removeHttp(e.target.value))}
             />
           </div>
           <Button
             size="md"
             variant="neutral-white"
             className="cc-font-semibold cc-hidden sm:cc-flex"
-            disabled={url === ""}
-            onClick={() => setInternalStep(2)}
+            disabled={url === "" || urlsLoading}
+            onClick={() => handleFetchSitemapUrls()}
           >
             Fetch
           </Button>
@@ -146,9 +288,10 @@ export default function SitemapTabContent({
                 Fetched URLs
               </div>
               <div className="cc-py-2 cc-text-xs cc-text-disabledtext dark:cc-text-dark-text-white cc-capitalize cc-font-bold cc-text-right cc-mr-4">
-                {selectedFiles.length === fileList.length ? (
+                {selectedUrls.length &&
+                selectedUrls.length === sitemapUrls.length ? (
                   <button
-                    onClick={() => setSelectedFiles([])}
+                    onClick={() => setSelectedUrls([])}
                     className="cc-text-sm cc-font-semibold cc-h-6 cc-text-outline-danger_high_em cc-items-start cc-text-left"
                   >
                     Clear selection
@@ -157,10 +300,13 @@ export default function SitemapTabContent({
                   <label className="cc-flex cc-gap-2 cc-items-center cc-h-6 cc-text-sm cc-font-semibold cc-cursor-pointer">
                     <Checkbox
                       className="cc-my-0.5"
-                      checked={selectedFiles.length === fileList.length}
+                      checked={
+                        selectedUrls.length
+                          ? selectedUrls.length === sitemapUrls.length
+                          : false
+                      }
                       onCheckedChange={() => {
-                        const allFilesId = fileList.map((item) => item.id);
-                        setSelectedFiles(allFilesId);
+                        setSelectedUrls(sitemapUrls);
                       }}
                     />
                     Select all
@@ -168,22 +314,24 @@ export default function SitemapTabContent({
                 )}
               </div>
             </div>
-            {fileList.length > 0 ? (
+            {urlsLoading ? (
+              <Loader />
+            ) : sitemapUrls.length > 0 ? (
               <ul className="cc-px-4 sm:cc-px-0 sm:cc-pb-2">
-                {fileList.map((item) => {
-                  const isChecked = selectedFiles.indexOf(item.id) >= 0;
+                {sitemapUrls.map((item, index) => {
+                  const isChecked = selectedUrls.indexOf(item) >= 0;
 
                   return (
                     <SitemapItem
-                      key={item.id}
+                      key={index}
                       isChecked={isChecked}
                       item={item}
                       onSelect={() => {
-                        setSelectedFiles((prev) => {
+                        setSelectedUrls((prev) => {
                           if (isChecked) {
-                            return prev.filter((id) => id !== item.id);
+                            return prev.filter((url) => url !== item);
                           } else {
-                            return [...prev, item.id];
+                            return [...prev, item];
                           }
                         });
                       }}
@@ -193,7 +341,7 @@ export default function SitemapTabContent({
               </ul>
             ) : (
               <div className="cc-py-4 cc-text-center cc-text-disabledtext cc-font-medium cc-text-sm">
-                No item found
+                No URLs found
               </div>
             )}
           </div>
@@ -208,14 +356,14 @@ export default function SitemapTabContent({
             className="cc-w-full"
             disabled={url === ""}
             onClick={() => {
-              setInternalStep(2);
+              handleFetchSitemapUrls();
             }}
           >
             Fetch
           </Button>
         </DialogFooter>
       )}
-      {internalStep === 2 && selectedFiles.length > 0 && (
+      {internalStep === 2 && selectedUrls.length > 0 && (
         <DialogFooter>
           <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold dark:cc-text-dark-text-white">
             <img
@@ -223,14 +371,17 @@ export default function SitemapTabContent({
               alt="info_fill"
               className="cc-h-5 cc-w-5 cc-flex cc-mr-2 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
-            Select a max of 50 links to sync.
+            {selectedUrls.length == sitemapUrls.length
+              ? `All URL(s) will be synced`
+              : `${selectedUrls.length} URL(s) selected`}
           </div>
           <Button
             size="md"
             className="cc-w-full"
             onClick={() => {
-              setInternalStep(3);
+              submitScrapeRequest();
             }}
+            disabled={isSubmitting}
           >
             Submit
           </Button>
@@ -243,14 +394,13 @@ export default function SitemapTabContent({
 type SitemapItemProps = {
   isChecked: boolean;
   onSelect: () => void;
-  item: UrlType;
+  item: string;
 };
 
 function SitemapItem({ item, isChecked, onSelect }: SitemapItemProps) {
   return (
     <li
-      key={item.id}
-      onClick={onSelect}
+      key={item}
       className="cc-flex cc-transition-all sm:cc-px-4 cc-font-semibold cc-text-high_em cc-text-sm dark:cc-text-dark-text-white dark:hover:cc-bg-[#464646] hover:cc-bg-gray-25 cc-cursor-pointer"
     >
       <div className="cc-py-3 cc-border-b cc-border-outline-base_em cc-w-full">
@@ -261,7 +411,7 @@ function SitemapItem({ item, isChecked, onSelect }: SitemapItemProps) {
             onCheckedChange={onSelect}
           />
           <div className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap">
-            <p className="cc-flex cc-flex-grow cc-flex-start">{item.url}</p>
+            <p className="cc-flex cc-flex-grow cc-flex-start">{item}</p>
           </div>
         </div>
       </div>

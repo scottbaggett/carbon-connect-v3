@@ -43,6 +43,7 @@ import {
 } from "../../constants/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import { BannerState } from "../common/Banner";
+import { isValidHttpUrl, removeHttp } from "../../utils/helper-functions";
 
 type WebscrapeInput = {
   url: string;
@@ -140,18 +141,10 @@ export default function WebsiteTabContent({
       const cssSelectorsToSkip = service?.cssSelectorsToSkip || [];
 
       setSubmitting(true);
-      const urlPattern = new RegExp(
-        "^(https?:\\/\\/)?" + // protocol
-          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-          "(\\#[-a-z\\d_]*)?$",
-        "i"
-      ); // fragment locator
+      console.log(websiteDataList);
 
       let validData = websiteDataList.filter((urlData) =>
-        urlPattern.test(urlData.url)
+        isValidHttpUrl("https://" + urlData.url)
       );
 
       if (validData.length === 0) {
@@ -286,7 +279,7 @@ export default function WebsiteTabContent({
                     value={websiteData.url}
                     onChange={(e) =>
                       updateWebsiteListData(index, {
-                        url: e.target.value.replace("https://", ""),
+                        url: removeHttp(e.target.value),
                       })
                     }
                   />

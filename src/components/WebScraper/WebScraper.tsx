@@ -10,6 +10,7 @@ import WebsiteTabContent from "./WebsiteTabContent";
 import SitemapTabContent from "./SitemapTabContent";
 import {
   ActiveStep,
+  IntegrationName,
   ProcessedIntegration,
   WebScraperIntegration,
 } from "../../typing/shared";
@@ -89,6 +90,9 @@ function WebScraper({
         <SitemapTabContent
           setActiveTab={setActiveTab}
           sitemapEnabled={sitemapEnabled}
+          processedIntegration={processedIntegrations?.find(
+            (p) => p.id == IntegrationName.WEB_SCRAPER
+          )}
         />
       )}
     </>

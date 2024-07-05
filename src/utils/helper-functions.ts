@@ -299,3 +299,16 @@ export const pluralize = (str: string, value: number) => {
   }
   return str;
 };
+
+export const isValidHttpUrl = (string: string) => {
+  try {
+    const newUrl = new URL(string);
+    return newUrl.protocol === "http:" || newUrl.protocol === "https:";
+  } catch (err) {
+    return false;
+  }
+};
+
+export const removeHttp = (string: string) => {
+  return string.replace("https://", "").replace("http://", "");
+};
