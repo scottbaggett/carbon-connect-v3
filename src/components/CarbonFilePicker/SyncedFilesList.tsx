@@ -45,13 +45,12 @@ export default function SyncedFilesList({
   setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
-  const [serchValue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const {
     authenticatedFetch,
     environment = ENV.PRODUCTION,
     accessToken,
     sendDeletionWebhooks,
-    showFilesTab,
   } = useCarbon();
 
   const [files, setFiles] = useState<UserFileApi[]>([]);
@@ -59,15 +58,9 @@ export default function SyncedFilesList({
   const [offset, setOffset] = useState(0);
   const [syncedFilesRefreshes, setSyncedFilesRefreshes] = useState(0);
   const [filesLoading, setFilesLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [actionInProgress, setActionInProgress] = useState(false);
   const isLocalFiles = processedIntegration.id == IntegrationName.LOCAL_FILES;
-  const shouldShowFilesTab = showFilesTab || processedIntegration?.showFilesTab;
-
-  useEffect(() => {
-    if (!shouldShowFilesTab) {
-      setActiveStep("FILE_UPLOAD");
-    }
-  }, [processedIntegration]);
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse | null,
@@ -127,6 +120,7 @@ export default function SyncedFilesList({
 
   const loadMoreRows = async () => {
     if (!selectedDataSource && !isLocalFiles) return;
+    setLoadingMore(true);
     const { count, userFiles } = await getUserFiles(selectedDataSource, offset);
     const newFiles = [...files, ...userFiles];
     setFiles(newFiles);
@@ -137,6 +131,7 @@ export default function SyncedFilesList({
     } else {
       setHasMoreFiles(false);
     }
+    setLoadingMore(false);
   };
 
   useEffect(() => {
@@ -150,7 +145,7 @@ export default function SyncedFilesList({
   }, [selectedDataSource?.id, syncedFilesRefreshes]);
 
   const filteredList = files.filter((item) =>
-    item.name.toLowerCase().includes(serchValue.toLowerCase())
+    item.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleDeleteFiles = async () => {
@@ -247,11 +242,8 @@ export default function SyncedFilesList({
     });
   };
 
-  if (isLocalFiles && !shouldShowFilesTab && !processedIntegration) return null;
-
   return (
     <>
-      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
@@ -268,7 +260,7 @@ export default function SyncedFilesList({
                 type="text"
                 placeholder="Search"
                 className="cc-h-8 cc-text-xs cc-pl-7"
-                value={serchValue}
+                value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </label>
@@ -363,10 +355,10 @@ export default function SyncedFilesList({
             </div>
           ) : (
             <InfiniteScroll
-              dataLength={files.length}
+              dataLength={files.length + 1}
               next={loadMoreRows}
               hasMore={hasMoreFiles} // Replace with a condition based on your data source
-              loader={<Loader />}
+              loader={loadingMore ? <Loader /> : null}
               scrollableTarget="scrollableTarget"
             >
               <ul className="cc-pb-2">

@@ -188,7 +188,6 @@ export default function GithubRepoScreen({
       setBannerState({ message: "Unable to sync your repos", type: "ERROR" });
     }
   };
-  console.log(hasMoreFiles);
 
   return (
     <>

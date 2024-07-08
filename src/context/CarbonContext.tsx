@@ -11,7 +11,6 @@ import {
   ActionType,
   CarbonConnectProps,
   EmbeddingGenerators,
-  FilePickerMode,
   Integration,
   IntegrationName,
   ProcessedIntegration,
@@ -55,7 +54,6 @@ export const CarbonProvider = ({
       maxFileSize: 20000000,
       skipEmbeddingGeneration: false,
       setPageAsBoundary: false,
-      filePickerMode: FilePickerMode.FILES,
       sendDeletionWebhooks: false,
       allowedFileTypes: [
         {
@@ -89,7 +87,6 @@ export const CarbonProvider = ({
   prependFilenameToChunks = false,
   maxItemsPerChunk,
   setPageAsBoundary = false,
-  showFilesTab = true,
   useRequestIds = false,
   useOcr = false,
   parsePdfTablesWithOcr = false,
@@ -268,7 +265,6 @@ export const CarbonProvider = ({
     prependFilenameToChunks,
     maxItemsPerChunk,
     setPageAsBoundary,
-    showFilesTab,
     setRequestIds,
     requestIds,
     useRequestIds,

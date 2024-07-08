@@ -118,8 +118,6 @@ const DialogTitle = React.forwardRef<
   />
 ));
 
-console.log(DialogPrimitive.Title.displayName);
-
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
 const DialogDescription = React.forwardRef<

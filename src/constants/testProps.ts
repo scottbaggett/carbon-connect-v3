@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   AutoSyncedSourceTypes,
   CarbonConnectProps,
-  FilePickerMode,
+  EmbeddingGenerators,
   IntegrationName,
 } from "../typing/shared";
 import { ENV } from "./shared";
@@ -45,29 +45,27 @@ export const TEST_PROPS: CarbonConnectProps = {
   },
   maxFileSize: 10000000,
   // maxItemsPerChunk={1}
-  // embeddingModel={EmbeddingGenerators.OPENAI_ADA_LARGE_1024}
+  embeddingModel: EmbeddingGenerators.OPENAI_ADA_LARGE_1024,
   generateSparseVectors: false,
-  prependFilenameToChunks: true,
+  prependFilenameToChunks: false,
   maxItemsPerChunk: 1,
-  entryPoint: IntegrationName.GITHUB,
-  // showFilesTab={false}
+  // entryPoint: IntegrationName.GITHUB,
   setPageAsBoundary: false,
   useRequestIds: true,
   parsePdfTablesWithOcr: false,
   // primaryTextColor="black"
   sendDeletionWebhooks: true,
-  // showFilesTab={false}
   // fileSyncConfig={{
   //   auto_synced_data_sources: [AutoSyncedSourceTypes.ARTICLE]
   // }}
   enabledIntegrations: [
     {
       id: IntegrationName.BOX,
-      showFilesTab: true,
     },
     {
       id: IntegrationName.CONFLUENCE,
       syncFilesOnConnection: true,
+      useCarbonFilePicker: true,
     },
     {
       id: IntegrationName.DROPBOX,
@@ -101,24 +99,23 @@ export const TEST_PROPS: CarbonConnectProps = {
       generateSparseVectors: false,
       maxItemsPerChunk: 2,
       setPageAsBoundary: true,
-      filePickerMode: FilePickerMode.FILES,
       sendDeletionWebhooks: true,
-      allowedFileTypes: [
-        {
-          extension: "csv",
-          skipEmbeddingGeneration: true,
-        },
-        {
-          extension: "txt",
-        },
-        {
-          extension: "pdf",
-          useOcr: true,
-        },
-        {
-          extension: "HTML",
-        },
-      ],
+      // allowedFileTypes: [
+      //   {
+      //     extension: "csv",
+      //     skipEmbeddingGeneration: true,
+      //   },
+      //   {
+      //     extension: "txt",
+      //   },
+      //   {
+      //     extension: "pdf",
+      //     useOcr: true,
+      //   },
+      //   {
+      //     extension: "HTML",
+      //   },
+      // ],
     },
     {
       id: IntegrationName.NOTION,
@@ -134,7 +131,7 @@ export const TEST_PROPS: CarbonConnectProps = {
       // enableAutoSync: true,
       chunkSize: 1100,
       recursionDepth: 0,
-      // maxPagesToScrape: 500,
+      maxPagesToScrape: 500,
       // embeddingModel: "COHERE_MULTILINGUAL_V3",
       // cssClassesToSkip: ["some"],
       // htmlTagsToSkip: ["script"],

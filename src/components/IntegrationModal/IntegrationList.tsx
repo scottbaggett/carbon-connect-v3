@@ -54,9 +54,6 @@ function IntegrationList({
     .filter((ai: ProcessedIntegration) =>
       ai.name?.toLowerCase()?.includes(searchText?.toLowerCase())
     );
-  const handleClass = () => {
-    console.log("class is true");
-  };
 
   return (
     <>
@@ -129,7 +126,6 @@ function IntegrationList({
                   }`}
                   onClick={() => {
                     setActiveStep(integration?.id);
-                    handleClass();
                   }}
                 >
                   <div className="cc-grid cc-grid-cols-[40px,calc(100%_-_52px)] sm:cc-grid-cols-[56px,calc(100%_-_68px)] cc-gap-3 cc-items-center cc-justify-start">

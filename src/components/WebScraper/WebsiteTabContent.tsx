@@ -361,7 +361,7 @@ export default function WebsiteTabContent({
             alt="info_fill"
             className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
           />
-          The first {maxPagesToScrape} links per website are synced.
+          First {maxPagesToScrape} links per website are synced by default.
         </div>
         <Button
           size="md"

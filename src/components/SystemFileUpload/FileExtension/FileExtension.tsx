@@ -11,6 +11,8 @@ const getFileIcon = (fileName: string): string => {
       return images.xlsx;
     case "presentation":
       return images.pptx;
+    case "document":
+      return images.docx;
   }
   switch (image) {
     case "":

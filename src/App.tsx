@@ -14,7 +14,7 @@ import { TEST_PROPS } from "./constants/testProps";
 import { ENV } from "./constants/shared";
 import "react-circular-progressbar/dist/styles.css";
 
-const App: React.FC<CarbonConnectProps> = (props) => {
+const CarbonConnect: React.FC<CarbonConnectProps> = (props) => {
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(
     finalProps.open ?? false
@@ -82,4 +82,4 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   );
 };
 
-export default App;
+export default CarbonConnect;

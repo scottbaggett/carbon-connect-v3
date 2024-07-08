@@ -17,7 +17,7 @@ import { useCarbon } from "../../context/CarbonContext";
 import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
 import { SyncingModes } from "../CarbonFilePicker/CarbonFilePicker";
 import SystemFileUpload from "./SystemFileUpload";
-import { BannerState } from "../common/Banner";
+import Banner, { BannerState } from "../common/Banner";
 
 export default function LocalFilesScreen({
   setActiveStep,
@@ -92,6 +92,7 @@ export default function LocalFilesScreen({
           </>
         </div>
       </DialogHeader>
+      <Banner bannerState={bannerState} setBannerState={setBannerState} />
       <SyncedFilesList
         setActiveStep={setActiveStep}
         mode={SyncingModes.UPLOAD}

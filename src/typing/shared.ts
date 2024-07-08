@@ -45,12 +45,6 @@ export enum AutoSyncedSourceTypes {
   TICKET = "TICKET",
 }
 
-export enum FilePickerMode {
-  FILES = "FILES",
-  FOLDERS = "FOLDERS",
-  BOTH = "BOTH",
-}
-
 export enum EmbeddingGenerators {
   OPENAI = "OPENAI",
   AZURE_OPENAI = "AZURE_OPENAI",
@@ -165,7 +159,6 @@ export type BaseIntegration = {
   syncFilesOnConnection?: boolean;
   syncSourceItems?: boolean;
   setPageAsBoundary?: boolean;
-  showFilesTab?: boolean;
   useOcr?: boolean;
   parsePdfTablesWithOcr?: boolean;
   sendDeletionWebhooks?: boolean;
@@ -177,7 +170,6 @@ export type LocalFilesIntegration = BaseIntegration & {
   maxFileSize: number;
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
-  filePickerMode?: FilePickerMode;
   splitRows?: boolean;
 };
 
@@ -228,7 +220,6 @@ export type CarbonConnectProps = {
   prependFilenameToChunks?: boolean;
   maxItemsPerChunk?: number;
   setPageAsBoundary?: boolean;
-  showFilesTab?: boolean;
   useRequestIds?: boolean;
   useOcr?: boolean;
   parsePdfTablesWithOcr?: boolean;
