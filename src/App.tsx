@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CarbonConnectModal from "./components/CarbonConnectModal";
+// import CarbonConnectModal from "./components/CarbonConnect";
 import IntegrationModal from "./components/IntegrationModal";
 
 import "./styles.css";

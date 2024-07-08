@@ -12,7 +12,7 @@ import { ActiveStep, IntegrationName } from "../../typing/shared";
 import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
 import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
 import LocalFilesScreen from "../SystemFileUpload/LocalFilesScreen";
-import CarbonConnectModal from "@components/CarbonConnectModal";
+import CarbonConnect from "@components/CarbonConnect/CarbonConnect";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -40,7 +40,7 @@ export type IntegrationAPIResponse = {
   data_source_metadata: any;
 };
 
-function IntegrationModal({
+export function IntegrationModal({
   isOpen = false,
   onCloseModal = emptyFunction,
   goToConnectModal = emptyFunction,
@@ -66,6 +66,7 @@ function IntegrationModal({
   const activeIntegrationsRef = useRef(activeIntegrations);
 
   const { environment = "PRODUCTION", authenticatedFetch } = useCarbon();
+  const [carbonActive, SetCarbonActive] = useState<boolean>(false);
 
   const fetchUserIntegrations = async () => {
     try {
@@ -129,16 +130,17 @@ function IntegrationModal({
 
   useEffect(() => {
     activeIntegrationsRef.current = activeIntegrations;
-  }, [activeIntegrations]);
+  }, [activeIntegrations, carbonActive]);
 
   const showActiveContent = (activeStep: ActiveStep) => {
     switch (activeStep) {
       case "CONNECT":
         return (
-          <CarbonConnectModal
+          <CarbonConnect
             isOpen={openCarbon}
             manageModalOpenState={manageModalState}
             onPrimaryButtonClick={primaryClick}
+            isCarbonActive={SetCarbonActive}
           />
         );
       case "INTEGRATION_LIST":
@@ -190,7 +192,15 @@ function IntegrationModal({
       open={isOpen}
       onOpenChange={(modalOpenState) => manageModalState(modalOpenState)}
     >
-      <DialogContent>{showActiveContent(activeStep)}</DialogContent>
+      <DialogContent
+        className={`${
+          carbonActive
+            ? "sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]"
+            : ""
+        }`}
+      >
+        {showActiveContent(activeStep)}
+      </DialogContent>
     </Dialog>
   );
 }

@@ -1,9 +1,9 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import { emptyFunction } from "@utils/helper-functions";
 import carbonLogo from "@assets/carbon.svg";
 import LockIcon from "@assets/svgIcons/lock.svg";
 import Shield from "@assets/svgIcons/shield.svg";
-import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
+
 import { Button } from "@components/common/design-system/Button";
 import { useCarbon } from "../../context/CarbonContext";
 import { ActiveStep } from "../../typing/shared";
@@ -14,12 +14,13 @@ export interface ModalProps {
   isOpen: boolean;
   onPrimaryButtonClick?: (step: ActiveStep) => void;
   manageModalOpenState: (arg: boolean) => void;
+  isCarbonActive: Dispatch<SetStateAction<boolean>>;
 }
 
-function CarbonConnectModal({
-  isOpen = false,
+function CarbonConnect({
   onPrimaryButtonClick = () => {},
   manageModalOpenState,
+  isCarbonActive,
 }: ModalProps) {
   const {
     whiteLabelingData,
@@ -37,6 +38,7 @@ function CarbonConnectModal({
   } = useCarbon();
 
   const handlePrimaryButtonClick = () => {
+    isCarbonActive(false);
     if (entryPointIntegrationObject?.active) {
       onPrimaryButtonClick(entryPointIntegrationObject.data_source_type);
     } else {
@@ -57,11 +59,8 @@ function CarbonConnectModal({
   };
 
   return (
-    <Dialog
-      onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
-      open={alwaysOpen ? false : isOpen}
-    >
-      <DialogContent className="sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]">
+    <div className="sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]">
+      <div>
         {loading ? (
           <Loader />
         ) : (
@@ -197,9 +196,9 @@ function CarbonConnectModal({
             </div>
           </>
         )}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
 
-export default CarbonConnectModal;
+export default CarbonConnect;
