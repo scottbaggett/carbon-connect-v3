@@ -247,7 +247,7 @@ export default function SyncedFilesList({
     });
   };
 
-  if (isLocalFiles && !shouldShowFilesTab) return null;
+  if (isLocalFiles && !shouldShowFilesTab && !processedIntegration) return null;
 
   return (
     <>

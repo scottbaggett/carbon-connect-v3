@@ -59,7 +59,7 @@ function CarbonConnectModal({
   return (
     <Dialog
       onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
-      open={alwaysOpen ? true : isOpen}
+      open={alwaysOpen ? false : isOpen}
     >
       <DialogContent className="sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]">
         {loading ? (
@@ -98,7 +98,7 @@ function CarbonConnectModal({
                 </h2>
               ) : (
                 <h2 className="cc-font-medium cc-mb-6 cc-text-2xl cc-tracking-tight dark:cc-text-dark-text-white">
-                  <span className="cc-font-bold">{orgName}</span> uses{" "}
+                  <span className="cc-font-bold">{orgName}</span> usess{" "}
                   <span className="cc-font-bold">Carbon</span> to connect{" "}
                   {entryPointIntegrationObject?.announcementName ? (
                     <span className="cc-font-bold">

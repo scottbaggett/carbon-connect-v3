@@ -271,7 +271,7 @@ export type ActiveStep =
   | IntegrationName
   | "INTEGRATION_LIST"
   | "CONNECT"
-  | "FILE_UPLOAD";
+  | "FILE_UPLOAD"
 
 export type Formats = {
   [index: string]: string[];

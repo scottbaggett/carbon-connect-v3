@@ -19,7 +19,7 @@ const App: React.FC<CarbonConnectProps> = (props) => {
   const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(
     finalProps.open ?? false
   );
-  const [openIntegration, setOpenIntegration] = useState<boolean>(false);
+  const [openIntegration, setOpenIntegration] = useState<boolean>(true);
   const [activeStep, setActiveStep] = useState<ActiveStep>("CONNECT");
 
   const manageModalOpenState = (modalOpenState: boolean) => {
@@ -36,19 +36,13 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     setOpenCarbonConnect(modalOpenState);
   };
 
-  useEffect(() => {
-    if (activeStep == "CONNECT") {
-      setOpenIntegration(false);
-      setOpenCarbonConnect(true);
-    }
-  }, [activeStep]);
+  useEffect(() => {}, [activeStep]);
 
   useEffect(() => {
     if (!finalProps.theme) {
       const newTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
-      console.log(window.matchMedia("(prefers-color-scheme: dark)"));
       document.querySelector("html")?.setAttribute("data-mode", newTheme);
       return;
     }
@@ -60,19 +54,16 @@ const App: React.FC<CarbonConnectProps> = (props) => {
     setOpenCarbonConnect(finalProps.open || false);
   }, [finalProps.open]);
 
+  const handlePrimaryClick = (step: ActiveStep) => {
+    setOpenCarbonConnect(false);
+    setActiveStep(step);
+    setOpenIntegration(true);
+  };
+
   return (
     // @ts-ignore
     <>
       <CarbonProvider {...finalProps}>
-        <CarbonConnectModal
-          isOpen={openCarbonConnect}
-          manageModalOpenState={manageModalOpenState}
-          onPrimaryButtonClick={(step: ActiveStep) => {
-            setOpenCarbonConnect(false);
-            setActiveStep(step);
-            setOpenIntegration(true);
-          }}
-        />
         <IntegrationModal
           isOpen={openIntegration}
           onCloseModal={() => setOpenIntegration(false)}
@@ -82,6 +73,9 @@ const App: React.FC<CarbonConnectProps> = (props) => {
           }}
           activeStep={activeStep}
           setActiveStep={setActiveStep}
+          openCarbon={openCarbonConnect}
+          manageModalState={manageModalOpenState}
+          primaryClick={handlePrimaryClick}
         />
       </CarbonProvider>
     </>

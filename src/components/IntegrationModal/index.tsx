@@ -12,6 +12,7 @@ import { ActiveStep, IntegrationName } from "../../typing/shared";
 import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
 import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
 import LocalFilesScreen from "../SystemFileUpload/LocalFilesScreen";
+import CarbonConnectModal from "@components/CarbonConnectModal";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -19,6 +20,9 @@ export interface ModalProps {
   goToConnectModal?: () => void;
   activeStep: ActiveStep;
   setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
+  openCarbon: boolean;
+  manageModalState: (modalOpenState: boolean) => void;
+  primaryClick?: (step: ActiveStep) => void;
 }
 
 // todo - better types
@@ -42,6 +46,9 @@ function IntegrationModal({
   goToConnectModal = emptyFunction,
   activeStep,
   setActiveStep,
+  openCarbon,
+  manageModalState,
+  primaryClick,
 }: ModalProps) {
   const {
     orgName,
@@ -126,6 +133,14 @@ function IntegrationModal({
 
   const showActiveContent = (activeStep: ActiveStep) => {
     switch (activeStep) {
+      case "CONNECT":
+        return (
+          <CarbonConnectModal
+            isOpen={openCarbon}
+            manageModalOpenState={manageModalState}
+            onPrimaryButtonClick={primaryClick}
+          />
+        );
       case "INTEGRATION_LIST":
         return (
           <IntegrationList
@@ -171,7 +186,10 @@ function IntegrationModal({
   };
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(modalOpenState) => manageModalState(modalOpenState)}
+    >
       <DialogContent>{showActiveContent(activeStep)}</DialogContent>
     </Dialog>
   );
