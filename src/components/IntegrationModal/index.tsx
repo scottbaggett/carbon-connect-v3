@@ -138,7 +138,6 @@ export function IntegrationModal() {
     entryPoint == "INTEGRATION_LIST" && whiteLabelingData?.remove_branding;
 
   const showActiveContent = (activeStep: ActiveStep) => {
-    console.log(activeStep);
     switch (activeStep) {
       case "CONNECT":
         return (

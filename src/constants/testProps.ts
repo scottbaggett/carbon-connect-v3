@@ -49,7 +49,7 @@ export const TEST_PROPS: CarbonConnectProps = {
   generateSparseVectors: false,
   prependFilenameToChunks: false,
   maxItemsPerChunk: 1,
-  entryPoint: IntegrationName.BOX,
+  entryPoint: "INTEGRATION_LIST",
   setPageAsBoundary: false,
   useRequestIds: true,
   parsePdfTablesWithOcr: false,

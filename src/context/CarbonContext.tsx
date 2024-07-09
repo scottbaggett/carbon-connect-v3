@@ -198,7 +198,7 @@ export const CarbonProvider = ({
     }
     setProcessedIntegrations(tempIntegrations);
 
-    if (entryPoint) {
+    if (entryPoint && entryPoint !== "INTEGRATION_LIST") {
       const obj = tempIntegrations.find(
         (integration) => integration.id === entryPoint
       );
