@@ -89,7 +89,8 @@ export default function WebsiteTabContent({
     onError,
   } = useCarbon();
 
-  const maxPagesToScrape = service.maxPagesToScrape || MAX_PAGES_TO_SCRAPE;
+  const maxPagesToScrape = service.maxPagesToScrape ?? MAX_PAGES_TO_SCRAPE;
+  const maxRecursionDepth = service.recursionDepth ?? MAX_RECURSION_DEPTH;
 
   const updateWebsiteListData = (
     index: number,
@@ -158,7 +159,7 @@ export default function WebsiteTabContent({
       const requestObject = validData.map((urlData) => ({
         url: urlData.url,
         tags: tags,
-        recursion_depth: urlData.recursionDepth || DEFAULT_RECURSION_DEPTH,
+        recursion_depth: urlData.recursionDepth ?? DEFAULT_RECURSION_DEPTH,
         max_pages_to_scrape: urlData.maxPageToScrape || MAX_PAGES_TO_SCRAPE,
         chunk_size: chunkSizeValue,
         chunk_overlap: overlapSizeValue,
@@ -295,6 +296,7 @@ export default function WebsiteTabContent({
                         : () => deleteWebsiteListData(index)
                     }
                     maxPagesToScrape={maxPagesToScrape}
+                    maxRecursionDepth={maxRecursionDepth}
                   />
                 </div>
                 <div className="cc-hidden sm:cc-flex cc-items-center cc-gap-3">
@@ -303,6 +305,7 @@ export default function WebsiteTabContent({
                     index={index}
                     updateWebsiteListData={updateWebsiteListData}
                     maxPagesToScrape={maxPagesToScrape}
+                    maxRecursionDepth={maxRecursionDepth}
                   />
                   <Button
                     size="md"
@@ -383,6 +386,7 @@ function FilterPopover({
   index,
   updateWebsiteListData,
   maxPagesToScrape,
+  maxRecursionDepth,
 }: {
   initialData: WebscrapeInput;
   index: number;
@@ -391,6 +395,7 @@ function FilterPopover({
     newValues: { [key: string]: any }
   ) => void;
   maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -423,6 +428,7 @@ function FilterPopover({
           updateWebsiteListData={updateWebsiteListData}
           close={() => setOpen(false)}
           maxPagesToScrape={maxPagesToScrape}
+          maxRecursionDepth={maxRecursionDepth}
         />
       </PopoverContent>
     </Popover>
@@ -435,6 +441,7 @@ function MobileWebsiteUrlDropdown({
   updateWebsiteListData,
   deleteUrl,
   maxPagesToScrape,
+  maxRecursionDepth,
 }: {
   initialData: WebscrapeInput;
   index: number;
@@ -444,6 +451,7 @@ function MobileWebsiteUrlDropdown({
   ) => void;
   deleteUrl?: () => void;
   maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -478,6 +486,7 @@ function MobileWebsiteUrlDropdown({
               close={() => setShowDialog(false)}
               buttonVariant="primary"
               maxPagesToScrape={maxPagesToScrape}
+              maxRecursionDepth={maxRecursionDepth}
             />
           </div>
         </DialogContent>
@@ -534,6 +543,7 @@ function ConfigureForm({
   close,
   buttonVariant = "neutral-white",
   maxPagesToScrape,
+  maxRecursionDepth,
 }: {
   initialData: WebscrapeInput;
   index: number;
@@ -544,6 +554,7 @@ function ConfigureForm({
   close: () => void;
   buttonVariant?: "neutral-white" | "primary";
   maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
   const [urlData, setUrlData] = useState(initialData);
   return (
@@ -567,7 +578,7 @@ function ConfigureForm({
             className="cc-h-8 cc-text-xs cc-pl-2"
             value={urlData.recursionDepth || 0}
             onChange={(e) => {
-              if (parseInt(e.target.value) > MAX_RECURSION_DEPTH) return;
+              if (parseInt(e.target.value) > maxRecursionDepth) return;
               setUrlData((prev) => ({
                 ...prev,
                 recursionDepth: parseInt(e.target.value) || 0,

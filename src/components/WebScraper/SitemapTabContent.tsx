@@ -3,21 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@components/common/design-system/Button";
 import { Input } from "@components/common/design-system/Input";
 import { images } from "@assets/index";
-import DownChevIcon from "@assets/svgIcons/down-chev-icon.svg";
-import { cn } from "@components/common/design-system/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@components/common/design-system/Popover";
 import WebScraperTabs from "./WebScraperTabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuTrigger,
-} from "@components/common/design-system/Dropdown";
-import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomSheet";
 import { DialogFooter } from "@components/common/design-system/Dialog";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 import SuccessState from "@components/common/SuccessState";
@@ -36,7 +22,6 @@ import Loader from "../common/Loader";
 import {
   ActionType,
   IntegrationName,
-  ProcessedIntegration,
   WebScraperIntegration,
 } from "../../typing/shared";
 
@@ -58,6 +43,9 @@ export default function SitemapTabContent({
   });
   const [urlsLoading, setUrlsLoading] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const maxPagesToScrape =
+    processedIntegration?.maxPagesToScrape || MAX_PAGES_TO_SCRAPE;
 
   const {
     authenticatedFetch,
@@ -140,8 +128,6 @@ export default function SitemapTabContent({
       const embeddingModelValue = embeddingModel || null;
       const recursionDepth =
         processedIntegration?.recursionDepth ?? DEFAULT_RECURSION_DEPTH;
-      const maxPagesToScrape =
-        processedIntegration?.maxPagesToScrape || MAX_PAGES_TO_SCRAPE;
 
       const htmlTagsToSkip = processedIntegration?.htmlTagsToSkip || [];
       const cssClassesToSkip = processedIntegration?.cssClassesToSkip || [];
@@ -372,8 +358,10 @@ export default function SitemapTabContent({
               className="cc-h-5 cc-w-5 cc-flex cc-mr-2 dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
             {selectedUrls.length == sitemapUrls.length
-              ? `All URL(s) will be synced`
-              : `${selectedUrls.length} URL(s) selected`}
+              ? "All URLs selected."
+              : `${selectedUrls.length} URL(s) selected.`}
+            {selectedUrls.length > maxPagesToScrape &&
+              ` First ${maxPagesToScrape} URLs will be synced.`}
           </div>
           <Button
             size="md"
