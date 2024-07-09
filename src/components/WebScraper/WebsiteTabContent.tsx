@@ -451,6 +451,7 @@ function MobileWebsiteUrlDropdown({
     <>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
+          activeState={"INTEGRATION_LIST"}
           className="cc-h-auto sm:cc-h-fit sm:cc-max-h-[90vh] cc-top-auto  cc-gap-0 sm:cc-rounded-[20px] cc-translate-y-0 -sm:cc-translate-y-1/2 cc-bottom-0 cc-rounded-t-2xl sm:cc-bottom-auto sm:top-1/2 cc-overflow-visible"
           style={{ height: "auto" }}
         >

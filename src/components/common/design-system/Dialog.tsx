@@ -3,6 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import CrossIcon from "@assets/svgIcons/cross-icon.svg";
 
 import { cn } from "./utils";
+import { ActiveStep } from "src/typing/shared";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -33,16 +34,24 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  activeState: ActiveStep;
+}
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, activeState, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "cc-rootStyle dark:cc-bg-dark-bg-black cc-h-[703px] cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px]    cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 sm:cc-rounded-[20px] sm:cc-min-h-0 dark:cc-border-dark-border-color dark:cc-shadow-[#00000033] ",
+        `cc-rootStyle dark:cc-bg-dark-bg-black cc-h-[703px] cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50     cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg  sm:cc-rounded-[20px] sm:cc-min-h-0 dark:cc-border-dark-border-color dark:cc-shadow-[#00000033] ${
+          activeState === "CONNECT"
+            ? "sm:cc-w-[415px]"
+            : "cc-w-full cc-max-w-[784px]"
+        }`,
         className
       )}
       {...props}

@@ -48,7 +48,7 @@ export default function SourceItem({
           />
         )}
         <div
-          className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap cc-items-start"
+          className="cc-flex cc-flex-grow cc-gap-x-4 cc-gap-y-1 cc-flex-wrap cc-items-start cc-justify-between"
           onClick={() => onItemClick(item)}
         >
           <p className="cc-flex-grow dark:cc-text-dark-text-white cc-w-[350px] cc-max-w-[350px] cc-break-words">

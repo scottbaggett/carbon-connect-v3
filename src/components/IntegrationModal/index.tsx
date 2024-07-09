@@ -133,6 +133,7 @@ export function IntegrationModal({
   }, [activeIntegrations, carbonActive]);
 
   const showActiveContent = (activeStep: ActiveStep) => {
+    console.log(activeStep);
     switch (activeStep) {
       case "CONNECT":
         return (
@@ -193,11 +194,12 @@ export function IntegrationModal({
       onOpenChange={(modalOpenState) => manageModalState(modalOpenState)}
     >
       <DialogContent
-        className={`${
-          carbonActive
-            ? "sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]"
-            : ""
-        }`}
+        activeState={activeStep}
+        // className={`${
+        //   carbonActive
+        //     ? "sm:cc-max-h-[90vh] sm:cc-w-[415px] sm:cc-h-[703px] cc-gap-0 sm:cc-rounded-[20px]"
+        //     : ""
+        // }`}
       >
         {showActiveContent(activeStep)}
       </DialogContent>

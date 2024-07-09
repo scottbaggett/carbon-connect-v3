@@ -18,7 +18,10 @@ export default function DisconnectModal({
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="cc-h-auto sm:cc-h-fit sm:cc-max-h-[90vh] cc-top-auto sm:cc-w-[464px] cc-gap-0 sm:cc-rounded-[20px] cc-translate-y-0 -sm:cc-translate-y-1/2 cc-bottom-0 cc-rounded-t-2xl sm:cc-bottom-auto sm:top-1/2">
+      <DialogContent
+        activeState={"INTEGRATION_LIST"}
+        className="cc-h-auto sm:cc-h-fit sm:cc-max-h-[90vh] cc-top-auto sm:cc-w-[464px] cc-gap-0 sm:cc-rounded-[20px] cc-translate-y-0 -sm:cc-translate-y-1/2 cc-bottom-0 cc-rounded-t-2xl sm:cc-bottom-auto sm:top-1/2"
+      >
         <div className="cc-p-4 sm:cc-p-8">
           <div className="cc-p-2 cc-rounded-md cc-bg-surface-danger_main cc-inline-block cc-mb-6">
             <img
