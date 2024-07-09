@@ -11,16 +11,14 @@ import { ActiveStep } from "../../typing/shared";
 import { useTheme } from "next-themes";
 import Loader from "../common/Loader";
 export interface ModalProps {
-  isOpen: boolean;
   onPrimaryButtonClick?: (step: ActiveStep) => void;
-  manageModalOpenState: (arg: boolean) => void;
-  isCarbonActive: Dispatch<SetStateAction<boolean>>;
+
+  setCarbonActive: Dispatch<SetStateAction<boolean>>;
 }
 
-function CarbonConnect({
+function ConnectScreen({
   onPrimaryButtonClick = () => {},
-  manageModalOpenState,
-  isCarbonActive,
+  setCarbonActive,
 }: ModalProps) {
   const {
     whiteLabelingData,
@@ -35,10 +33,11 @@ function CarbonConnect({
     primaryBackgroundColor,
     alwaysOpen,
     navigateBackURL,
+    manageModalOpenState,
   } = useCarbon();
 
   const handlePrimaryButtonClick = () => {
-    isCarbonActive(false);
+    setCarbonActive(false);
     if (entryPointIntegrationObject?.active) {
       onPrimaryButtonClick(entryPointIntegrationObject.data_source_type);
     } else {
@@ -85,7 +84,7 @@ function CarbonConnect({
               {isWhiteLabeledOrg ? (
                 <h2 className="cc-font-medium cc-mb-6 cc-text-2xl cc-tracking-tight dark:cc-text-dark-text-white">
                   <span className="cc-font-bold">{orgName}</span> wants to
-                  access your data
+                  access your data{" "}
                   {entryPointIntegrationObject?.announcementName && (
                     <>
                       <span>on</span>
@@ -178,7 +177,7 @@ function CarbonConnect({
               </div>
               <Button
                 size="lg"
-                onClick={() => handlePrimaryButtonClick()}
+                onClick={handlePrimaryButtonClick}
                 style={{
                   color: primaryTextColor,
                   // backgroundColor: primaryBackgroundColor,
@@ -201,4 +200,4 @@ function CarbonConnect({
   );
 }
 
-export default CarbonConnect;
+export default ConnectScreen;

@@ -9,6 +9,7 @@ import {
 } from "../constants/shared";
 import {
   ActionType,
+  ActiveStep,
   CarbonConnectProps,
   EmbeddingGenerators,
   Integration,
@@ -28,6 +29,10 @@ type CarbonContextValues = CarbonConnectProps & {
   whiteLabelingData?: any;
   entryPointIntegrationObject?: ProcessedIntegration | null;
   loading?: boolean;
+  manageModalOpenState?: any;
+  activeStep?: ActiveStep;
+  setActiveStep?: any;
+  showModal?: boolean;
 };
 
 const CarbonContext: React.Context<CarbonContextValues> = createContext({
@@ -104,21 +109,16 @@ export const CarbonProvider = ({
   const [entryPointIntegrationObject, setEntryPointIntegrationObject] =
     useState<ProcessedIntegration | null>(null);
   const [whiteLabelingData, setWhiteLabelingData] = useState(null);
-  const [activeStep, setActiveStep] = useState<string | number>(
-    entryPoint === "LOCAL_FILES" || entryPoint === "WEB_SCRAPER"
-      ? entryPoint
-      : 0
-  );
 
   const [requestIds, setRequestIds] = useState({});
 
   const manageModalOpenState = (modalOpenState: boolean) => {
     if (alwaysOpen) return;
-    if (!modalOpenState) {
-      if (entryPoint === "LOCAL_FILES" || entryPoint === "WEB_SCRAPER")
-        setActiveStep(entryPoint);
-      else setActiveStep(0);
-    }
+    // if (!modalOpenState) {
+    //   if (entryPoint === "LOCAL_FILES" || entryPoint === "WEB_SCRAPER")
+    //     setActiveStep(entryPoint);
+    //   else setActiveStep("CONNECT");
+    // }
     if (setOpen) setOpen(modalOpenState);
     setShowModal(modalOpenState);
   };
@@ -256,8 +256,6 @@ export const CarbonProvider = ({
     alwaysOpen,
     navigateBackURL,
     manageModalOpenState,
-    activeStep,
-    setActiveStep,
     backButtonText,
     zIndex,
     embeddingModel,

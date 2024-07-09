@@ -16,27 +16,6 @@ import "react-circular-progressbar/dist/styles.css";
 
 const CarbonConnect: React.FC<CarbonConnectProps> = (props) => {
   const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
-  const [openCarbonConnect, setOpenCarbonConnect] = useState<boolean>(
-    finalProps.open ?? false
-  );
-  const [openIntegration, setOpenIntegration] = useState<boolean>(true);
-  const [activeStep, setActiveStep] = useState<ActiveStep>("CONNECT");
-
-  const manageModalOpenState = (modalOpenState: boolean) => {
-    if (finalProps.alwaysOpen) return;
-    if (!modalOpenState) {
-      if (
-        finalProps.entryPoint === IntegrationName.LOCAL_FILES ||
-        finalProps.entryPoint === IntegrationName.WEB_SCRAPER
-      )
-        setActiveStep(finalProps.entryPoint);
-      else setActiveStep("CONNECT");
-    }
-    if (finalProps.setOpen) finalProps.setOpen(modalOpenState);
-    setOpenCarbonConnect(modalOpenState);
-  };
-
-  useEffect(() => {}, [activeStep]);
 
   useEffect(() => {
     if (!finalProps.theme) {
@@ -50,33 +29,10 @@ const CarbonConnect: React.FC<CarbonConnectProps> = (props) => {
     document.querySelector("html")?.setAttribute("data-mode", newMode);
   }, [finalProps.theme]);
 
-  useEffect(() => {
-    setOpenCarbonConnect(finalProps.open || false);
-  }, [finalProps.open]);
-
-  const handlePrimaryClick = (step: ActiveStep) => {
-    setOpenCarbonConnect(false);
-    setActiveStep(step);
-    setOpenIntegration(true);
-  };
-
   return (
-    // @ts-ignore
     <>
       <CarbonProvider {...finalProps}>
-        <IntegrationModal
-          isOpen={openIntegration}
-          onCloseModal={() => setOpenIntegration(false)}
-          goToConnectModal={() => {
-            setOpenIntegration(false);
-            setOpenCarbonConnect(true);
-          }}
-          activeStep={activeStep}
-          setActiveStep={setActiveStep}
-          openCarbon={openCarbonConnect}
-          manageModalState={manageModalOpenState}
-          primaryClick={handlePrimaryClick}
-        />
+        <IntegrationModal />
       </CarbonProvider>
     </>
   );

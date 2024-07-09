@@ -397,7 +397,8 @@ export default function CarbonFilePicker({
           <button
             className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0 "
             onClick={() => {
-              if (!entryPoint) setActiveStep("INTEGRATION_LIST");
+              if (!entryPoint || entryPoint == "INTEGRATION_LIST")
+                setActiveStep("INTEGRATION_LIST");
               else setActiveStep("CONNECT");
             }}
           >

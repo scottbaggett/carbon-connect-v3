@@ -31,8 +31,8 @@ export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
   activeStep?: string;
   setActiveStep?: (stepId: ActiveStep) => void;
-  onCloseModal?: () => void;
-  goToConnectModal?: () => void;
+  onCloseModal: () => void;
+  handleBack: () => void;
 }
 
 function IntegrationList({
@@ -40,7 +40,7 @@ function IntegrationList({
   activeStep = "",
   setActiveStep = emptyFunction,
   onCloseModal,
-  goToConnectModal,
+  handleBack,
 }: IntegrationListProps) {
   const [searchText, setSearchText] = useState<string>("");
   const {
@@ -60,13 +60,13 @@ function IntegrationList({
       <DialogHeader
         className="cc-bg-white cc-border-b cc-border-outline-low_em"
         closeButtonClass="cc-hidden sm:cc-flex"
-        onCloseModal={onCloseModal}
+        onCloseModal={() => onCloseModal()}
       >
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
           <Button
             variant="neutral-white"
             className="cc-pr-1 cc-h-10 cc-w-auto cc-absolute sm:cc-relative cc-p-0 cc-border-none"
-            onClick={goToConnectModal}
+            onClick={() => handleBack()}
           >
             <img
               src={BackIcon}

@@ -198,7 +198,7 @@ export type CarbonConnectProps = {
   tags?: Record<string, TagValue>;
   maxFileSize?: number;
   environment?: keyof typeof BASE_URL;
-  entryPoint?: IntegrationName | "INTEGRATIONS_LIST";
+  entryPoint?: IntegrationName | "INTEGRATION_LIST";
   enabledIntegrations?: Integration[];
   primaryBackgroundColor?: string;
   primaryTextColor?: string;
@@ -262,7 +262,7 @@ export type ActiveStep =
   | IntegrationName
   | "INTEGRATION_LIST"
   | "CONNECT"
-  | "FILE_UPLOAD"
+  | "FILE_UPLOAD";
 
 export type Formats = {
   [index: string]: string[];

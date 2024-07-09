@@ -12,18 +12,9 @@ import { ActiveStep, IntegrationName } from "../../typing/shared";
 import SystemFileUpload from "@components/SystemFileUpload/SystemFileUpload";
 import SyncedFilesList from "../CarbonFilePicker/SyncedFilesList";
 import LocalFilesScreen from "../SystemFileUpload/LocalFilesScreen";
-import CarbonConnect from "@components/CarbonConnect/CarbonConnect";
+import ConnectScreen from "@components/CarbonConnect/ConnectScreen";
 
-export interface ModalProps {
-  isOpen: boolean;
-  onCloseModal?: () => void;
-  goToConnectModal?: () => void;
-  activeStep: ActiveStep;
-  setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
-  openCarbon: boolean;
-  manageModalState: (modalOpenState: boolean) => void;
-  primaryClick?: (step: ActiveStep) => void;
-}
+export interface ModalProps {}
 
 // todo - better types
 export type IntegrationAPIResponse = {
@@ -40,16 +31,7 @@ export type IntegrationAPIResponse = {
   data_source_metadata: any;
 };
 
-export function IntegrationModal({
-  isOpen = false,
-  onCloseModal = emptyFunction,
-  goToConnectModal = emptyFunction,
-  activeStep,
-  setActiveStep,
-  openCarbon,
-  manageModalState,
-  primaryClick,
-}: ModalProps) {
+export function IntegrationModal() {
   const {
     orgName,
     accessToken,
@@ -57,7 +39,14 @@ export function IntegrationModal({
     requestIds,
     onSuccess,
     processedIntegrations,
+    entryPoint,
+    whiteLabelingData,
+    showModal,
+    environment = "PRODUCTION",
+    authenticatedFetch,
+    manageModalOpenState,
   } = useCarbon();
+
   const [activeIntegrations, setActiveIntegrations] = useState<
     IntegrationAPIResponse[]
   >([]);
@@ -65,8 +54,10 @@ export function IntegrationModal({
   const requestIdsRef = useRef(requestIds);
   const activeIntegrationsRef = useRef(activeIntegrations);
 
-  const { environment = "PRODUCTION", authenticatedFetch } = useCarbon();
-  const [carbonActive, SetCarbonActive] = useState<boolean>(false);
+  const [carbonActive, setCarbonActive] = useState<boolean>(false);
+  const [activeStep, setActiveStep] = useState<ActiveStep>(
+    entryPoint || "CONNECT"
+  );
 
   const fetchUserIntegrations = async () => {
     try {
@@ -117,12 +108,12 @@ export function IntegrationModal({
   }, [accessToken]);
 
   useEffect(() => {
-    if (accessToken && isOpen) {
+    if (accessToken && showModal) {
       const intervalId = setInterval(fetchUserIntegrations, 10000);
       // Make sure to clear the interval when the component unmounts
       return () => clearInterval(intervalId);
     }
-  }, [accessToken, isOpen]);
+  }, [accessToken, showModal]);
 
   useEffect(() => {
     requestIdsRef.current = requestIds || {};
@@ -132,16 +123,28 @@ export function IntegrationModal({
     activeIntegrationsRef.current = activeIntegrations;
   }, [activeIntegrations, carbonActive]);
 
+  useEffect(() => {
+    if (
+      whiteLabelingData?.remove_branding &&
+      entryPoint == "INTEGRATION_LIST"
+    ) {
+      setActiveStep("INTEGRATION_LIST");
+    } else {
+      setActiveStep("CONNECT");
+    }
+  }, [whiteLabelingData]);
+
+  const isIntegrationsEntryPoint =
+    entryPoint == "INTEGRATION_LIST" && whiteLabelingData?.remove_branding;
+
   const showActiveContent = (activeStep: ActiveStep) => {
     console.log(activeStep);
     switch (activeStep) {
       case "CONNECT":
         return (
-          <CarbonConnect
-            isOpen={openCarbon}
-            manageModalOpenState={manageModalState}
-            onPrimaryButtonClick={primaryClick}
-            isCarbonActive={SetCarbonActive}
+          <ConnectScreen
+            onPrimaryButtonClick={(step) => setActiveStep(step)}
+            setCarbonActive={setCarbonActive}
           />
         );
       case "INTEGRATION_LIST":
@@ -149,8 +152,12 @@ export function IntegrationModal({
           <IntegrationList
             activeStep={activeStep}
             setActiveStep={setActiveStep}
-            goToConnectModal={goToConnectModal}
-            onCloseModal={onCloseModal}
+            handleBack={
+              isIntegrationsEntryPoint
+                ? () => manageModalOpenState(false)
+                : () => setActiveStep("CONNECT")
+            }
+            onCloseModal={() => manageModalOpenState(false)}
             activeIntegrations={activeIntegrations}
           />
         );
@@ -160,7 +167,7 @@ export function IntegrationModal({
           <WebScraper
             activeStep={activeStep}
             setActiveStep={setActiveStep}
-            onCloseModal={onCloseModal}
+            onCloseModal={() => manageModalOpenState(false)}
           />
         );
 
@@ -180,7 +187,7 @@ export function IntegrationModal({
               (item) => item.id === activeStep
             )}
             setActiveStep={setActiveStep}
-            onCloseModal={onCloseModal}
+            onCloseModal={() => manageModalOpenState(false)}
             activeIntegrations={activeIntegrations}
           />
         );
@@ -190,8 +197,8 @@ export function IntegrationModal({
 
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={(modalOpenState) => manageModalState(modalOpenState)}
+      open={showModal}
+      onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
     >
       <DialogContent
         activeState={activeStep}
