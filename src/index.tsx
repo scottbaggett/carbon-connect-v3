@@ -9,8 +9,8 @@ import { TEST_PROPS } from "./constants/testProps";
 
 const CarbonConnect: React.FC<CarbonConnectProps> = (props) => {
   // for local testing
-  const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
-  // const finalProps = props;
+  // const finalProps = props.environment != ENV.PRODUCTION ? TEST_PROPS : props;
+  const finalProps = props;
 
   useEffect(() => {
     if (!finalProps.theme) {
