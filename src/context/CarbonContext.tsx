@@ -1,22 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+import { BASE_URL, ENV } from "../constants/shared";
 import {
-  BASE_URL,
-  ENV,
-  onSuccessEvents,
-  SYNC_FILES_ON_CONNECT,
-  SYNC_SOURCE_ITEMS,
-} from "../constants/shared";
-import {
-  ActionType,
   ActiveStep,
-  CarbonConnectProps,
-  EmbeddingGenerators,
-  Integration,
-  IntegrationName,
   ProcessedIntegration,
+  IntegrationName,
+  EmbeddingGenerators,
+  CarbonConnectProps,
 } from "../typing/shared";
-import { generateRequestId } from "../utils/helper-functions";
 import { INTEGRATIONS_LIST } from "../utils/integrationModalconstants";
 
 type CarbonContextValues = CarbonConnectProps & {
@@ -73,10 +64,6 @@ export const CarbonProvider = ({
       ],
     },
   ],
-  primaryBackgroundColor = "#000000",
-  primaryTextColor = "#FFFFFF",
-  secondaryBackgroundColor = "#FFFFFF",
-  secondaryTextColor = "#000000",
   open = false,
   setOpen = null,
   chunkSize = 1500,
@@ -238,10 +225,6 @@ export const CarbonProvider = ({
     maxFileSize,
     onSuccess,
     onError,
-    primaryBackgroundColor,
-    primaryTextColor,
-    secondaryBackgroundColor,
-    secondaryTextColor,
     chunkSize,
     overlapSize,
     processedIntegrations,

@@ -4,7 +4,7 @@ import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
 import { DialogFooter } from "@components/common/design-system/Dialog";
-import FolderIcon from "@assets/svgIcons/folder.svg";
+
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
 import NoResultsIcon from "@assets/svgIcons/no-result.svg";
 import AddCircleIconBlack from "@assets/svgIcons/add-circle-icon-black.svg";
@@ -15,15 +15,15 @@ import { BASE_URL, ENV, LOCAL_FILE_TYPES } from "../../constants/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import {
   ActiveStep,
-  IntegrationName,
   ProcessedIntegration,
   UserFileApi,
+  IntegrationName,
 } from "../../typing/shared";
 import FileItem from "./FileItem";
 import { SyncingModes } from "./CarbonFilePicker";
 import Loader from "../common/Loader";
 import { pluralize } from "../../utils/helper-functions";
-import Banner, { BannerState } from "../common/Banner";
+import { BannerState } from "../common/Banner";
 
 const PER_PAGE = 20;
 

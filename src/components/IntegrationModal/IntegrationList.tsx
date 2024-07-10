@@ -15,8 +15,8 @@ import { cn } from "@components/common/design-system/utils";
 import {
   ActiveStep,
   IntegrationName,
-  LocalFilesIntegration,
   ProcessedIntegration,
+  LocalFilesIntegration,
   WebScraperIntegration,
 } from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
@@ -29,7 +29,6 @@ import { getFileSizeLimit } from "../../utils/files";
 
 export interface IntegrationListProps {
   activeIntegrations: IntegrationAPIResponse[];
-  activeStep?: string;
   setActiveStep?: (stepId: ActiveStep) => void;
   onCloseModal: () => void;
   handleBack: () => void;
@@ -37,7 +36,6 @@ export interface IntegrationListProps {
 
 function IntegrationList({
   activeIntegrations,
-  activeStep = "",
   setActiveStep = emptyFunction,
   onCloseModal,
   handleBack,

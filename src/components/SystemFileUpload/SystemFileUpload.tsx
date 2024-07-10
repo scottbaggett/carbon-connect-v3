@@ -5,30 +5,14 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
 import { IntegrationItemType } from "@utils/integrationModalconstants";
-import AuthForm from "@components/common/AuthForm";
-import UserPlus from "@assets/svgIcons/user-plus.svg";
 import { Button } from "@components/common/design-system/Button";
 import { images } from "@assets/index";
 
-import FileSelector from "@components/CarbonFilePicker/FileSelector";
 import SuccessScreen from "./SuccessScreen";
 
 import FileExtension from "@components/SystemFileUpload/FileExtension/FileExtension";
-import {
-  CircularProgressbar,
-  buildStyles,
-  CircularProgressbarWithChildren,
-} from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
-
-import {
-  ActionType,
-  ActiveStep,
-  IntegrationName,
-  LocalFilesIntegration,
-} from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import {
   BASE_URL,
@@ -40,6 +24,12 @@ import {
 } from "../../constants/shared";
 import { generateFileUploadUrl, getFileSizeLimit } from "../../utils/files";
 import Banner, { BannerState } from "../common/Banner";
+import {
+  ActiveStep,
+  IntegrationName,
+  ActionType,
+  LocalFilesIntegration,
+} from "../../typing/shared";
 
 export interface UploadFileData {
   lastModified: number;

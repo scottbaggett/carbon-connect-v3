@@ -21,10 +21,10 @@ import {
   TWO_STEP_CONNECTORS,
 } from "../../constants/shared";
 import {
-  ActionType,
   ActiveStep,
   IntegrationName,
   ProcessedIntegration,
+  ActionType,
 } from "../../typing/shared";
 import { useCarbon } from "../../context/CarbonContext";
 import {
@@ -37,7 +37,6 @@ import FreshdeskScreen from "../Screens/FreshdeskScreen";
 import SourceItemsList from "./SourceItemsList";
 import SyncedFilesList from "./SyncedFilesList";
 import Banner, { BannerState } from "../common/Banner";
-import Loader from "../common/Loader";
 import SalesforceScreen from "../Screens/SalesforceScreen";
 import GitbookScreen from "../Screens/GitbookScreen";
 import ConfluenceScreen from "../Screens/ConfluenceScreen";
