@@ -7,7 +7,7 @@
   "scripts": {
     "start": "parcel",
     "build": "rollup -c",
-    "dev": "parcel serve src/index.html --port 8080 --no-cache",
+    "dev": "rollup -c --watch",
     "watch": "parcel watch --public-url ./ ./src/App.tsx --dist-dir dist --no-cache"
   },
   "author": "",
