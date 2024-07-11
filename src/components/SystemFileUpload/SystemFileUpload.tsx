@@ -14,6 +14,7 @@ import SuccessScreen from "./SuccessScreen";
 import FileExtension from "@components/SystemFileUpload/FileExtension/FileExtension";
 import ClickToUpload from "./ClickToUpload";
 import { useCarbon } from "../../context/CarbonContext";
+import { useDropzone, FileRejection } from "react-dropzone";
 import {
   BASE_URL,
   DEFAULT_MAX_FILES,
@@ -22,7 +23,11 @@ import {
   MAX_FILES_LIMIT,
   ONE_MB,
 } from "../../constants/shared";
-import { generateFileUploadUrl, getFileSizeLimit } from "../../utils/files";
+import {
+  generateFileUploadUrl,
+  getFileSizeLimit,
+  getSupportedFileTypes,
+} from "../../utils/files";
 import Banner, { BannerState } from "../common/Banner";
 import {
   ActiveStep,
@@ -155,6 +160,30 @@ export default function SystemFileUpload({
       document.removeEventListener("mousedown", handleOutside);
     };
   }, []);
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    acceptedFiles,
+    fileRejections,
+  } = useDropzone({
+    accept: getSupportedFileTypes(allowedFileExtensions),
+    maxFiles: allowedMaxFilesCount,
+    multiple: allowedMaxFilesCount > 1,
+    maxSize: maxFileSize * ONE_MB,
+    onDrop: (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+      if (acceptedFiles.length > 0) {
+        handleFileUpload(acceptedFiles);
+      }
+      if (fileRejections.length > 0) {
+        setBannerState({
+          type: "ERROR",
+          message: `${fileRejections.length} file(s) didn't meet constraints`,
+        });
+      }
+    },
+  });
 
   const uploadSelectedFiles = async () => {
     if (files.length === 0) {
@@ -334,12 +363,13 @@ export default function SystemFileUpload({
         </div>
         {step === "UPLOAD" ? (
           <div
-            className="cc-text-[#0BABFB] md:cc-ml-[-34px] hover:cc-text-[#067BF9]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-[2px] cc-border-[#0BABFB] "
-            onClick={() => {
-              setStep("ADD");
-            }}
+            {...getRootProps({
+              className:
+                "cc-text-[#0BABFB] md:cc-ml-[-34px] hover:cc-text-[#067BF9]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-[2px] cc-border-[#0BABFB]",
+            })}
           >
-            Add files
+            <input {...getInputProps()} />
+            <div onClick={() => getInputProps().onClick}>Add files</div>
           </div>
         ) : null}
       </DialogHeader>
