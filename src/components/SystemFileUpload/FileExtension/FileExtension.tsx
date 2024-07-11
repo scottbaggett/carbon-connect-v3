@@ -11,10 +11,14 @@ const getFileIcon = (fileName: string): string => {
       return images.xlsx;
     case "presentation":
       return images.pptx;
+    case "document":
+      return images.docx;
   }
   switch (image) {
     case "":
       return images.folderIcon;
+    case "html":
+      return images.html;
     case "zip":
       return images.folderIcon;
 
@@ -71,7 +75,7 @@ const getFileIcon = (fileName: string): string => {
 const FileExtension = ({ fileName }: { fileName: string }) => {
   const fileIcon = getFileIcon(fileName);
   return (
-    <div className="cc-w-[48px] cc-h-[48px] md:cc-w-[40px] md:cc-h-[40px]  cc-rounded-full cc-bg-[#F3F3F4] cc-flex cc-justify-center cc-items-center">
+    <div className="cc-w-[48px] cc-h-[48px] md:cc-w-[40px] md:cc-h-[40px] dark:cc-bg-[#292929]  cc-rounded-full cc-bg-[#F3F3F4] cc-flex cc-justify-center cc-items-center">
       <img
         className="cc-w-[24px] cc-h-[24px] md:cc-w-[20px] md:cc-h-[20px] "
         src={fileIcon}

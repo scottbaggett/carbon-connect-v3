@@ -3,6 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import CrossIcon from "@assets/svgIcons/cross-icon.svg";
 
 import { cn } from "./utils";
+import { ActiveStep } from "src/typing/shared";
 
 const Dialog = DialogPrimitive.Root;
 
@@ -12,6 +13,12 @@ const DialogPortal = DialogPrimitive.Portal;
 
 const DialogClose = DialogPrimitive.Close;
 
+type DialogTitleProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Title
+> & {
+  justifyModification?: boolean;
+};
+
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -19,7 +26,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "cc-fixed cc-inset-0 cc-z-50 cc-bg-black/40 data-[state=open]:cc-animate-in data-[state=closed]:cc-animate-out data-[state=closed]:cc-fade-out-0 data-[state=open]:cc-fade-in-0",
+      " cc-text-dark-text-white cc-fixed cc-inset-0 cc-z-50 cc-bg-black/40 data-[state=open]:cc-animate-in data-[state=closed]:cc-animate-out data-[state=closed]:cc-fade-out-0 data-[state=open]:cc-fade-in-0",
       className
     )}
     {...props}
@@ -27,16 +34,24 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  activeState: ActiveStep;
+}
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, activeState, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "cc-rootStyle cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50 cc-w-full cc-max-w-[784px] cc-h-screen sm:cc-h-[90vh] sm:cc-max-h-[90vh] cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg cc-duration-200 sm:cc-rounded-[20px] sm:cc-min-h-0",
+        `cc-rootStyle dark:cc-bg-dark-bg-black cc-h-[703px] cc-font-manrope cc-antialiased cc-fixed cc-flex cc-flex-col cc-left-1/2 cc-top-1/2 cc-z-50     cc-overflow-auto -cc-translate-x-1/2 -cc-translate-y-1/2 cc-border cc-border-outline-base_em cc-bg-white cc-text-high_em cc-shadow-lg  sm:cc-rounded-[20px] sm:cc-min-h-0 dark:cc-border-dark-border-color dark:cc-shadow-[#00000033] ${
+          activeState === "CONNECT"
+            ? "sm:cc-w-[415px]"
+            : "cc-w-full cc-max-w-[784px]"
+        }`,
         className
       )}
       {...props}
@@ -59,7 +74,7 @@ const DialogHeader = ({
 }) => (
   <div
     className={cn(
-      "cc-flex cc-items-center cc-gap-3 cc-text-center sm:cc-text-left cc-p-4 cc-bg-[#0000000A] sm:cc-rounded-t-2xl",
+      "cc-flex dark:cc-text-dark-text-white dark:cc-bg-dark-bg-black cc-items-center cc-gap-3 cc-text-center sm:cc-text-left cc-p-[0.75rem_1rem] md:cc-p-[.47rem_1rem] cc-bg-[#0000000A] sm:cc-rounded-t-2xl dark:cc-border-b-dark-border-color",
       className
     )}
     {...rest}
@@ -75,7 +90,7 @@ const DialogHeader = ({
       <img
         src={CrossIcon}
         alt="CrossIcon"
-        className="cc-h-[18px] cc-w-[18px] "
+        className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
       />
     </DialogPrimitive.Close>
   </div>
@@ -88,7 +103,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "cc-p-4 cc-border-t cc-bg-white cc-border-outline-low_em sm:cc-shadow-modal-footer-top",
+      "cc-p-4 cc-border-t cc-bg-white dark:cc-bg-dark-bg-black cc-border-outline-low_em sm:cc-shadow-modal-footer-top dark:cc-shadow-[0px_-3px_8px_-2px_#ffffff1F]",
       className
     )}
     {...props}
@@ -98,17 +113,20 @@ DialogFooter.displayName = "DialogFooter";
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
+  DialogTitleProps
+>(({ className, justifyModification, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "cc-text-xl cc-font-semibold cc-leading-none cc-tracking-tight md:cc-mr-[34px] md:cc-text-center",
+      `cc-text-xl cc-font-semibold cc-leading-none  cc-tracking-tight  cc-h-10 cc-flex ${
+        justifyModification ? "md:cc-justify-center" : "md:cc-justify-start"
+      } cc-items-center md:cc-text-center`,
       className
     )}
     {...props}
   />
 ));
+
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 
 const DialogDescription = React.forwardRef<

@@ -3,6 +3,7 @@
     "target": "ES6",
     "module": "ESNext",
     "strict": true,
+    "lib": ["es2016", "dom"],
     "jsx": "react",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -12,7 +13,6 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "declarationMap": true, // Generate source map for .d.ts files
-    "declarationDir": "dist/types",
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {

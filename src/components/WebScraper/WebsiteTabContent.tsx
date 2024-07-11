@@ -19,7 +19,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@components/common/design-system/Dropdown";
-import WebsiteFilterBottomSheet from "@components/common/WebsiteFilterBottomSheet";
 import {
   Dialog,
   DialogClose,
@@ -27,36 +26,76 @@ import {
   DialogFooter,
 } from "@components/common/design-system/Dialog";
 import SuccessState from "@components/common/SuccessState";
+import {
+  BASE_URL,
+  DEFAULT_CHUNK_SIZE,
+  DEFAULT_OVERLAP_SIZE,
+  DEFAULT_RECURSION_DEPTH,
+  ENV,
+  MAX_PAGES_TO_SCRAPE,
+  MAX_RECURSION_DEPTH,
+} from "../../constants/shared";
+import { useCarbon } from "../../context/CarbonContext";
+import { BannerState } from "../common/Banner";
+import { isValidHttpUrl, removeHttp } from "../../utils/helper-functions";
+import {
+  IntegrationName,
+  ActionType,
+  WebScraperIntegration,
+} from "../../typing/shared";
 
-type WebsiteListDataType = {
+type WebscrapeInput = {
   url: string;
-  recursionDepth: number;
-  maxPageToScrape: number;
-  selectedFilter: "recursionDepth" | "maxPageToScrape" | null;
+  recursionDepth: number | null;
+  maxPageToScrape: number | null;
 };
 
-const initialData: WebsiteListDataType = {
+const initialData: WebscrapeInput = {
   url: "",
-  recursionDepth: 3,
-  maxPageToScrape: 40,
-  selectedFilter: null,
+  recursionDepth: null,
+  maxPageToScrape: null,
 };
 
 export default function WebsiteTabContent({
   setActiveTab,
+  sitemapEnabled,
+  service,
+  setBannerState,
 }: {
   setActiveTab: (val: string) => void;
+  sitemapEnabled: boolean;
+  service: WebScraperIntegration;
+  setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
 }) {
-  const [internalStep, setInternalStep] = useState<number>(1);
-  const [websiteDataList, setWebsiteDataList] = useState<WebsiteListDataType[]>(
-    [initialData]
-  );
+  const [showSuccessState, setShowSuccessState] = useState<boolean>(false);
+  const [websiteDataList, setWebsiteDataList] = useState<WebscrapeInput[]>([
+    initialData,
+  ]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const {
+    chunkSize,
+    overlapSize,
+    generateSparseVectors,
+    prependFilenameToChunks,
+    embeddingModel,
+    maxItemsPerChunk,
+    authenticatedFetch,
+    environment = ENV.PRODUCTION,
+    tags,
+    accessToken,
+    onSuccess,
+    onError,
+  } = useCarbon();
+
+  const maxPagesToScrape = service.maxPagesToScrape ?? MAX_PAGES_TO_SCRAPE;
+  const maxRecursionDepth = service.recursionDepth ?? MAX_RECURSION_DEPTH;
 
   const updateWebsiteListData = (
     index: number,
     newValues: { [key: string]: any }
   ) => {
-    setWebsiteDataList((prev: WebsiteListDataType[]) => {
+    setWebsiteDataList((prev: WebscrapeInput[]) => {
       const newData = [...prev];
       newData[index] = { ...prev[index], ...newValues };
       return newData;
@@ -64,7 +103,7 @@ export default function WebsiteTabContent({
   };
 
   const deleteWebsiteListData = (index: number) => {
-    setWebsiteDataList((prev: WebsiteListDataType[]) => {
+    setWebsiteDataList((prev: WebscrapeInput[]) => {
       const newData = prev.filter((_, i) => i !== index);
       if (newData.length === 0) {
         return [initialData];
@@ -73,13 +112,129 @@ export default function WebsiteTabContent({
     });
   };
 
-  if (internalStep === 2) {
+  const submitScrape = async () => {
+    try {
+      if (submitting) {
+        setBannerState({
+          type: "ERROR",
+          message: "Please wait for the request to finish",
+        });
+
+        return;
+      }
+      const chunkSizeValue =
+        service?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
+      const overlapSizeValue =
+        service?.overlapSize || overlapSize || DEFAULT_OVERLAP_SIZE;
+      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
+      const enableAutoSync = service?.enableAutoSync ?? false;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors ?? generateSparseVectors ?? false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks ?? prependFilenameToChunks ?? false;
+      const maxItemsPerChunkValue =
+        service?.maxItemsPerChunk || maxItemsPerChunk || null;
+      const embeddingModelValue = embeddingModel || null;
+
+      const htmlTagsToSkip = service?.htmlTagsToSkip || [];
+      const cssClassesToSkip = service?.cssClassesToSkip || [];
+      const cssSelectorsToSkip = service?.cssSelectorsToSkip || [];
+
+      setSubmitting(true);
+
+      let validData = websiteDataList.filter((urlData) =>
+        isValidHttpUrl("https://" + urlData.url)
+      );
+
+      if (validData.length === 0) {
+        setBannerState({
+          type: "ERROR",
+          message: "Please provide at least one valid URL.",
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      const requestObject = validData.map((urlData) => ({
+        url: urlData.url,
+        tags: tags,
+        recursion_depth: urlData.recursionDepth ?? DEFAULT_RECURSION_DEPTH,
+        max_pages_to_scrape: urlData.maxPageToScrape || MAX_PAGES_TO_SCRAPE,
+        chunk_size: chunkSizeValue,
+        chunk_overlap: overlapSizeValue,
+        skip_embedding_generation: skipEmbeddingGeneration,
+        enable_auto_sync: enableAutoSync,
+        generate_sparse_vectors: generateSparseVectorsValue,
+        prepend_filename_to_chunks: prependFilenameToChunksValue,
+        html_tags_to_skip: htmlTagsToSkip,
+        css_classes_to_skip: cssClassesToSkip,
+        css_selectros_to_skip: cssSelectorsToSkip,
+        ...(maxItemsPerChunkValue && {
+          max_items_per_chunk: maxItemsPerChunkValue,
+        }),
+        ...(embeddingModelValue && {
+          embedding_model: embeddingModelValue,
+        }),
+      }));
+
+      const uploadResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/web_scrape`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestObject),
+        }
+      );
+      const responseData = await uploadResponse.json();
+      if (uploadResponse.status === 200) {
+        setShowSuccessState(true);
+        setWebsiteDataList([]);
+        onSuccess &&
+          onSuccess({
+            status: 200,
+            data: {
+              data_source_external_id: null,
+              sync_status: null,
+              files: responseData,
+            },
+            action: ActionType.UPDATE,
+            event: ActionType.UPDATE,
+            integration: IntegrationName.WEB_SCRAPER,
+          });
+      }
+    } catch (error) {
+      setBannerState({
+        type: "ERROR",
+        message: "Error initiating scraping. Please try again.",
+      });
+
+      onError &&
+        onError({
+          status: 400,
+          data: [{ message: "Error initiating scraping. Please try again." }],
+          action: ActionType.UPDATE,
+          event: ActionType.UPDATE,
+          integration: IntegrationName.WEB_SCRAPER,
+        });
+      setShowSuccessState(false);
+    }
+    setSubmitting(false);
+  };
+
+  if (showSuccessState) {
     return (
       <div className="cc-flex-grow cc-p-4 cc-overflow-auto cc-flex cc-flex-col">
-        <WebScraperTabs activeTab="website" setActiveTab={setActiveTab} />
+        <WebScraperTabs
+          activeTab="website"
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+        />
         <SuccessState
           heading="Scraping request initiated successfully."
-          action={() => setInternalStep(1)}
+          action={() => setShowSuccessState(false)}
         />
       </div>
     );
@@ -88,7 +243,11 @@ export default function WebsiteTabContent({
   return (
     <>
       <div className="cc-flex-grow cc-p-4 cc-overflow-auto">
-        <WebScraperTabs activeTab="website" setActiveTab={setActiveTab} />
+        <WebScraperTabs
+          activeTab="website"
+          setActiveTab={setActiveTab}
+          sitemapEnabled={sitemapEnabled}
+        />
         <div className="cc-pb-4 cc-flex cc-grow cc-w-full">
           <div className="cc-flex cc-flex-col cc-justify-start cc-items-start cc-w-full cc-space-y-4">
             {websiteDataList.map((websiteData, index) => (
@@ -101,7 +260,7 @@ export default function WebsiteTabContent({
                     <img
                       src={images.left_icon}
                       alt="tabler_sitemap"
-                      className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none"
+                      className="cc-absolute cc-top-3 cc-left-2 cc-pointer-events-none dark:cc-invert-[1] dark:cc-hue-rotate-180"
                     />
                     <Input
                       type="text"
@@ -111,14 +270,16 @@ export default function WebsiteTabContent({
                       value="https://"
                     />
                   </div>
-                  <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em" />
+                  <div className="cc-w-px cc-shrink-0 cc-bg-outline-med_em dark:cc-bg-dark-input-bg " />
                   <Input
                     type="text"
                     className="cc-rounded-l-none"
                     placeholder="Enter URL"
                     value={websiteData.url}
                     onChange={(e) =>
-                      updateWebsiteListData(index, { url: e.target.value })
+                      updateWebsiteListData(index, {
+                        url: removeHttp(e.target.value),
+                      })
                     }
                   />
                 </div>
@@ -133,6 +294,8 @@ export default function WebsiteTabContent({
                         ? undefined
                         : () => deleteWebsiteListData(index)
                     }
+                    maxPagesToScrape={maxPagesToScrape}
+                    maxRecursionDepth={maxRecursionDepth}
                   />
                 </div>
                 <div className="cc-hidden sm:cc-flex cc-items-center cc-gap-3">
@@ -140,6 +303,8 @@ export default function WebsiteTabContent({
                     initialData={websiteData}
                     index={index}
                     updateWebsiteListData={updateWebsiteListData}
+                    maxPagesToScrape={maxPagesToScrape}
+                    maxRecursionDepth={maxRecursionDepth}
                   />
                   <Button
                     size="md"
@@ -149,7 +314,7 @@ export default function WebsiteTabContent({
                     <img
                       src={images.trash_2}
                       alt=""
-                      className="cc-cursor-pointer"
+                      className="cc-cursor-pointer dark:cc-invert-[1] dark:cc-hue-rotate-180"
                       onClick={() => deleteWebsiteListData(index)}
                     />
                   </Button>
@@ -174,7 +339,7 @@ export default function WebsiteTabContent({
                 </Button>
                 <Button
                   size="lg"
-                  variant="neutral-white"
+                  variant="neutral-white-fix"
                   onClick={() => {
                     setWebsiteDataList((prev) => [...prev, initialData]);
                   }}
@@ -192,20 +357,21 @@ export default function WebsiteTabContent({
         </div>
       </div>
       <DialogFooter>
-        <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold">
+        <div className="cc-mb-4 cc-full cc-text-sm cc-flex cc-justify-center cc-text-low_em cc-font-semibold dark:cc-text-dark-text-gray">
           <img
             src={images.info_fill}
             alt="info_fill"
             className="cc-h-5 cc-w-5 cc-flex cc-mr-2"
           />
-          The first 50 links per website are synced.
+          First {maxPagesToScrape} links per website are synced by default.
         </div>
         <Button
           size="md"
           className="cc-w-full"
           onClick={() => {
-            setInternalStep(2);
+            submitScrape();
           }}
+          disabled={submitting}
         >
           Submit
         </Button>
@@ -218,13 +384,17 @@ function FilterPopover({
   initialData,
   index,
   updateWebsiteListData,
+  maxPagesToScrape,
+  maxRecursionDepth,
 }: {
-  initialData: WebsiteListDataType;
+  initialData: WebscrapeInput;
   index: number;
   updateWebsiteListData: (
     index: number,
     newValues: { [key: string]: any }
   ) => void;
+  maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -237,12 +407,17 @@ function FilterPopover({
           variant="neutral-white"
           className="cc-gap-2 cc-font-semibold cc-relative"
         >
-          {initialData.selectedFilter !== null && (
-            <div className="cc-absolute -cc-right-0.5 -cc-top-0.5 cc-border-2 cc-border-white cc-h-2.5 cc-w-2.5 cc-rounded-full cc-bg-surface-info_main "></div>
-          )}
-          <img src={images.filter} alt="" className="cc-mr-2" />
+          <img
+            src={images.filter}
+            alt=""
+            className="cc-mr-2 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+          />
           Configure
-          <img src={DownChevIcon} alt="" />
+          <img
+            src={DownChevIcon}
+            alt=""
+            className="dark:cc-invert-[1] dark:cc-hue-rotate-180"
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="cc-p-2">
@@ -251,6 +426,8 @@ function FilterPopover({
           index={index}
           updateWebsiteListData={updateWebsiteListData}
           close={() => setOpen(false)}
+          maxPagesToScrape={maxPagesToScrape}
+          maxRecursionDepth={maxRecursionDepth}
         />
       </PopoverContent>
     </Popover>
@@ -262,14 +439,18 @@ function MobileWebsiteUrlDropdown({
   index,
   updateWebsiteListData,
   deleteUrl,
+  maxPagesToScrape,
+  maxRecursionDepth,
 }: {
-  initialData: WebsiteListDataType;
+  initialData: WebscrapeInput;
   index: number;
   updateWebsiteListData: (
     index: number,
     newValues: { [key: string]: any }
   ) => void;
   deleteUrl?: () => void;
+  maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -277,6 +458,7 @@ function MobileWebsiteUrlDropdown({
     <>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
+          activeState={"INTEGRATION_LIST"}
           className="cc-h-auto sm:cc-h-fit sm:cc-max-h-[90vh] cc-top-auto  cc-gap-0 sm:cc-rounded-[20px] cc-translate-y-0 -sm:cc-translate-y-1/2 cc-bottom-0 cc-rounded-t-2xl sm:cc-bottom-auto sm:top-1/2 cc-overflow-visible"
           style={{ height: "auto" }}
         >
@@ -302,6 +484,8 @@ function MobileWebsiteUrlDropdown({
               updateWebsiteListData={updateWebsiteListData}
               close={() => setShowDialog(false)}
               buttonVariant="primary"
+              maxPagesToScrape={maxPagesToScrape}
+              maxRecursionDepth={maxRecursionDepth}
             />
           </div>
         </DialogContent>
@@ -340,7 +524,7 @@ function MobileWebsiteUrlDropdown({
                 <img
                   src={images.trash_2}
                   alt=""
-                  className="cc-w-[18px] cc-h-[18px"
+                  className="cc-w-[18px] cc-h-[18px dark:cc-invert-[1] dark:cc-hue-rotate-180"
                 />
               </DropdownMenuItem>
             )}
@@ -357,8 +541,10 @@ function ConfigureForm({
   updateWebsiteListData,
   close,
   buttonVariant = "neutral-white",
+  maxPagesToScrape,
+  maxRecursionDepth,
 }: {
-  initialData: WebsiteListDataType;
+  initialData: WebscrapeInput;
   index: number;
   updateWebsiteListData: (
     index: number,
@@ -366,37 +552,18 @@ function ConfigureForm({
   ) => void;
   close: () => void;
   buttonVariant?: "neutral-white" | "primary";
+  maxPagesToScrape: number;
+  maxRecursionDepth: number;
 }) {
-  const [urlData, setUrlData] = useState<WebsiteListDataType>(initialData);
-
+  const [urlData, setUrlData] = useState(initialData);
   return (
     <>
       <div className="cc-flex cc-justify-between cc-items-center cc-py-2">
         <div className="cc-flex">
           <label>
-            <input
-              type="radio"
-              name="tab"
-              checked={urlData.selectedFilter === "recursionDepth"}
-              onChange={() =>
-                setUrlData((prev) => {
-                  return {
-                    ...prev,
-                    selectedFilter:
-                      prev.selectedFilter === "recursionDepth"
-                        ? null
-                        : "recursionDepth",
-                  };
-                })
-              }
-              className="cc-hidden"
-            />
             <span
               className={cn(
-                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em`,
-                urlData.selectedFilter === "recursionDepth"
-                  ? "cc-custom-radio-checked"
-                  : ""
+                `dark:after:cc-bg-dark-bg-black cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray before:cc-hidden `
               )}
             >
               Recursion depth
@@ -410,6 +577,7 @@ function ConfigureForm({
             className="cc-h-8 cc-text-xs cc-pl-2"
             value={urlData.recursionDepth || 0}
             onChange={(e) => {
+              if (parseInt(e.target.value) > maxRecursionDepth) return;
               setUrlData((prev) => ({
                 ...prev,
                 recursionDepth: parseInt(e.target.value) || 0,
@@ -422,29 +590,9 @@ function ConfigureForm({
       <div className="cc-flex cc-justify-between cc-items-center cc-py-2">
         <div className="cc-flex">
           <label>
-            <input
-              type="radio"
-              name="tab"
-              checked={urlData.selectedFilter === "maxPageToScrape"}
-              onChange={() =>
-                setUrlData((prev) => {
-                  return {
-                    ...prev,
-                    selectedFilter:
-                      prev.selectedFilter === "maxPageToScrape"
-                        ? null
-                        : "maxPageToScrape",
-                  };
-                })
-              }
-              className="cc-hidden"
-            />
             <span
               className={cn(
-                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em`,
-                urlData.selectedFilter === "maxPageToScrape"
-                  ? "cc-custom-radio-checked"
-                  : ""
+                `cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray before:cc-hidden`
               )}
             >
               Max pages to scrape
@@ -458,10 +606,10 @@ function ConfigureForm({
             className="cc-h-8 cc-text-xs cc-pl-2"
             value={urlData.maxPageToScrape || 0}
             onChange={(e) => {
+              if (parseInt(e.target.value) > maxPagesToScrape) return;
               setUrlData((prev) => ({
                 ...prev,
                 maxPageToScrape: parseInt(e.target.value) || 0,
-                selectedFilter: "maxPageToScrape",
               }));
             }}
           />
@@ -469,13 +617,12 @@ function ConfigureForm({
       </div>
       <Button
         size="md"
-        variant={buttonVariant}
+        variant="neutral-white-fix"
         className="cc-font-semibold cc-w-full cc-mt-3"
         onClick={() => {
           updateWebsiteListData(index, {
             recursionDepth: urlData.recursionDepth,
             maxPageToScrape: urlData.maxPageToScrape,
-            selectedFilter: urlData.selectedFilter,
           });
           close();
         }}

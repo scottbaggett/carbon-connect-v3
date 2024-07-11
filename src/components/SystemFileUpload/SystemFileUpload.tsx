@@ -5,19 +5,36 @@ import {
   DialogTitle,
 } from "@components/common/design-system/Dialog";
 import BackIcon from "@assets/svgIcons/back-icon.svg";
-import AddCircleIconWhite from "@assets/svgIcons/add-circle-icon-white.svg";
 import { IntegrationItemType } from "@utils/integrationModalconstants";
-import AuthForm from "@components/common/AuthForm";
-import UserPlus from "@assets/svgIcons/user-plus.svg";
 import { Button } from "@components/common/design-system/Button";
 import { images } from "@assets/index";
 
-import FileSelector from "@components/CarbonFilePicker/FileSelector";
 import SuccessScreen from "./SuccessScreen";
 
 import FileExtension from "@components/SystemFileUpload/FileExtension/FileExtension";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import ClickToUpload from "./ClickToUpload";
+import { useCarbon } from "../../context/CarbonContext";
+import { useDropzone, FileRejection } from "react-dropzone";
+import {
+  BASE_URL,
+  DEFAULT_MAX_FILES,
+  DEFAULT_SIZE_MB,
+  ENV,
+  MAX_FILES_LIMIT,
+  ONE_MB,
+} from "../../constants/shared";
+import {
+  generateFileUploadUrl,
+  getFileSizeLimit,
+  getSupportedFileTypes,
+} from "../../utils/files";
+import Banner, { BannerState } from "../common/Banner";
+import {
+  ActiveStep,
+  IntegrationName,
+  ActionType,
+  LocalFilesIntegration,
+} from "../../typing/shared";
 
 export interface UploadFileData {
   lastModified: number;
@@ -26,106 +43,312 @@ export interface UploadFileData {
   size: number;
 }
 
+const defaultSupportedFileTypes = [
+  "txt",
+  "csv",
+  "pdf",
+  "docx",
+  "pptx",
+  "json",
+  "html",
+];
+
 export default function SystemFileUpload({
   activeStepData,
   setActiveStep,
-  onCloseModal,
+  bannerState,
+  setBannerState,
+  setScreen,
 }: {
   activeStepData?: IntegrationItemType;
-  setActiveStep: (val: string) => void;
-  onCloseModal: () => void;
+  setActiveStep: (val: ActiveStep) => void;
+  bannerState: BannerState;
+  setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
+  setScreen: React.Dispatch<React.SetStateAction<"FILES" | "UPLOAD">>;
 }) {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<"ADD" | "SUCCESS" | "UPLOAD">("ADD");
   // state variable for file upload
-  const [file, setFile] = useState<UploadFileData[]>([]);
+  const [files, setFiles] = useState<UploadFileData[]>([]);
 
-  const [folderName, setFolderName] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [filesConfig, setFilesConfig] = useState<
+    LocalFilesIntegration | null | undefined
+  >(null);
+  const [allowedMaxFileSize, setAllowedMaxFileSize] = useState(DEFAULT_SIZE_MB);
+  const [allowedMaxFilesCount, setAllowedMaxFilesCount] =
+    useState(DEFAULT_MAX_FILES);
 
-  const [isUploading, setIsUploading] = useState<{
-    state: boolean;
-    percentage: number;
-  }>({ state: false, percentage: 0 });
+  const deleteRef = useRef<HTMLDivElement | null>(null);
 
-  const handleItemClick = (id: number) => {
+  const allowedFileExtensions = filesConfig?.allowedFileTypes
+    ? filesConfig.allowedFileTypes.map((config) =>
+        config.extension.toLowerCase()
+      )
+    : defaultSupportedFileTypes;
+
+  const carbonProps = useCarbon();
+  const {
+    processedIntegrations,
+    whiteLabelingData,
+    maxFileSize = DEFAULT_SIZE_MB * ONE_MB,
+    accessToken,
+    authenticatedFetch,
+    tags,
+    environment = ENV.PRODUCTION,
+    onSuccess,
+    onError,
+  } = carbonProps;
+
+  useEffect(() => {
+    const newFilesConfig = processedIntegrations?.find(
+      (integration) => integration.id === IntegrationName.LOCAL_FILES
+    ) as LocalFilesIntegration;
+
+    const maxAllowedLimit = getFileSizeLimit(
+      newFilesConfig,
+      whiteLabelingData,
+      maxFileSize
+    );
+
+    if (newFilesConfig) {
+      setAllowedMaxFileSize(Math.floor(maxAllowedLimit / ONE_MB));
+      setAllowedMaxFilesCount(
+        Math.min(
+          newFilesConfig.maxFilesCount || DEFAULT_MAX_FILES,
+          MAX_FILES_LIMIT
+        )
+      );
+      setFilesConfig(newFilesConfig);
+    }
+  }, [processedIntegrations, whiteLabelingData]);
+
+  const handleOutside = (event: MouseEvent) => {
+    if (
+      deleteRef.current &&
+      !deleteRef.current.contains(event.target as Node)
+    ) {
+      setOpenDropdown(null);
+    }
+  };
+
+  const handleDropdownClick = (id: number) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
+
   const handleFileUpload = (selectedFiles: File[]): void => {
     const fileList = Array.from(selectedFiles);
-    setFile(fileList);
-
-    const firstFile = fileList[0];
-    if (firstFile.webkitRelativePath) {
-      const pathParts = firstFile.webkitRelativePath.split("/");
-
-      if (pathParts.length > 1) {
-        setFolderName(pathParts[0]);
-        setStep(2);
-      } else {
-        setFolderName(null);
-      }
-    } else {
-      setFolderName(null);
-    }
-
-    setStep(2);
-    uploadFiles(fileList);
+    setFiles(fileList);
+    setStep("UPLOAD");
   };
 
-  const uploadFiles = (fileList: UploadFileData[]) => {
-    setUploading(true);
-    setUploadSuccess(false);
-    setUploadProgress(0);
-
-    const totalFiles = fileList.length;
-    let uploadedFiles = 0;
-
-    fileList.forEach((file, index) => {
-      setTimeout(() => {
-        uploadedFiles += 1;
-        setUploadProgress((uploadedFiles / totalFiles) * 100);
-
-        if (uploadedFiles === totalFiles) {
-          setUploading(false);
-          setUploadSuccess(true);
-          setTimeout(() => setUploadSuccess(true), 3000);
-        }
-      }, (index + 1) * 1000);
-    });
+  const handleRemove = (data: UploadFileData) => {
+    const newFiles = files.filter(
+      (f) => f.name != data.name && f.lastModified != data.lastModified
+    );
+    setFiles(newFiles);
   };
 
   const convertBytesToKB = (bytes: number): string => {
     return (bytes / 1024).toFixed(2) + " KB";
   };
 
-  useEffect(() => {}, [file]);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+    };
+  }, []);
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    acceptedFiles,
+    fileRejections,
+  } = useDropzone({
+    accept: getSupportedFileTypes(allowedFileExtensions),
+    maxFiles: allowedMaxFilesCount,
+    multiple: allowedMaxFilesCount > 1,
+    maxSize: maxFileSize * ONE_MB,
+    onDrop: (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+      if (acceptedFiles.length > 0) {
+        handleFileUpload(acceptedFiles);
+      }
+      if (fileRejections.length > 0) {
+        setBannerState({
+          type: "ERROR",
+          message: `${fileRejections.length} file(s) didn't meet constraints`,
+        });
+      }
+    },
+  });
+
+  const uploadSelectedFiles = async () => {
+    if (files.length === 0) {
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const successfulUploads: any = [];
+      const failedUploads: any = [];
+
+      await Promise.all(
+        files.map(async (file, index) => {
+          try {
+            const fileType = file.name.split(".").pop();
+
+            const isExtensionAllowed = allowedFileExtensions.find(
+              (configuredType) => configuredType === fileType
+            );
+
+            if (!isExtensionAllowed) {
+              failedUploads.push({
+                name: file.name,
+                message: "Unsupported Format",
+              });
+              return;
+            }
+
+            const apiUrl = generateFileUploadUrl(
+              fileType,
+              filesConfig,
+              carbonProps
+            );
+
+            const fileSize = file.size / 1000000;
+
+            if (fileSize > allowedMaxFileSize) {
+              failedUploads.push({
+                name: file.name,
+                message: `File size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
+              });
+              return;
+            }
+
+            const formData = new FormData();
+            // @ts-ignore
+            formData.append("file", file);
+
+            const uploadResponse = await authenticatedFetch(apiUrl.toString(), {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Token ${accessToken}`,
+              },
+            });
+
+            if (uploadResponse.status === 200 && tags) {
+              const uploadResponseData = await uploadResponse.json();
+
+              const appendTagsResponse = await authenticatedFetch(
+                `${BASE_URL[environment]}/create_user_file_tags`,
+                {
+                  method: "POST",
+                  body: JSON.stringify({
+                    tags: tags,
+                    organization_user_file_id: uploadResponseData["id"],
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${accessToken}`,
+                  },
+                }
+              );
+
+              if (appendTagsResponse.status === 200) {
+                const appendTagsResponseData = await appendTagsResponse.json();
+                successfulUploads.push(appendTagsResponseData);
+              } else {
+                failedUploads.push({
+                  name: file.name,
+                  message: "Failed to add tags to the file.",
+                });
+              }
+            } else {
+              const errorData = await uploadResponse.json(); // Get the error response body
+
+              failedUploads.push({
+                name: file.name,
+                message: errorData.detail || "Failed to upload file.",
+              });
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        })
+      );
+
+      if (successfulUploads.length > 0) {
+        onSuccess &&
+          onSuccess({
+            status: 200,
+            data: {
+              data_source_external_id: null,
+              sync_status: null,
+              files: successfulUploads,
+            },
+            action: ActionType.UPDATE,
+            event: ActionType.UPDATE,
+            integration: IntegrationName.LOCAL_FILES,
+          });
+      }
+
+      if (failedUploads.length > 0) {
+        onError &&
+          onError({
+            status: 400,
+            data: failedUploads,
+            action: ActionType.UPDATE,
+            event: ActionType.UPDATE,
+            integration: IntegrationName.LOCAL_FILES,
+          });
+        setBannerState({
+          message: "Some files were not uploaded",
+          type: "ERROR",
+          additionalInfo: `${successfulUploads.length} succeeded and ${failedUploads.length} failed`,
+        });
+        setScreen("FILES");
+      } else {
+        setStep("SUCCESS");
+      }
+    } catch (error) {
+      onError &&
+        onError({
+          status: 400,
+          data: [{ message: "Error uploading files" }],
+          action: ActionType.UPDATE,
+          event: ActionType.UPDATE,
+          integration: IntegrationName.LOCAL_FILES,
+        });
+    }
+    setUploading(false);
+    setFiles([]);
+  };
 
   return (
     <>
       <DialogHeader closeButtonClass="cc-hidden sm:cc-flex">
         <div className="cc-flex-grow cc-flex cc-gap-3 cc-items-center">
           <button
-            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0"
+            className="cc-pr-1 cc-h-10 cc-w-auto cc-shrink-0 "
             onClick={() => {
-              if (step > 1) {
-                // setStep((prev) => prev - 1);
-                setStep(1);
+              if (step != "ADD") {
+                setStep("ADD");
               } else {
-                setActiveStep("INTEGRATION_LIST");
+                setScreen("FILES");
               }
             }}
           >
             <img
               src={BackIcon}
               alt="Lock"
-              className="cc-h-[18px] cc-w-[18px]"
+              className="cc-h-[18px] cc-w-[18px] dark:cc-invert-[1] dark:cc-hue-rotate-180"
             />
           </button>
-          <div className="md:cc-hidden cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
+          <div className="dark:cc-shadow-[0px_3px_4px_-2px_#0000007A] dark:cc-border-dark-border-color md:cc-hidden cc-h-8 cc-w-8 sm:cc-h-14 sm:cc-w-14 cc-shrink-0 cc-bg-surface-white cc-rounded-lg cc-p-0.5 cc-shadow-e2">
             <div className="cc-h-full cc-w-full cc-bg-gray-50 cc-flex cc-items-center cc-justify-center cc-rounded-lg">
               <img
                 src={activeStepData?.logo}
@@ -138,50 +361,58 @@ export default function SystemFileUpload({
             {activeStepData?.name}
           </DialogTitle>
         </div>
-        {step === 2 ? (
+        {step === "UPLOAD" ? (
           <div
-            className="cc-text-[#0BABFB]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-4 cc-border-[#0BABFB] md:cc-hidden"
-            onClick={() => {
-              setStep(1);
-            }}
+            {...getRootProps({
+              className:
+                "cc-text-[#0BABFB] md:cc-ml-[-34px] hover:cc-text-[#067BF9]  cc-cursor-pointer cc-font-semibold cc-text-[14px] cc-leading-[24px] cc-border-b-[2px] cc-border-[#0BABFB]",
+            })}
           >
-            Add files
+            <input {...getInputProps()} />
+            <div onClick={() => getInputProps().onClick}>Add files</div>
           </div>
         ) : null}
       </DialogHeader>
-      {step === 1 && (
+      {step === "ADD" && (
         <>
-          <ClickToUpload onSubmit={handleFileUpload} />
+          <Banner bannerState={bannerState} setBannerState={setBannerState} />
+          <ClickToUpload
+            onSubmit={handleFileUpload}
+            maxFileSize={allowedMaxFileSize}
+            maxFiles={allowedMaxFilesCount}
+            allowedFileExtensions={allowedFileExtensions}
+            setBannerState={setBannerState}
+          />
         </>
       )}
-      {step === 2 && (
+      {step === "UPLOAD" && (
         <>
+          <Banner bannerState={bannerState} setBannerState={setBannerState} />
           <div className="cc-flex cc-flex-col cc-h-full cc-grow cc-overflow-hidden">
             <div className="cc-hidden md:cc-block">
-              <ClickToUpload onSubmit={handleFileUpload} />
+              {/* <ClickToUpload onSubmit={handleFileUpload} /> */}
             </div>
             <div className=" cc-overflow-scroll">
-              <div className="cc-flex cc-w-full  cc-flex-wrap cc-p-2.5  cc-gap-[10px]  cc-pb-[90px]">
-                {file.map((data, index) => (
+              <div className="cc-flex cc-w-full  cc-flex-wrap cc-p-2.5  cc-gap-[10px]  cc-pb-[90px] ">
+                {files.map((data, index) => (
                   <div
                     key={index}
-                    className="uploadFileWrapper cc-cursor-pointer group cc-relative  cc-flex cc-border cc-border-solid cc-border-[#0000001F] cc-p-[16px] cc-rounded-xl cc-items-center cc-w-[368px] cc-justify-between hover:cc-shadow-[0_3px_4px_-2px_#00000029]"
+                    className="uploadFileWrapper md:cc-w-full dark:cc-border-dark-input-bg cc-cursor-pointer group cc-relative  cc-flex cc-border cc-border-solid cc-border-[#0000001F] cc-p-[16px] cc-rounded-xl cc-items-center cc-w-[368px] cc-justify-between dark:hover:cc-shadow-[0px_3px_4px_-2px_#FFFFFF29] hover:cc-shadow-[0_3px_4px_-2px_#00000029]"
                   >
                     <FileExtension fileName={data.type} />
                     <div>
-                      <div className="cc-w-[201px] cc-whitespace-nowrap cc-text-ellipsis cc-overflow-hidden cc-text-[#100C20] cc-font-semibold cc-text-base">
+                      <div className="cc-w-[201px] cc-whitespace-nowrap cc-text-ellipsis cc-overflow-hidden cc-text-[#100C20] cc-font-semibold cc-text-base dark:cc-text-dark-text-white">
                         {data.name}
                       </div>
-                      <div className="cc-text-xs cc-font-medium cc-text-[#0000007A]">
+                      <div className="cc-text-xs cc-font-medium cc-text-[#0000007A] dark:cc-text-dark-text-gray">
                         {convertBytesToKB(data.size)}
                       </div>
                     </div>
                     <div>
-                      {uploading && (
+                      {/* {uploading && (
                         <div className="cc-w-[48] cc-h-[48] md:cc-w-[40px] md:cc-h-[40px]">
-                          <CircularProgressbar
+                          <CircularProgressbarWithChildren
                             value={uploadProgress}
-                            text={`${Math.round(uploadProgress)}%`}
                             styles={buildStyles({
                               textSize: "23px",
                               pathColor: `#0BABFB, ${uploadProgress / 100})`,
@@ -189,33 +420,41 @@ export default function SystemFileUpload({
                               trailColor: "#d6d6d6",
                               backgroundColor: "#3e98c7",
                             })}
-                          />
+                          >
+                            <div className=" cc-text-[10px] cc-text-[#8C8A94] cc-font-medium cc-absolute cc-top-2/4 cc-left-1/2 cc-translate-x-[-50%] cc-translate-y-[-50%]">{`${Math.round(
+                              uploadProgress
+                            )}%`}</div>
+                          </CircularProgressbarWithChildren>
                         </div>
-                      )}
-                      {uploadSuccess && (
-                        <div>
-                          <img
-                            className="delete cc-hidden md:cc-w-[40px] md:cc-h-[40px] "
-                            src={images.deleteIcon}
-                            alt="delete"
-                          />
-                          <img
-                            className=" success cc-block md:cc-w-[40px] md:cc-h-[40px] "
-                            src={images.fileUploadSuccess}
-                            alt="success"
-                          />
-                        </div>
-                      )}
+                      )} */}
+
+                      <div>
+                        <img
+                          className="delete cc-hidden md:cc-w-[40px] md:cc-h-[40px] "
+                          src={images.deleteIcon}
+                          alt="delete"
+                          onClick={() => handleRemove(data)}
+                        />
+                        <img
+                          className=" success cc-block md:cc-w-[40px] md:cc-h-[40px] "
+                          src={images.fileUploadSuccess}
+                          alt="success"
+                        />
+                      </div>
                     </div>
                     <div className="cc-hidden md:cc-block ">
                       <img
-                        className="cc-hidden md:cc-block cc-cursor-pointer"
-                        onClick={() => handleItemClick(index)}
+                        className="cc-hidden md:cc-block cc-cursor-pointer dark:cc-invert-[1] dark:cc-hue-rotate-180"
+                        onClick={() => handleDropdownClick(index)}
                         src={images.menudot}
                         alt=""
                       />
                       {openDropdown === index && (
-                        <div className="mobileCta cc-absolute cc-flex cc-w-[157px]  cc-py-[8px] cc-px-[20px] cc-bg-[#FFFFFF] cc-border-[1px] cc-border-[#F3F3F4] cc-border-solid cc-rounded-[12px] cc-shadow-[0px_8px_24px_-4px_#0000001F] cc-right-[0] cc-top-[61px] cc-z-[2]  cc-justify-between cc-items-center">
+                        <div
+                          ref={deleteRef}
+                          className="mobileCta cc-absolute cc-flex cc-w-[157px]  cc-py-[8px] cc-px-[20px] cc-bg-[#FFFFFF] cc-border-[1px] cc-border-[#F3F3F4] cc-border-solid cc-rounded-[12px] cc-shadow-[0px_8px_24px_-4px_#0000001F] cc-right-[0] cc-top-[61px] cc-z-[2]  cc-justify-between cc-items-center"
+                          onClick={() => handleRemove(data)}
+                        >
                           <p className="cc-text-[14px] cc-leading-[24px] cc-text-[#100C20] cc-font-semibold">
                             Delete
                           </p>
@@ -232,13 +471,14 @@ export default function SystemFileUpload({
               </div>
             </div>
           </div>
-          <div className=" cc-fixed cc-bottom-[0px] cc-w-full ">
+          <div className=" cc-fixed cc-bottom-[0px] cc-w-full dark:cc-bg-dark-bg-black">
             <DialogFooter>
               <Button
                 variant="primary"
                 size="lg"
                 className="cc-w-full"
-                onClick={() => setStep(3)}
+                onClick={() => uploadSelectedFiles()}
+                disabled={uploading}
               >
                 Submit
               </Button>
@@ -246,41 +486,13 @@ export default function SystemFileUpload({
           </div>
         </>
       )}
-      {step === 3 && (
-        <div className="cc-flex cc-flex-col cc-h-full cc-overflow-hidden">
-          <div className="cc-flex cc-flex-col cc-h-full">
-            <FileSelector
-              headName="My files"
-              navigationHeadingFirst="All Files"
-              forwardMard={false}
-              navigationHeadingSecond=""
-              navigationHeadingThird=""
-              addViewCtaText="Add more files"
-              isDeleteCta={true}
-              isErrorMessage={true}
-              isAddIcon={true}
-              forwardMove={() => {
-                setStep(4);
-              }}
-              setIsUploading={setIsUploading}
-            />
-          </div>
-        </div>
-      )}
-      {step === 4 && (
+      {step === "SUCCESS" && (
         <SuccessScreen
           addMoreFiles={() => {
-            setStep(1);
+            setStep("ADD");
           }}
         />
       )}
-      {/* {step === 3 && (
-        <AuthForm
-          onSubmit={() => {
-            setStep(3);
-          }}
-        />
-      )} */}
     </>
   );
 }

@@ -87,7 +87,7 @@ const BreadcrumbSeparator = ({
       <img
         src={ChevRightSmall}
         alt="Chev Right Icon"
-        className="cc-w-6 cc-shrink-0"
+        className="cc-w-6 cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
       />
     )}
   </li>

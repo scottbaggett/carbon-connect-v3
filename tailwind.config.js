@@ -1,6 +1,8 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: "media", // or 'media' or 'class'
+
+  darkMode: ["selector", '[data-mode="dark"]'], // or 'media' or 'class'
   prefix: "cc-",
   theme: {
     extend: {
@@ -13,7 +15,9 @@ module.exports = {
         white: "#FFFFFF",
         "surface-info_main": "#0BABFB",
         "surface-white": "#FFFFFF",
+
         "surface-surface_1": "rgba(0, 0, 0, 0.04)",
+        "dark-surface_1": "rgba(255,255,255, 0.04)",
         "surface-surface_2": "rgba(0, 0, 0, 0.07)",
         "surface-surface_3": "rgba(0, 0, 0, 0.12)",
         "surface-info_accent_1": "#E4FCFF",
@@ -27,6 +31,7 @@ module.exports = {
         "outline-base_em": "rgba(0, 0, 0, 0.07)",
         "outline-low_em": "rgba(0, 0, 0, 0.12)",
         "outline-med_em": "rgba(0, 0, 0, 0.16)",
+        "dark-outline-med_em": "rgba(255, 255, 255, 0.16)",
         "outline-danger_high_em": "#F03D3D",
         disabledtext: "rgba(0, 0, 0, 0.32)",
         "gray-25": "#F8F8F8",
@@ -37,6 +42,16 @@ module.exports = {
         "gradient-blue":
           "linear-gradient(0deg, rgba(31, 123, 245, 0.10) 0%, rgba(31, 123, 245, 0.10) 100%), var(--color-white-20, rgba(255, 255, 255, 0.20)",
         "focus-primary": "#D9D6FE",
+        "dark-text-white": "#fff",
+        "dark-bg-black": "#0c0c0c",
+        "dark-text-gray": "#ffffff7a",
+        "dark-border-color": "#ffffff12",
+        "dark-input-bg": "#ffffff33",
+        "dark-input-text": "#ffffff52",
+        "svg-background": "#1f1f1f",
+        "custom-gradient-dark":
+          "linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), linear-gradient(0deg, rgba(31, 123, 245, 0.1), rgba(31, 123, 245, 0.1))",
+        justifyStart: "flex-start",
       },
       fontFamily: {
         manrope: ["Manrope", "sans-serif"],

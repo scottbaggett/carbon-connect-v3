@@ -21,6 +21,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+  --invert-dark: invert(1);
+  --hue-dark: hue-rotate(180);
+  --customGradient: background:(
+    linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+    linear-gradient(0deg, rgba(31, 123, 245, 0.1), rgba(31, 123, 245, 0.1))
+  );
+}
+
+
+
+
+.dark .searchSvg {
+  fill: #ffffffc2;
 }
 
 a {
@@ -64,7 +77,7 @@ h1 {
 
 .cc-custom-radio.cc-custom-radio-checked::after {
   content: "";
-  @apply cc-w-[8px] cc-h-[8px] cc-bg-white cc-rounded-full;
+  @apply cc-w-[8px] cc-h-[8px] cc-bg-white cc-rounded-full dark:cc-bg-dark-bg-black;
   position: absolute;
   left: 5px; /* Adjust the position as needed */
 }
@@ -94,3 +107,7 @@ input[type="radio"]:not(:checked) + .cc-custom-radio {
     display: block;
   }
 }
+
+/* .dark img.dark:cc-invert-[1] dark:cc-hue-rotate-180 {
+  filter: invert(1) hue-rotate(180deg);
+} */

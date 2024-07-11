@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
@@ -19,7 +17,7 @@ const PopoverContent = React.forwardRef<
       align={align}
       sideOffset={sideOffset}
       className={cn(
-        "cc-z-50 cc-w-72 cc-rounded-xl cc-border cc-border-outline-low_em cc-bg-white cc-p-4 cc-text-high_em cc-shadow-md cc-outline-none",
+        "cc-z-50 cc-w-72 cc-rounded-xl cc-border cc-border-outline-low_em cc-bg-white cc-p-4 cc-text-high_em cc-shadow-md cc-outline-none dark:cc-bg-dark-bg-black dark:cc-border-dark-border-color dark:cc-shadow-[0px_8px_24px_-4px_#00000052]",
         className
       )}
       {...props}

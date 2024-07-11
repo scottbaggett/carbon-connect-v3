@@ -1,3 +1,23 @@
+import { IntegrationAPIResponse } from "../components/IntegrationModal";
+import {
+  DEFAULT_CHUNK_SIZE,
+  DEFAULT_OVERLAP_SIZE,
+  DEFAULT_SIZE_MB,
+  ONE_MB,
+  SYNC_FILES_ON_CONNECT,
+  SYNC_SOURCE_ITEMS,
+} from "../constants/shared";
+import { useCarbon } from "../context/CarbonContext";
+import {
+  Formats,
+  ProcessedIntegration,
+  IntegrationName,
+  UserSourceItemApi,
+  UserFileApi,
+  ActionType,
+  CarbonConnectProps,
+} from "../typing/shared";
+
 export function isEmpty(obj: any) {
   let isEmpty = false;
   const type = typeof obj;
@@ -54,3 +74,241 @@ export function keyExists(key: string, obj: any) {
   }
   return false;
 }
+
+export const generateRequestId = (length: number) => {
+  const prefix = "cc-";
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return prefix + result;
+};
+
+export const getConnectRequestProps = (
+  processedIntegration: ProcessedIntegration,
+  requestId: string | null,
+  additionalProps: object = {},
+  carbonProps: CarbonConnectProps
+) => {
+  const {
+    chunkSize,
+    overlapSize,
+    embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
+    tags,
+    fileSyncConfig,
+    maxItemsPerChunk,
+    setPageAsBoundary,
+    useOcr,
+    parsePdfTablesWithOcr,
+  } = carbonProps;
+
+  const chunkSizeValue =
+    processedIntegration?.chunkSize || chunkSize || DEFAULT_CHUNK_SIZE;
+  const overlapSizeValue =
+    processedIntegration?.overlapSize || overlapSize || DEFAULT_OVERLAP_SIZE;
+  const skipEmbeddingGeneration =
+    processedIntegration?.skipEmbeddingGeneration || false;
+  const embeddingModelValue = embeddingModel || null;
+  const generateSparseVectorsValue =
+    processedIntegration?.generateSparseVectors ||
+    generateSparseVectors ||
+    false;
+  const prependFilenameToChunksValue =
+    processedIntegration?.prependFilenameToChunks ||
+    prependFilenameToChunks ||
+    false;
+  const syncFilesOnConnection =
+    processedIntegration?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT;
+  const syncSourceItems =
+    processedIntegration?.syncSourceItems ?? SYNC_SOURCE_ITEMS;
+  const fileSyncConfigValue =
+    processedIntegration?.fileSyncConfig || fileSyncConfig || {};
+  const maxItemsPerChunkValue =
+    processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
+  const setPageAsBoundaryValue =
+    processedIntegration?.setPageAsBoundary || setPageAsBoundary || false;
+  const useOcrValue = processedIntegration?.useOcr || useOcr || false;
+  const parsePdfTablesWithOcrValue =
+    processedIntegration?.parsePdfTablesWithOcr ||
+    parsePdfTablesWithOcr ||
+    false;
+
+  return {
+    ...additionalProps,
+    tags: tags,
+    chunk_size: chunkSizeValue,
+    chunk_overlap: overlapSizeValue,
+    skip_embedding_generation: skipEmbeddingGeneration,
+    embedding_model: embeddingModelValue,
+    generate_sparse_vectors: generateSparseVectorsValue,
+    prepend_filename_to_chunks: prependFilenameToChunksValue,
+    sync_files_on_connection: syncFilesOnConnection,
+    ...(requestId && { request_id: requestId }),
+    sync_source_items: syncSourceItems,
+    file_sync_config: fileSyncConfigValue,
+    ...(maxItemsPerChunkValue && {
+      max_items_per_chunk: maxItemsPerChunkValue,
+    }),
+    set_page_as_boundary: setPageAsBoundaryValue,
+    use_ocr: useOcrValue,
+    parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
+  };
+};
+
+export const getFileItemType = (item: UserFileApi) => {
+  if (item.file_metadata?.is_folder) {
+    return "FOLDER";
+  } else {
+    return "FILE";
+  }
+};
+
+export const getSourceItemType = (item: UserSourceItemApi) => {
+  if (item.is_expandable) return "FOLDER";
+  return "FILE";
+};
+
+export const formatDate = (data: Date) => {
+  const dateString = new Date(data).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+
+  const timeString = new Date(data).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    // second: '2-digit',
+    hour12: true,
+  });
+  return `${dateString} ${timeString}`;
+};
+
+export function getDataSourceDomain(dataSource: IntegrationAPIResponse) {
+  const extId = dataSource.data_source_external_id;
+  const type = dataSource.data_source_type;
+
+  if (!extId) return null;
+
+  const parts = extId.split("|");
+
+  if (
+    type == IntegrationName.SALESFORCE ||
+    type == IntegrationName.ZENDESK ||
+    type == IntegrationName.SHAREPOINT
+  ) {
+    if (parts.length == 3) return parts[2];
+    else return null;
+  }
+
+  if (type == "CONFLUENCE") {
+    const workspace = parts[2];
+    const workspaceParts = workspace.split("/");
+    if (workspaceParts.length == 2) return workspaceParts[1];
+    return null;
+  }
+}
+
+export const findModifications = (
+  newIntegrations: IntegrationAPIResponse[],
+  oldIntegrations: IntegrationAPIResponse[],
+  requestIdsRef: any
+) => {
+  const response = [];
+  try {
+    for (let i = 0; i < newIntegrations.length; i++) {
+      const newIntegration = newIntegrations[i];
+      const requestId = requestIdsRef.current
+        ? requestIdsRef.current[newIntegration.data_source_type] || null
+        : null;
+
+      const oldIntegration = oldIntegrations.find(
+        (oldIntegration) => oldIntegration.id === newIntegration.id
+      );
+      if (!oldIntegration) {
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.ADD,
+          event: ActionType.ADD,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+            request_id: requestId,
+          },
+        };
+
+        response.push(onSuccessObject);
+      } else if (
+        oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+        newIntegration?.last_sync_action === "CANCEL"
+      ) {
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.CANCEL,
+          event: ActionType.CANCEL,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+          },
+        };
+        response.push(onSuccessObject);
+      } else if (
+        oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+        newIntegration?.last_sync_action === "UPDATE"
+      ) {
+        const requestId = requestIdsRef.current
+          ? requestIdsRef.current[newIntegration.data_source_type] || null
+          : null;
+        const filesSynced =
+          oldIntegration?.files_synced_at !== newIntegration?.files_synced_at;
+        const onSuccessObject = {
+          status: 200,
+          integration: newIntegration.data_source_type,
+          action: ActionType.UPDATE,
+          event: ActionType.UPDATE,
+          data: {
+            data_source_external_id: newIntegration.data_source_external_id,
+            sync_status: newIntegration.sync_status,
+            request_id: requestId,
+            files_synced: filesSynced,
+          },
+        };
+        response.push(onSuccessObject);
+      }
+    }
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    return response;
+  }
+};
+
+export const pluralize = (str: string, value: number) => {
+  if (value == 0 || value > 1) {
+    return str + "s";
+  }
+  return str;
+};
+
+export const isValidHttpUrl = (string: string) => {
+  try {
+    const newUrl = new URL(string);
+    return newUrl.protocol === "http:" || newUrl.protocol === "https:";
+  } catch (err) {
+    return false;
+  }
+};
+
+export const removeHttp = (string: string) => {
+  return string.replace("https://", "").replace("http://", "");
+};

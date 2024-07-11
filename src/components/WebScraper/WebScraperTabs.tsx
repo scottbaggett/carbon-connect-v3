@@ -13,15 +13,13 @@ const tabValues = [
 export default function WebScraperTabs({
   activeTab,
   setActiveTab,
+  sitemapEnabled,
 }: {
   activeTab: string;
   setActiveTab: (val: string) => void;
+  sitemapEnabled?: boolean;
 }) {
-  if (tabValues.length === 0) {
-    return null;
-  }
-
-  if (tabValues.length === 1) {
+  if (!sitemapEnabled) {
     return (
       <div className="cc-flex cc-justify-start cc-items-center cc-mb-6">
         <div className="cc-mr-2">
@@ -49,7 +47,7 @@ export default function WebScraperTabs({
                 className={`cc-flex cc-w-full cc-justify-between cc-items-center cc-cursor-pointer cc-border cc-rounded-xl cc-px-3 cc-py-3 ${
                   activeTab === item.tab
                     ? "cc-border-surface-info_main"
-                    : "cc-border-surface-surface_3"
+                    : "cc-border-surface-surface_3 dark:cc-border-[#FFFFFF1F]"
                 }`}
               >
                 <input
@@ -60,8 +58,8 @@ export default function WebScraperTabs({
                   className="cc-hidden"
                 />
                 <span
-                  className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em ${
-                    activeTab === item.tab ? "cc-custom-radio-checked" : ""
+                  className={`cc-custom-radio cc-text-sm cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white dark:before:cc-border-dark-text-gray  ${
+                    activeTab === item.tab ? "cc-custom-radio-checked " : ""
                   }`}
                 >
                   {item.text}
