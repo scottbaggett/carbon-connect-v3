@@ -259,7 +259,7 @@ export default function SyncedFilesList({
               <Input
                 type="text"
                 placeholder="Search"
-                className="cc-h-8 cc-text-xs cc-pl-7"
+                className="cc-h-8 cc-text-xs !cc-pl-7"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
@@ -280,7 +280,7 @@ export default function SyncedFilesList({
               <Button
                 size="sm"
                 variant="neutral-white"
-                className="cc-text-xs cc-rounded-xl cc-font-semibold cc-shrink-0"
+                className="cc-text-xs !cc-rounded-xl cc-font-semibold cc-shrink-0"
                 onClick={() => handleUploadFilesClick()}
               >
                 <img

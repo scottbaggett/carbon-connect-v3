@@ -84,7 +84,7 @@ function IntegrationList({
         <div className="cc-relative cc-mb-6">
           <Input
             placeholder="Search Integrations"
-            className="cc-pl-10 dark:cc-bg-dark-input-bg dark:placeholder:cc-text-dark-input-text"
+            className="!cc-pl-10 dark:cc-bg-dark-input-bg dark:placeholder:cc-text-dark-input-text"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
