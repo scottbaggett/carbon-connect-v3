@@ -279,10 +279,9 @@ export default function SourceItemsList({
             <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
               <BreadcrumbList className="cc-flex-nowrap">
                 {breadcrumbs.map((crumb, index) => (
-                  <>
+                  <React.Fragment key={index}>
                     <BreadcrumbItem
                       className="cc-shrink-0"
-                      key={index}
                       onClick={() => onBreadcrumbClick(index)}
                     >
                       <BreadcrumbPage className="hover:cc-opacity-70 cc-cursor-pointer cc-transition-all cc-gap-1.5 cc-flex cc-shrink-0 cc-items-center dark:cc-text-dark-text-white">
@@ -297,7 +296,7 @@ export default function SourceItemsList({
                     {breadcrumbs.length > index + 1 ? (
                       <BreadcrumbSeparator className="cc-shrink-0" />
                     ) : null}
-                  </>
+                  </React.Fragment>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
