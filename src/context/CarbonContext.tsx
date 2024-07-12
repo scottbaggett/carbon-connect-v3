@@ -64,7 +64,7 @@ export const CarbonProvider = ({
       ],
     },
   ],
-  open = true,
+  open = false,
   setOpen = null,
   chunkSize = 1500,
   overlapSize = 20,
