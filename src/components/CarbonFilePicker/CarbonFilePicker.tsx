@@ -130,10 +130,10 @@ export default function CarbonFilePicker({
       (integration) => integration.data_source_type === activeStepData?.id
     );
     const accountsAdded = connected.length > connectedDataSources.length;
-    setConnectedDataSources(connected);
-    if (pauseDataSourceSelection) {
+    if (pauseDataSourceSelection || !connected.length) {
       return;
     }
+    setConnectedDataSources(connected);
 
     const currDataSource = connected.find(
       (c) => c.id == selectedDataSource?.id
