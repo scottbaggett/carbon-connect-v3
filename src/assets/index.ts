@@ -49,6 +49,7 @@ import folderIcon from './svgIcons/folderIcon.svg';
 import coreTick from './svgIcons/coreTick.svg';
 import infoClear from './svgIcons/info_color.svg';
 import html from './svgIcons/htmlIcon.svg';
+import rubber from './rubberImage.svg'
 
 
 
@@ -125,6 +126,7 @@ export const images = {
   folderIcon,
   coreTick,
   infoClear,
-  html
+  html,
+  rubber
 
 };

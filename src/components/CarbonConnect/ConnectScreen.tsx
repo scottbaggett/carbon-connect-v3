@@ -2,6 +2,7 @@ import React, { Dispatch, ReactNode, SetStateAction, useEffect } from "react";
 import carbonLogo from "@assets/carbon.svg";
 import LockIcon from "@assets/svgIcons/lock.svg";
 import Shield from "@assets/svgIcons/shield.svg";
+import rubber from "@assets/rubberImage.svg";
 
 import { Button } from "@components/common/design-system/Button";
 import { useCarbon } from "../../context/CarbonContext";
@@ -63,8 +64,14 @@ function ConnectScreen({
             <div className="cc-p-8 cc-border-b cc-border-color-black-7 dark:cc-border-dark-border-color cc-flex-grow cc-overflow-auto">
               <div className="cc-mb-6">
                 <div className="cc-flex cc-pt-8 -cc-space-x-2">
-                  <img
+                  {/* <img
                     src={brandIcon}
+                    alt={`${orgName} Icon`}
+                    className="cc-h-12 cc-w-21"
+                  /> */}
+                  {/* This is statis brandIcon image  */}
+                  <img
+                    src={rubber}
                     alt={`${orgName} Icon`}
                     className="cc-h-12 cc-w-21"
                   />
