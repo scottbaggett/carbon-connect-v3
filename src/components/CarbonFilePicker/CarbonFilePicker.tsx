@@ -129,6 +129,7 @@ export default function CarbonFilePicker({
     const connected = activeIntegrations.filter(
       (integration) => integration.data_source_type === activeStepData?.id
     );
+    const accountsAdded = connected.length > connectedDataSources.length;
     setConnectedDataSources(connected);
     if (pauseDataSourceSelection) {
       return;
@@ -142,15 +143,20 @@ export default function CarbonFilePicker({
       (selectedDataSource === null && connected.length) ||
       currDataSource?.source_items_synced_at !==
         selectedDataSource?.source_items_synced_at ||
-      currDataSource?.sync_status !== selectedDataSource?.sync_status
+      currDataSource?.sync_status !== selectedDataSource?.sync_status ||
+      accountsAdded
     ) {
       if (connected.length === 1) {
         setSelectedDataSource(connected[0]);
       } else {
-        if (currDataSource) {
+        if (currDataSource && !accountsAdded) {
           setSelectedDataSource(currDataSource);
         } else {
-          const sorted = connected.sort((a, b) => b.id - a.id);
+          const sorted = connected.sort(
+            (a, b) =>
+              new Date(b.last_synced_at).getTime() -
+              new Date(a.last_synced_at).getTime()
+          );
           setSelectedDataSource(sorted[0]);
         }
       }

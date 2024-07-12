@@ -59,6 +59,7 @@ export default function GithubRepoScreen({
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
   });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setPauseDataSourceSelection(true);
@@ -146,6 +147,7 @@ export default function GithubRepoScreen({
       });
       return;
     }
+    setSubmitting(true);
     try {
       const res = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/github/sync_repos`,
@@ -182,6 +184,7 @@ export default function GithubRepoScreen({
       console.error(e);
       setBannerState({ message: "Unable to sync your repos", type: "ERROR" });
     }
+    setSubmitting(false);
   };
 
   return (
@@ -296,6 +299,7 @@ export default function GithubRepoScreen({
               // setIsUploading({ state: true, percentage: 24 });
               syncSelectedRepos();
             }}
+            disabled={submitting}
           >
             Select {selectedRepos.length} repo(s)
           </Button>
