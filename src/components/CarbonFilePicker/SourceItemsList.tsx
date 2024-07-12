@@ -132,17 +132,17 @@ export default function SourceItemsList({
       const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
       setCurrItems([]);
       setHasMoreItems(true);
-      setItemsLoading(true);
-      lastBreadcrumb.lastSync &&
+      if (lastBreadcrumb.lastSync) {
+        setItemsLoading(true);
         fetchSourceItems(lastBreadcrumb.parentId, 0).then(() =>
           setItemsLoading(false)
         );
+      }
     }
   }, [JSON.stringify(breadcrumbs)]);
 
   useEffect(() => {
-    if (!selectedDataSource || selectedDataSource?.sync_status !== "READY")
-      return;
+    if (!selectedDataSource?.source_items_synced_at) return;
     setOffset(0);
     setParentId(null);
     setBreadcrumbs([
