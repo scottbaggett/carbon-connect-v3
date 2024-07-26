@@ -238,6 +238,7 @@ export type UserFileApi = {
     bucket?: string;
     type?: string;
     is_feed_url?: boolean;
+    is_thread?: boolean;
   };
 };
 
