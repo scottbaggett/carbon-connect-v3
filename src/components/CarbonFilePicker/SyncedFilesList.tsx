@@ -22,10 +22,18 @@ import {
 import FileItem from "./FileItem";
 import { SyncingModes } from "./CarbonFilePicker";
 import Loader from "../common/Loader";
-import { pluralize } from "../../utils/helper-functions";
+import { getFileItemType, pluralize } from "../../utils/helper-functions";
 import { BannerState } from "../common/Banner";
 
 const PER_PAGE = 20;
+
+type BreadcrumbType = {
+  parentId: number | null;
+  name: string;
+  accountId: number | undefined;
+  refreshes: number;
+  root_files_only: boolean;
+};
 
 export default function SyncedFilesList({
   selectedDataSource,
@@ -61,10 +69,20 @@ export default function SyncedFilesList({
   const [loadingMore, setLoadingMore] = useState(false);
   const [actionInProgress, setActionInProgress] = useState(false);
   const isLocalFiles = processedIntegration.id == IntegrationName.LOCAL_FILES;
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbType[]>([
+    {
+      parentId: null,
+      name: "All Files",
+      accountId: undefined,
+      refreshes: 0,
+      root_files_only: true,
+    },
+  ]);
 
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse | null,
-    offset: number
+    offset: number,
+    breadcrumb: BreadcrumbType
   ) => {
     const requestBody = {
       pagination: {
@@ -74,6 +92,10 @@ export default function SyncedFilesList({
       filters: selectedDataSource
         ? {
             organization_user_data_source_id: [selectedDataSource.id],
+            root_files_only: breadcrumb.root_files_only,
+            ...(breadcrumb.parentId && {
+              parent_file_ids: [breadcrumb.parentId],
+            }),
           }
         : {
             source: LOCAL_FILE_TYPES,
@@ -105,9 +127,14 @@ export default function SyncedFilesList({
   };
 
   const loadInitialData = async (
-    selectedDataSource: IntegrationAPIResponse | null
+    selectedDataSource: IntegrationAPIResponse | null,
+    breadcrumb: BreadcrumbType
   ) => {
-    const { count, userFiles } = await getUserFiles(selectedDataSource, 0);
+    const { count, userFiles } = await getUserFiles(
+      selectedDataSource,
+      0,
+      breadcrumb
+    );
     setFiles([...userFiles]);
     setOffset(userFiles.length);
 
@@ -121,7 +148,12 @@ export default function SyncedFilesList({
   const loadMoreRows = async () => {
     if (!selectedDataSource && !isLocalFiles) return;
     setLoadingMore(true);
-    const { count, userFiles } = await getUserFiles(selectedDataSource, offset);
+    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+    const { count, userFiles } = await getUserFiles(
+      selectedDataSource,
+      offset,
+      lastBreadcrumb
+    );
     const newFiles = [...files, ...userFiles];
     setFiles(newFiles);
     setOffset(offset + userFiles.length);
@@ -135,13 +167,49 @@ export default function SyncedFilesList({
   };
 
   useEffect(() => {
+    if (breadcrumbs.length) {
+      setOffset(0);
+      const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+      setFiles([]);
+      setHasMoreFiles(true);
+      if (lastBreadcrumb.accountId || isLocalFiles) {
+        setFilesLoading(true);
+        loadInitialData(selectedDataSource, lastBreadcrumb).then(() =>
+          setFilesLoading(false)
+        );
+      }
+    }
+  }, [JSON.stringify(breadcrumbs)]);
+
+  const onItemClick = (item: UserFileApi) => {
+    if (filesLoading) return;
+    if (getFileItemType(item) == "FOLDER") {
+      // setParentId(item.external_id);
+      setBreadcrumbs((prev) => [
+        ...prev,
+        {
+          parentId: item.id,
+          name: item.name,
+          accountId: selectedDataSource?.id,
+          refreshes: syncedFilesRefreshes,
+          root_files_only: false,
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
     if (!selectedDataSource && !isLocalFiles) return;
-    setOffset(0);
-    setFiles([]);
     setSearchValue("");
-    setHasMoreFiles(true);
-    setFilesLoading(true);
-    loadInitialData(selectedDataSource).then(() => setFilesLoading(false));
+    setBreadcrumbs([
+      {
+        parentId: null,
+        name: "All Files",
+        accountId: selectedDataSource?.id,
+        refreshes: syncedFilesRefreshes,
+        root_files_only: true,
+      },
+    ]);
   }, [selectedDataSource?.id, syncedFilesRefreshes]);
 
   const filteredList = files.filter((item) =>
@@ -379,6 +447,7 @@ export default function SyncedFilesList({
                           }
                         });
                       }}
+                      onClick={onItemClick}
                     />
                   );
                 })}
