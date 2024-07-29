@@ -12,7 +12,12 @@ import AddCircleIconBlack from "@assets/svgIcons/add-circle-icon-black.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 
 import { useCarbon } from "../../context/CarbonContext";
-import { BASE_URL, ENV, LOCAL_FILE_TYPES } from "../../constants/shared";
+import {
+  BASE_URL,
+  ENV,
+  FOLDER_BASED_CONNECTORS,
+  LOCAL_FILE_TYPES,
+} from "../../constants/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import {
   ActiveStep,
@@ -124,6 +129,31 @@ export default function SyncedFilesList({
     }
   }, [JSON.stringify(breadcrumbs)]);
 
+  const getUserFilesFilters = (
+    breadcrumb: BreadcrumbType,
+    selectedDataSource: IntegrationAPIResponse | null
+  ) => {
+    if (selectedDataSource) {
+      if (
+        FOLDER_BASED_CONNECTORS.includes(selectedDataSource.data_source_type)
+      ) {
+        return {
+          organization_user_data_source_id: [selectedDataSource.id],
+          root_files_only: breadcrumb.root_files_only,
+          ...(breadcrumb.parentId && {
+            parent_file_ids: [breadcrumb.parentId],
+          }),
+        };
+      } else {
+        return { organization_user_data_source_id: [selectedDataSource.id] };
+      }
+    } else {
+      return {
+        source: LOCAL_FILE_TYPES,
+      };
+    }
+  };
+
   const getUserFiles = async (
     selectedDataSource: IntegrationAPIResponse | null,
     offset: number,
@@ -134,17 +164,7 @@ export default function SyncedFilesList({
         offset: offset,
         limit: PER_PAGE,
       },
-      filters: selectedDataSource
-        ? {
-            organization_user_data_source_id: [selectedDataSource.id],
-            root_files_only: breadcrumb.root_files_only,
-            ...(breadcrumb.parentId && {
-              parent_file_ids: [breadcrumb.parentId],
-            }),
-          }
-        : {
-            source: LOCAL_FILE_TYPES,
-          },
+      filters: getUserFilesFilters(breadcrumb, selectedDataSource),
       order_by: "created_at",
       order_dir: "desc",
     };
@@ -212,7 +232,12 @@ export default function SyncedFilesList({
   };
 
   const onItemClick = (item: UserFileApi) => {
-    if (filesLoading) return;
+    if (
+      filesLoading ||
+      !selectedDataSource ||
+      !FOLDER_BASED_CONNECTORS.includes(selectedDataSource?.data_source_type)
+    )
+      return;
     if (getFileItemType(item) == "FOLDER") {
       // setParentId(item.external_id);
       setBreadcrumbs((prev) => [
@@ -323,6 +348,11 @@ export default function SyncedFilesList({
   };
 
   const onBreadcrumbClick = (index: number) => {
+    if (
+      !selectedDataSource ||
+      !FOLDER_BASED_CONNECTORS.includes(selectedDataSource.data_source_type)
+    )
+      return;
     // Navigate to the clicked directory in the breadcrumb
     const newBreadcrumbs = breadcrumbs.slice(0, index + 1);
     setBreadcrumbs(newBreadcrumbs);

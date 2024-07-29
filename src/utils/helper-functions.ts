@@ -165,14 +165,15 @@ export const getConnectRequestProps = (
 export const getFileItemType = (item: UserFileApi) => {
   let isFolder = false;
   const fileType = item.file_metadata?.type;
+  // for now only folder type data sources are considered
   if (item.file_metadata?.is_folder) isFolder = true;
-  if (item.file_metadata?.is_shortcut) isFolder = true;
-  if (item.file_metadata?.bucket) isFolder = true;
-  if (item.file_metadata?.is_query) isFolder = true;
-  if (item.file_metadata?.is_feed_url) isFolder = true;
-  if (item.file_metadata?.is_thread) isFolder = true;
-  if (fileType && ["SPACE", "DIRECTORY", "HELP_CENTER"].indexOf(fileType) != -1)
-    isFolder = true;
+  // if (item.file_metadata?.is_shortcut) isFolder = true;
+  // if (item.file_metadata?.bucket) isFolder = true;
+  // if (item.file_metadata?.is_query) isFolder = true;
+  // if (item.file_metadata?.is_feed_url) isFolder = true;
+  // if (item.file_metadata?.is_thread) isFolder = true;
+  // if (fileType && ["SPACE", "DIRECTORY", "HELP_CENTER"].indexOf(fileType) != -1)
+  //   isFolder = true;
   if (isFolder) {
     return "FOLDER";
   } else {
