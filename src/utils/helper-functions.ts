@@ -331,3 +331,17 @@ export const truncateString = (str: string, n: number) => {
     return str;
   }
 };
+
+export const getIntegrationDisclaimer = (
+  processedIntegration: ProcessedIntegration,
+  whitelabelingData: any,
+  orgName: string
+) => {
+  const removeBranding = whitelabelingData?.remove_branding;
+  return `By connecting to ${processedIntegration.name}, you are providing us
+  with access to your ${processedIntegration.name} account. We will use
+  this access to import your data ${
+    removeBranding && orgName ? `into ${orgName}` : "into Carbon"
+  }. We will not modify your
+  data in any way.`;
+};
