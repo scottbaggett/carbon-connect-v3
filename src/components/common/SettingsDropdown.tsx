@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SettingsIcon from "@assets/svgIcons/settings-icon.svg";
 import DisconnectIcon from "@assets/svgIcons/disconnect-icon.svg";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
-import AddIcon from "@assets/svgIcons/add-plain.svg";
+import AddIcon from "@assets/svgIcons/add-circle-icon-black.svg";
 import { Button } from "@components/common/design-system/Button";
 import {
   DropdownMenu,
