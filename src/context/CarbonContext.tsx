@@ -86,6 +86,7 @@ export const CarbonProvider = ({
   fileSyncConfig = {},
   filesTabColumns,
   incrementalSync = false,
+  showFilesTab = true,
 }: CarbonConnectProps) => {
   const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(false);
@@ -258,6 +259,7 @@ export const CarbonProvider = ({
     fileSyncConfig,
     filesTabColumns,
     incrementalSync,
+    showFilesTab,
   };
 
   return (

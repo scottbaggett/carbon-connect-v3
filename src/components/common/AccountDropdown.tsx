@@ -13,6 +13,7 @@ import {
 } from "@components/common/design-system/Dropdown";
 import DropboxAccountReady from "@components/common/DropboxAccountReady";
 import { IntegrationAPIResponse } from "../IntegrationModal";
+import { getAccountIdentifier } from "../../utils/helper-functions";
 
 export default function AccountDropdown({
   dataSources,
@@ -28,19 +29,9 @@ export default function AccountDropdown({
   const [isDropboxAccountReady, setIsDropboxAccountReady] =
     useState<boolean>(false);
 
-  const getAccountEmail = (dataSource: IntegrationAPIResponse | null) => {
-    let email =
-      dataSource?.data_source_external_id.split("|")[1] ||
-      dataSource?.data_source_external_id.split("-")[1];
-    if (dataSource?.data_source_metadata?.type) {
-      email += ` (${dataSource?.data_source_metadata?.type})`;
-    }
-    return email;
-  };
-
   const commonMenuConponent = () => {
     return (
-      <DropdownMenuContent align="end" className="cc-w-[232px]">
+      <DropdownMenuContent align="end" className="cc-w-[232px] ">
         <DropdownMenuGroup>
           {dataSources.map((dataSource) => {
             return (
@@ -51,7 +42,7 @@ export default function AccountDropdown({
               >
                 <div>
                   <p className="cc-text-xs cc-font-semibold cc-text-high_em dark:cc-text-dark-text-white">
-                    {getAccountEmail(dataSource)}
+                    {getAccountIdentifier(dataSource)}
                   </p>
                 </div>
               </DropdownMenuItem>
@@ -86,7 +77,7 @@ export default function AccountDropdown({
         <DropdownMenuTrigger asChild>
           <Button
             variant="gray"
-            className="cc-font-semibold cc-px-0  cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl sm:cc-hidden cc-shrink-0  "
+            className="cc-font-semibold cc-px-0 cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl sm:cc-hidden cc-shrink-0 "
           >
             <img
               src={UserIcon}
@@ -101,12 +92,10 @@ export default function AccountDropdown({
         <DropdownMenuTrigger asChild>
           <Button
             variant="gray"
-            className="cc-font-semibold !cc-px-3 cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl cc-hidden sm:cc-flex cc-shrink-0  "
+            className="cc-font-semibold cc-px-3 cc-gap-3 sm:cc-min-w-[180px] cc-rounded-xl cc-hidden sm:cc-flex cc-shrink-0 cc-z-[2000]"
           >
-            <span className="cc-flex-grow cc-text-left dark:cc-text-dark-text-white cc-truncate cc-w-[148px]">
-              {selectedDataSource !== null
-                ? getAccountEmail(selectedDataSource)
-                : "Connect Account"}
+            <span className="cc-flex-grow cc-text-left dark:cc-text-dark-text-white">
+              {getAccountIdentifier(selectedDataSource)}
             </span>
             <img
               src={DownChevIcon}

@@ -156,6 +156,7 @@ export type BaseIntegration = {
   filesTabColumns?: FileTabColumns[];
   incrementalSync?: boolean;
   enableDigitalOcean?: boolean;
+  showFilesTab?: boolean;
 };
 
 export type LocalFilesIntegration = BaseIntegration & {
@@ -217,6 +218,7 @@ export type CarbonConnectProps = {
   theme?: "dark" | "light";
   filesTabColumns?: FileTabColumns[];
   incrementalSync?: boolean;
+  showFilesTab?: boolean;
 };
 
 export enum AutoSyncedSourceTypes {
