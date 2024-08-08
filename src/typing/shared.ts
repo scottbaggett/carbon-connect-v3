@@ -119,6 +119,7 @@ export type BaseIntegration = {
   sendDeletionWebhooks?: boolean;
   fileSyncConfig?: FileSyncConfig;
   useCarbonFilePicker?: boolean;
+  filesTabColumns?: FileTabColumns[];
   incrementalSync?: boolean;
   enableDigitalOcean?: boolean;
 };
@@ -143,6 +144,8 @@ export type Integration =
   | LocalFilesIntegration
   | WebScraperIntegration
   | BaseIntegration;
+
+export type FileTabColumns = "name" | "status" | "created_at" | "external_url";
 
 export type CarbonConnectProps = {
   orgName: string;
@@ -178,6 +181,7 @@ export type CarbonConnectProps = {
   sendDeletionWebhooks?: boolean;
   fileSyncConfig?: FileSyncConfig;
   theme?: "dark" | "light";
+  filesTabColumns?: FileTabColumns[];
   incrementalSync?: boolean;
 };
 
