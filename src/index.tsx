@@ -134,6 +134,7 @@ export type FileSyncConfig = {
   sync_attachments?: boolean;
   detect_audio_language?: boolean;
   split_rows?: boolean;
+  transcription_service?: TranscriptionService;
 };
 
 export type BaseIntegration = {
@@ -164,6 +165,7 @@ export type LocalFilesIntegration = BaseIntegration & {
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
   splitRows?: boolean;
+  transcriptionService?: TranscriptionService;
 };
 
 export interface WebScraperIntegration extends BaseIntegration {
@@ -265,4 +267,9 @@ export enum IntegrationName {
   GITHUB = "GITHUB",
   SLACK = "SLACK",
   GOOGLE_CLOUD_STORAGE = "GOOGLE_CLOUD_STORAGE",
+}
+
+export enum TranscriptionService {
+  ASSEMBLYAI = "assemblyai",
+  DEEPGRAM = "deepgram",
 }

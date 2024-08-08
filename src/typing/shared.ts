@@ -130,6 +130,7 @@ export type LocalFilesIntegration = BaseIntegration & {
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
   splitRows?: boolean;
+  transcriptionService?: TranscriptionService;
 };
 
 export interface WebScraperIntegration extends BaseIntegration {
@@ -278,3 +279,8 @@ export type ActiveStep =
 export type Formats = {
   [index: string]: string[];
 };
+
+export enum TranscriptionService {
+  ASSEMBLYAI = "assemblyai",
+  DEEPGRAM = "deepgram",
+}
