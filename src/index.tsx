@@ -27,7 +27,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = (props) => {
   return (
     <>
       <CarbonProvider {...finalProps}>
-        <IntegrationModal />
+        <IntegrationModal>{finalProps.children}</IntegrationModal>
       </CarbonProvider>
     </>
   );
