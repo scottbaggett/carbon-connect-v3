@@ -87,7 +87,9 @@ export default function SyncedFilesList({
   const [filesLoading, setFilesLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [actionInProgress, setActionInProgress] = useState(false);
+
   const isLocalFiles = processedIntegration.id == IntegrationName.LOCAL_FILES;
+  const isWebscrape = processedIntegration.id == IntegrationName.WEB_SCRAPER;
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbType[]>([
     {
       parentId: null,
@@ -108,7 +110,7 @@ export default function SyncedFilesList({
     DEFAULT_FILES_TAB_COLUMNS;
 
   useEffect(() => {
-    if (!selectedDataSource && !isLocalFiles) return;
+    if (!selectedDataSource && !isLocalFiles && !isWebscrape) return;
     setSearchValue("");
     setBreadcrumbs([
       {
@@ -127,7 +129,7 @@ export default function SyncedFilesList({
       setFiles([]);
       setHasMoreFiles(true);
       const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-      if (lastBreadcrumb.accountId || isLocalFiles) {
+      if (lastBreadcrumb.accountId || isLocalFiles || isWebscrape) {
         setFilesLoading(true);
         loadInitialData(selectedDataSource, lastBreadcrumb).then(() =>
           setFilesLoading(false)
@@ -154,9 +156,17 @@ export default function SyncedFilesList({
       } else {
         return { organization_user_data_source_id: [selectedDataSource.id] };
       }
-    } else {
+    } else if (isLocalFiles) {
       return {
         source: LOCAL_FILE_TYPES,
+      };
+    } else {
+      return {
+        root_files_only: breadcrumb.root_files_only,
+        ...(breadcrumb.parentId && {
+          parent_file_ids: [breadcrumb.parentId],
+        }),
+        source: "WEB_SCRAPE",
       };
     }
   };
@@ -218,7 +228,7 @@ export default function SyncedFilesList({
   };
 
   const loadMoreRows = async () => {
-    if (!selectedDataSource && !isLocalFiles) return;
+    if (!selectedDataSource && !isLocalFiles && !isWebscrape) return;
     setLoadingMore(true);
     const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
     const { count, userFiles } = await getUserFiles(
@@ -239,10 +249,11 @@ export default function SyncedFilesList({
   };
 
   const onItemClick = (item: UserFileApi) => {
+    if (filesLoading) return;
     if (
-      filesLoading ||
-      !selectedDataSource ||
-      !FOLDER_BASED_CONNECTORS.includes(selectedDataSource?.data_source_type)
+      !isWebscrape &&
+      (!selectedDataSource ||
+        !FOLDER_BASED_CONNECTORS.includes(selectedDataSource?.data_source_type))
     )
       return;
     if (getFileItemType(item) == "FOLDER") {
@@ -356,8 +367,9 @@ export default function SyncedFilesList({
 
   const onBreadcrumbClick = (index: number) => {
     if (
-      !selectedDataSource ||
-      !FOLDER_BASED_CONNECTORS.includes(selectedDataSource.data_source_type)
+      !isWebscrape &&
+      (!selectedDataSource ||
+        !FOLDER_BASED_CONNECTORS.includes(selectedDataSource.data_source_type))
     )
       return;
     // Navigate to the clicked directory in the breadcrumb
@@ -370,7 +382,7 @@ export default function SyncedFilesList({
       <div className="cc-p-4 cc-min-h-0 cc-flex-grow cc-flex cc-flex-col">
         <div className="cc-flex cc-gap-2 sm:cc-gap-3 cc-mb-3 cc-flex-col sm:cc-flex-row">
           <p className="cc-text-xl cc-font-semibold cc-flex-grow dark:cc-text-dark-text-white">
-            Synced Files
+            Synced {isWebscrape ? "URLs" : "Files"}
           </p>
           <div className="cc-flex cc-gap-2 sm:cc-gap-3">
             <label className="cc-relative cc-flex-grow sm:cc-max-w-[220px]">
@@ -411,7 +423,7 @@ export default function SyncedFilesList({
                   alt="Add Circle Plus"
                   className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
                 />
-                Add more files
+                Add more {isWebscrape ? "URLs" : "files"}
               </Button>
             ) : null}
           </div>
