@@ -269,7 +269,9 @@ export default function CarbonFilePicker({
           "You will be redirected to the service to connect your account",
         type: "WARN",
       });
-      await sendOauthRequest();
+      await sendOauthRequest(undefined, undefined, {
+        enable_file_picker: mode !== SyncingModes.FILE_PICKER,
+      });
     }
   };
 
