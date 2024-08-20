@@ -150,7 +150,7 @@ function IntegrationList({
                             {isActive ? (
                               <span
                                 className={
-                                  "cc-h-2 cc-ml-[10px]  cc-top-[10px] cc-right-[10px] cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg cc-bg-success-600"
+                                  "cc-h-2 cc-ml-[4px]  cc-top-[10px] cc-right-[10px] cc-inline-block cc-w-2 cc-border dark:cc-border-dark-bg-black cc-border-white cc-rounded-lg cc-bg-success-600"
                                 }
                               />
                             ) : null}
