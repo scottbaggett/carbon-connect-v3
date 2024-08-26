@@ -32,6 +32,7 @@ import {
   getFileItemType,
   pluralize,
   truncateString,
+  wereFilesSynced,
 } from "../../utils/helper-functions";
 import { BannerState } from "../common/Banner";
 import {
@@ -60,6 +61,8 @@ export default function SyncedFilesList({
   setActiveStep,
   bannerState,
   setBannerState,
+  addingOauthFiles = false,
+  setAddingOauthFiles,
 }: {
   selectedDataSource: IntegrationAPIResponse | null;
   handleUploadFilesClick: () => void;
@@ -68,6 +71,8 @@ export default function SyncedFilesList({
   setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
   bannerState: BannerState;
   setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
+  addingOauthFiles?: boolean;
+  setAddingOauthFiles?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -76,6 +81,7 @@ export default function SyncedFilesList({
     environment = ENV.PRODUCTION,
     accessToken,
     sendDeletionWebhooks,
+    lastModifications,
   } = useCarbon();
 
   const [files, setFiles] = useState<UserFileApi[]>([]);
@@ -130,6 +136,18 @@ export default function SyncedFilesList({
       }
     }
   }, [JSON.stringify(breadcrumbs)]);
+
+  useEffect(() => {
+    if (
+      wereFilesSynced(
+        lastModifications || [],
+        processedIntegration.data_source_type
+      )
+    ) {
+      setSyncedFilesRefreshes((prev) => prev + 1);
+      setAddingOauthFiles && setAddingOauthFiles(false);
+    }
+  }, [JSON.stringify(lastModifications)]);
 
   const getUserFilesFilters = (
     breadcrumb: BreadcrumbType,
@@ -411,11 +429,15 @@ export default function SyncedFilesList({
                 className="cc-text-xs !cc-rounded-xl cc-font-semibold cc-shrink-0"
                 onClick={() => handleUploadFilesClick()}
               >
-                <img
-                  src={AddCircleIconBlack}
-                  alt="Add Circle Plus"
-                  className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
-                />
+                {addingOauthFiles ? (
+                  <Loader height={20} width={20} />
+                ) : (
+                  <img
+                    src={AddCircleIconBlack}
+                    alt="Add Circle Plus"
+                    className="cc-h-[14px] cc-w-[14px] cc-shrink-0 dark:cc-invert-[1] dark:cc-hue-rotate-180"
+                  />
+                )}
                 Add more {isWebscrape ? "URLs" : "files"}
               </Button>
             ) : null}
