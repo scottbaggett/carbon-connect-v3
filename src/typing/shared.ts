@@ -252,7 +252,7 @@ export type ProcessedIntegration = IntegrationItemType & Integration;
 
 export type UserFileApi = {
   id: number;
-  name: string;
+  name: string | null;
   created_at: Date;
   sync_status: string;
   external_url: string | null;

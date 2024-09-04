@@ -108,7 +108,9 @@ export default function SyncedFilesList({
   ]);
 
   const filteredList = files.filter((item) =>
-    item.name.toLowerCase().includes(searchValue.toLowerCase())
+    searchValue
+      ? item.name?.toLowerCase().includes(searchValue.toLowerCase())
+      : true
   );
 
   const columnsToDisplay =
@@ -281,7 +283,7 @@ export default function SyncedFilesList({
         ...prev,
         {
           parentId: item.id,
-          name: item.name,
+          name: item.name || "Untitled",
           accountId: selectedDataSource?.id,
           refreshes: syncedFilesRefreshes,
           root_files_only: false,

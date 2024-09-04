@@ -73,7 +73,9 @@ export default function SourceItemsList({
   const [itemsLoading, setItemsLoading] = useState(false);
 
   const filteredList = currItems.filter((item: any) =>
-    item.name.toLowerCase().includes(serchValue.toLowerCase())
+    serchValue
+      ? item.name?.toLowerCase().includes(serchValue.toLowerCase())
+      : true
   );
 
   const carbonProps = useCarbon();
