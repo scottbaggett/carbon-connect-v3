@@ -369,18 +369,33 @@ export default function SyncedFilesList({
     Promise.all(promises).then(function (values) {
       let successCount = 0;
       let failedCount = 0;
+      let additionalInfo = "";
+      let message = "Selected files queued successfully for resync";
       for (let value of values) {
         if (value.status == 200) {
           successCount += 1;
         } else {
+          if (!additionalInfo) {
+            additionalInfo =
+              value.status == "409"
+                ? "File not ready to be resynced"
+                : "Something went wrong";
+          }
           failedCount += 1;
+        }
+      }
+      if (failedCount > 0) {
+        if (!successCount) {
+          message = "None of the selected files could be queued for resync";
+        } else {
+          message = `${failedCount} file(s) failed to resync`;
         }
       }
       const state = failedCount > 0 ? "ERROR" : "SUCCESS";
       setBannerState({
-        message: "Finished queuing files for resync",
+        message: message,
         type: state,
-        additionalInfo: `${successCount} succeeded, ${failedCount} failed`,
+        additionalInfo: additionalInfo,
       });
       setSelectedFiles([]);
       setActionInProgress(false);
