@@ -204,6 +204,7 @@ export type CarbonConnectProps = {
 export enum AutoSyncedSourceTypes {
   ARTICLE = "ARTICLE",
   TICKET = "TICKET",
+  CONVERSATION = "CONVERSATION",
 }
 
 export enum EmbeddingGenerators {
