@@ -523,6 +523,7 @@ export default function CarbonFilePicker({
           activeStepData={processedIntegration}
           screen={accountAdded ? "CONNECTED" : "CHANNEL"}
           setStartCustomSync={setStartCustomSync}
+          selectedDataSource={selectedDataSource}
         />
       );
     }

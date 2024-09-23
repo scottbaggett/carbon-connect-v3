@@ -15,6 +15,7 @@ import {
 
 import Channel from "@components/common/Slack/Channel";
 import Banner, { BannerState } from "../common/Banner";
+import { IntegrationAPIResponse } from "../IntegrationModal";
 
 export type ActiveSlackScreen = "CONNECTED" | "CHANNEL";
 
@@ -30,11 +31,13 @@ const SlackScreen = ({
   activeStepData,
   screen,
   setStartCustomSync,
+  selectedDataSource,
 }: {
   setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
   activeStepData?: IntegrationItemType;
   screen: ActiveSlackScreen;
   setStartCustomSync: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedDataSource: IntegrationAPIResponse | null;
 }) => {
   const [active, setActive] = useState(0);
   const [activeScreen, setActiveScreen] = useState(screen);
@@ -96,6 +99,7 @@ const SlackScreen = ({
             setStartCustomSync={setStartCustomSync}
             setBannerState={setBannerState}
             bannerState={bannerState}
+            selectedDataSource={selectedDataSource}
           />
         </>
       )}

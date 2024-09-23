@@ -21,6 +21,7 @@ import { ENV } from "../../../constants/shared";
 import Loader from "../Loader";
 import Banner, { BannerState } from "../Banner";
 import { getBaseURL } from "../../../utils/helper-functions";
+import { IntegrationAPIResponse } from "../../IntegrationModal";
 
 const Channel: React.FC<{
   setActiveStep: React.Dispatch<React.SetStateAction<ActiveStep>>;
@@ -30,6 +31,7 @@ const Channel: React.FC<{
   setStartCustomSync: React.Dispatch<React.SetStateAction<boolean>>;
   setBannerState: React.Dispatch<React.SetStateAction<BannerState>>;
   bannerState: BannerState;
+  selectedDataSource: IntegrationAPIResponse | null;
 }> = ({
   setActiveStep,
   activeStepData,
@@ -38,6 +40,7 @@ const Channel: React.FC<{
   setStartCustomSync,
   setBannerState,
   bannerState,
+  selectedDataSource,
 }) => {
   const {
     entryPoint,
@@ -79,6 +82,9 @@ const Channel: React.FC<{
         apiURL,
         environment
       )}/integrations/slack/conversations?types=public_channel,private_channel,im,mpim`;
+      if (selectedDataSource) {
+        url = url + `&data_source_id=${selectedDataSource.id}`;
+      }
       if (cursor) {
         url = url + `&cursor=${cursor}`;
       }
@@ -94,9 +100,14 @@ const Channel: React.FC<{
         allConversations = allConversations.concat(data.results);
         cursor = data.next_cursor;
       } else {
+        let addlMessage = "";
+        try {
+          const data = await convoRes.json();
+          addlMessage = `: ${data.detail}`;
+        } catch (e) {}
         setBannerState({
           type: "ERROR",
-          message: "Unable to get your list of conversations",
+          message: "Unable to get your list of conversations" + addlMessage,
         });
         cursor = null;
       }
