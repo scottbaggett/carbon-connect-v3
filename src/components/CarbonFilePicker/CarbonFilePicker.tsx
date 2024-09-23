@@ -373,7 +373,11 @@ export default function CarbonFilePicker({
           message: "Successfully disconnected account",
         });
         setSelectedDataSource(null);
-        setActiveStep(entryPoint ? "CONNECT" : "INTEGRATION_LIST");
+        if (!entryPoint || entryPoint == "INTEGRATION_LIST") {
+          setActiveStep("INTEGRATION_LIST");
+        } else if (!isWhiteLabeledEntryPoint) {
+          setActiveStep("CONNECT");
+        }
       } else {
         setBannerState({
           type: "ERROR",
