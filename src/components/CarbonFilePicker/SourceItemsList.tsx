@@ -73,6 +73,7 @@ export default function SourceItemsList({
   ]);
   const [sourceItemRefreshes, setSourceItemRefreshes] = useState(0);
   const [itemsLoading, setItemsLoading] = useState(false);
+  const [sourceItemsSyncing, setSourceItemsSyncing] = useState(false);
 
   const carbonProps = useCarbon();
   const {
@@ -173,6 +174,7 @@ export default function SourceItemsList({
       selectedDataSource?.sync_status == "SYNCING" ||
       selectedDataSource?.sync_status == "QUEUED_FOR_SYNC"
     ) {
+      setSourceItemsSyncing(true);
       setBannerState({
         type: "WARN",
         message: "Your content is being synced.",
@@ -180,6 +182,7 @@ export default function SourceItemsList({
         persist: true,
       });
     } else {
+      setSourceItemsSyncing(false);
       setBannerState({ message: "" });
     }
   }, [selectedDataSource?.sync_status]);
@@ -388,7 +391,7 @@ export default function SourceItemsList({
               <p className="cc-px-4">CREATED AT</p>
             </div>
           </div>
-          {itemsLoading ? (
+          {itemsLoading || (sourceItemsSyncing && !currItems.length) ? (
             <Loader />
           ) : !currItems.length ? (
             <div className="cc-py-4 cc-px-4 cc-text-center cc-flex-grow cc-text-disabledtext cc-font-medium cc-text-sm cc-flex cc-flex-col cc-items-center cc-justify-center h-full">
