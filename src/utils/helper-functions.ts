@@ -1,4 +1,5 @@
 import { Integration, OnSuccessData } from "..";
+import { FileItemType } from "../components/common/FileListItem";
 import { IntegrationAPIResponse } from "../components/IntegrationModal";
 import {
   BASE_URL,
@@ -349,6 +350,10 @@ export const truncateString = (str: string, n: number) => {
   }
 };
 
+export const capitalize = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const getIntegrationDisclaimer = (
   processedIntegration: ProcessedIntegration,
   whitelabelingData: any,
@@ -436,4 +441,36 @@ export const getBaseURL = (
   }
   const environment = env || ENV.PRODUCTION;
   return BASE_URL[environment];
+};
+
+export const getFileName = (item: UserFileApi) => {
+  if (
+    item.source == IntegrationName.SLACK &&
+    item.file_metadata?.type == "TIME_RANGE"
+  ) {
+    try {
+      const jsonName = JSON.parse(item.name || "");
+      let readableName = [];
+      if (jsonName.after) {
+        readableName.push(
+          formatDate(new Date(parseInt(jsonName.after) * 1000), true)
+        );
+      }
+      if (jsonName.before) {
+        readableName.push(
+          formatDate(new Date(parseInt(jsonName.before) * 1000), true)
+        );
+      }
+      if (item.file_metadata?.channel_name) {
+        readableName.push(capitalize(item.file_metadata?.channel_name));
+      } else {
+        readableName.push(jsonName.conversation);
+      }
+      return `${readableName[2]} (${readableName[0]} - ${readableName[1]})`;
+    } catch (e) {
+      console.error(e);
+      return item.name || "Untitled";
+    }
+  }
+  return item.name || "Untitled";
 };
