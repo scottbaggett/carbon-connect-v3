@@ -10,18 +10,26 @@ import SyncedConversationSlack from "./SyncedConversationSlack";
 import { DialogFooter } from "../design-system/Dialog";
 import { Button } from "../design-system/Button";
 import SuccessScreenSlack from "./SuccessScreenSlack";
-import CarbonContext from "src/context/CarbonContext";
-import { SlackConversation } from "../../../typing/shared";
+import CarbonContext, { useCarbon } from "src/context/CarbonContext";
+import {
+  ProcessedIntegration,
+  SlackConversation,
+} from "../../../typing/shared";
 import { SlackConversations } from "../../Screens/SlackScreen";
 import Banner, { BannerState } from "../Banner";
 import { ENV } from "../../../constants/shared";
-import { getBaseURL } from "../../../utils/helper-functions";
+import {
+  generateRequestId,
+  getBaseURL,
+  getConnectRequestProps,
+} from "../../../utils/helper-functions";
 
 type PropsInfo = {
   activeTab: string;
   setActiveTab: Dispatch<SetStateAction<string>>;
   conversations: SlackConversations;
   setStartCustomSync: React.Dispatch<React.SetStateAction<boolean>>;
+  processedIntegration: ProcessedIntegration;
 };
 
 export type SlackSyncObject = {
@@ -34,6 +42,7 @@ const SlackTab = ({
   setActiveTab,
   conversations,
   setStartCustomSync,
+  processedIntegration,
 }: PropsInfo) => {
   const [selectedConversations, setSelectedConversations] = useState<string[]>(
     []
@@ -43,6 +52,7 @@ const SlackTab = ({
   const [bannerState, setBannerState] = useState<BannerState>({
     message: null,
   });
+  const carbonProps = useCarbon();
   const {
     setSlackActive,
     slackActive,
@@ -50,7 +60,10 @@ const SlackTab = ({
     authenticatedFetch,
     accessToken,
     apiURL,
-  } = useContext(CarbonContext);
+    useRequestIds,
+    setRequestIds,
+    requestIds,
+  } = carbonProps;
   const [performingSync, setPerformingSync] = useState(false);
   const [conversationDates, setConversationDates] = useState<{
     [id: string]: string;
@@ -71,6 +84,23 @@ const SlackTab = ({
     if (conversationDates[id]) {
       filters["after"] = conversationDates[id];
     }
+    let requestId = null;
+    if (useRequestIds) {
+      requestId = generateRequestId(20);
+      setRequestIds({
+        ...requestIds,
+        [processedIntegration?.data_source_type]: requestId,
+      });
+    }
+    const requestObject = getConnectRequestProps(
+      processedIntegration,
+      requestId,
+      {
+        filters,
+      },
+      carbonProps
+    );
+
     const slackSyncResponse = await authenticatedFetch(
       `${getBaseURL(apiURL, environment)}/integrations/slack/sync`,
       {
@@ -79,7 +109,7 @@ const SlackTab = ({
           Authorization: `Token ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ filters }),
+        body: JSON.stringify(requestObject),
       }
     );
     return slackSyncResponse;

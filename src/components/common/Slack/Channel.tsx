@@ -225,6 +225,7 @@ const Channel: React.FC<{
           setActiveTab={setActiveTab}
           conversations={{ publicChannels, privateChannels, dms, mpdms }}
           setStartCustomSync={setStartCustomSync}
+          processedIntegration={localIntegration}
         />
       )}
     </>
