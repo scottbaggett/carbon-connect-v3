@@ -3,10 +3,19 @@ import { BASE_URL } from "../constants/shared";
 import { IntegrationItemType } from "../utils/integrationModalconstants";
 
 export enum SyncStatus {
-  READY = "READY",
+  DELAYED = "DELAYED",
   QUEUED_FOR_SYNC = "QUEUED_FOR_SYNC",
   SYNCING = "SYNCING",
+  READY = "READY",
   SYNC_ERROR = "SYNC_ERROR",
+  // This is the status when a file is being evaluated for a resync
+  EVALUATING_RESYNC = "EVALUATING_RESYNC",
+  RATE_LIMITED = "RATE_LIMITED",
+  SYNC_ABORTED = "SYNC_ABORTED",
+  // This is the status when a file is being processed by an async OCR service like Textract
+  QUEUED_FOR_OCR = "QUEUED_FOR_OCR",
+  // when the user opts to skip processing the file
+  READY_TO_SYNC = "READY_TO_SYNC",
 }
 
 export enum ActionType {
@@ -157,7 +166,12 @@ export type Integration =
   | WebScraperIntegration
   | BaseIntegration;
 
-export type FileTabColumns = "name" | "status" | "created_at" | "external_url";
+export type FileTabColumns =
+  | "name"
+  | "status"
+  | "created_at"
+  | "external_url"
+  | "updated_at";
 
 export type CarbonConnectProps = {
   orgName: string;
@@ -256,7 +270,9 @@ export type UserFileApi = {
   id: number;
   name: string | null;
   created_at: Date;
-  sync_status: string;
+  last_sync: Date | null;
+  updated_at: Date;
+  sync_status: SyncStatus;
   external_url: string | null;
   source: string;
   parent_id: number | null;
