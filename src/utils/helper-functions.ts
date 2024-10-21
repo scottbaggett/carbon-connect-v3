@@ -95,6 +95,7 @@ export const generateRequestId = (length: number) => {
   return prefix + result;
 };
 
+// S3, Github, etc are excluded from this
 export const getConnectRequestProps = (
   processedIntegration: ProcessedIntegration,
   requestId: string | null,
@@ -114,6 +115,7 @@ export const getConnectRequestProps = (
     useOcr,
     parsePdfTablesWithOcr,
     incrementalSync,
+    dataSourceTags,
   } = carbonProps;
 
   const chunkSizeValue =
@@ -169,6 +171,7 @@ export const getConnectRequestProps = (
     use_ocr: useOcrValue,
     parse_pdf_tables_with_ocr: parsePdfTablesWithOcrValue,
     incremental_sync: incrementalSyncValue,
+    data_source_tags: dataSourceTags || {}
   };
 };
 
@@ -197,6 +200,7 @@ export const getFileItemType = (item: UserFileApi) => {
   } else {
     return "FILE";
   }
+
 };
 
 export const getSourceItemType = (item: UserSourceItemApi) => {
