@@ -490,14 +490,12 @@ export const getAllowedFormats = (
   type: IntegrationName | undefined
 ): string[] | null => {
   let settings = null;
-  if (!isObjectEmpty(userConnectorSettings)) {
-    settings =
-      userConnectorSettings[type || "DEFAULT"] ||
-      userConnectorSettings["DEFAULT"];
-  } else if (!isObjectEmpty(orgConnectorSettings)) {
-    settings =
-      orgConnectorSettings[type || "DEFAULT"] ||
-      orgConnectorSettings["DEFAULT"];
+  const userSettings = userConnectorSettings || {}
+  const orgSettings = orgConnectorSettings || {}
+  if (!isObjectEmpty(userSettings)) {
+    settings = userSettings[type || "DEFAULT"] || userSettings["DEFAULT"];
+  } else if (!isObjectEmpty(orgSettings)) {
+    settings = orgSettings[type || "DEFAULT"] || orgSettings["DEFAULT"];
   }
   if (settings && settings.allowed_file_formats) {
     return settings.allowed_file_formats;
