@@ -209,7 +209,7 @@ export default function SystemFileUpload({
             const fileType = file.name.split(".").pop();
 
             const isExtensionAllowed = allowedFileExtensions.find(
-              (configuredType) => configuredType === fileType
+              (configuredType) => configuredType === fileType?.toLowerCase()
             );
 
             if (!isExtensionAllowed) {
