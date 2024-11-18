@@ -115,6 +115,8 @@ export type FileSyncConfig = {
   transcription_service?: TranscriptionService;
   include_speaker_labels?: boolean;
   generate_chunks_only?: boolean;
+  skip_file_processing?: boolean;
+  store_file_only?: boolean;
 };
 
 export type BaseIntegration = {
@@ -266,6 +268,7 @@ export enum IntegrationName {
   GURU = "GURU",
   SERVICENOW = "SERVICENOW",
   AZURE_BLOB_STORAGE = "AZURE_BLOB_STORAGE",
+  DOCUMENT360 = "DOCUMENT360",
 }
 
 export type ProcessedIntegration = IntegrationItemType & Integration;
