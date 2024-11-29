@@ -140,6 +140,7 @@ export type FileType = {
   splitRows?: boolean;
   transcriptionService?: TranscriptionService;
   includeSpeakerLabels?: boolean;
+  embeddingModel?: EmbeddingGenerators;
 };
 
 export type FileSyncConfig = {
@@ -176,6 +177,7 @@ export type BaseIntegration = {
   enableDigitalOcean?: boolean;
   showFilesTab?: boolean;
   scopes?: string[];
+  embeddingModel?: EmbeddingGenerators;
 };
 
 export type LocalFilesIntegration = BaseIntegration & {

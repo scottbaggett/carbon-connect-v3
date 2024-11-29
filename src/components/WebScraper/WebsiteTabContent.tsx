@@ -138,7 +138,8 @@ export default function WebsiteTabContent({
         service?.prependFilenameToChunks ?? prependFilenameToChunks ?? false;
       const maxItemsPerChunkValue =
         service?.maxItemsPerChunk || maxItemsPerChunk || null;
-      const embeddingModelValue = embeddingModel || null;
+      const embeddingModelValue =
+        service?.embeddingModel || embeddingModel || null;
 
       const htmlTagsToSkip = service?.htmlTagsToSkip || [];
       const cssClassesToSkip = service?.cssClassesToSkip || [];

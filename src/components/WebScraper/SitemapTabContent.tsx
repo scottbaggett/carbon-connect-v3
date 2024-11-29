@@ -130,7 +130,8 @@ export default function SitemapTabContent({
         false;
       const maxItemsPerChunkValue =
         processedIntegration?.maxItemsPerChunk || maxItemsPerChunk || null;
-      const embeddingModelValue = embeddingModel || null;
+      const embeddingModelValue =
+        processedIntegration?.embeddingModel || embeddingModel || null;
       const recursionDepth =
         processedIntegration?.recursionDepth ?? DEFAULT_RECURSION_DEPTH;
 

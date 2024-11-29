@@ -124,7 +124,8 @@ export const getConnectRequestProps = (
     processedIntegration?.overlapSize || overlapSize || DEFAULT_OVERLAP_SIZE;
   const skipEmbeddingGeneration =
     processedIntegration?.skipEmbeddingGeneration || false;
-  const embeddingModelValue = embeddingModel || null;
+  const embeddingModelValue =
+    processedIntegration?.embeddingModel || embeddingModel || null;
   const generateSparseVectorsValue =
     processedIntegration?.generateSparseVectors ||
     generateSparseVectors ||

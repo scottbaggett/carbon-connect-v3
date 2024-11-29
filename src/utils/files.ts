@@ -53,7 +53,11 @@ export const generateFileUploadUrl = (
     filesConfig?.skipEmbeddingGeneration ||
     false;
 
-  const embeddingModelValue = embeddingModel || null;
+  const embeddingModelValue =
+    fileTypeConfigValue?.embeddingModel ||
+    filesConfig?.embeddingModel ||
+    embeddingModel ||
+    null;
 
   const useOCRValue =
     fileTypeConfigValue?.useOcr || filesConfig?.useOcr || useOcr || false;
