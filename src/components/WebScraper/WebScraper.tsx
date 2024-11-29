@@ -61,6 +61,7 @@ function WebScraper({
 
   const sitemapEnabled = service ? service?.sitemapEnabled ?? true : false;
   if (!service) return null;
+  console.log(bannerState);
 
   return (
     <>

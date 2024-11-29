@@ -31,7 +31,8 @@ export const generateFileUploadUrl = (
   } = carbonProps;
   const allowedFileTypes = filesConfig?.allowedFileTypes || [];
   const fileTypeConfigValue = allowedFileTypes.find(
-    (type) => type && type.extension == fileType
+    (type) =>
+      type && fileType && type.extension.toLowerCase() == fileType.toLowerCase()
   );
   const setPageAsBoundary =
     fileTypeConfigValue?.setPageAsBoundary ||

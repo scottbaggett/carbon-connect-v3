@@ -213,6 +213,11 @@ export default function WebsiteTabContent({
             event: ActionType.UPDATE,
             integration: IntegrationName.WEB_SCRAPER,
           });
+      } else {
+        setBannerState({
+          type: "ERROR",
+          message: responseData.detail,
+        });
       }
     } catch (error) {
       setBannerState({
