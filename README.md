@@ -22,7 +22,7 @@
     npm run dev
 
 
-5. In a new directory create a nextJS project with command:
+5. In a new directory create a nextJS project (choose default options for prompts) with command:
     ```bash
     npx create-next-app@14.2.4 my-app
     
