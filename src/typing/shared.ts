@@ -118,6 +118,7 @@ export type FileSyncConfig = {
   generate_chunks_only?: boolean;
   skip_file_processing?: boolean;
   store_file_only?: boolean;
+  parsed_text_format?: ParsedTextFormats;
 };
 
 export type BaseIntegration = {
@@ -331,6 +332,11 @@ export type Formats = {
 export enum TranscriptionService {
   ASSEMBLYAI = "assemblyai",
   DEEPGRAM = "deepgram",
+}
+
+export enum ParsedTextFormats {
+  PLAIN_TEXT = "PLAIN_TEXT",
+  MARKDOWN = "MARKDOWN",
 }
 
 export type SlackConversation = {
