@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 
 import { Button } from "../design-system/Button";
 import { images } from "@assets/index";

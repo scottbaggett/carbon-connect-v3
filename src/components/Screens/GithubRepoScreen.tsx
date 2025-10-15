@@ -1,6 +1,5 @@
-import React, { ReactText, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";
 import { Button } from "@components/common/design-system/Button";
 import { DialogFooter } from "@components/common/design-system/Dialog";

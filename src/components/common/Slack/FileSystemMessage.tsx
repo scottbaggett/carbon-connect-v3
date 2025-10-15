@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Checkbox } from "../design-system/Checkbox";
 import { MessageInfo } from "./FileSelectionSlack";
 import userIcon from "@assets/svgIcons/messageUser.svg";

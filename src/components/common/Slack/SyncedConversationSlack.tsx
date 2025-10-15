@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Input } from "../design-system/Input";
 
 import SearchIcon from "@assets/svgIcons/search-icon.svg";

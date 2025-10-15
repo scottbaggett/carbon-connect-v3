@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DayClickEventHandler, DayPicker } from "react-day-picker";
 import CalenderFooter from "./CalenderFooter";
 

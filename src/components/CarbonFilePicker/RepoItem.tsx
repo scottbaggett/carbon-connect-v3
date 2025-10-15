@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 import { GithubRepoItem } from "../../typing/shared";

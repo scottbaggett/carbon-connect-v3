@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import privateChannelIcon from "@assets/svgIcons/privateChannel.svg";
 import { Checkbox } from "../design-system/Checkbox";
 import { channelInfo } from "./FileSelectionSlack";

@@ -1,9 +1,5 @@
-import React from "react";
 import { Checkbox } from "./design-system/Checkbox";
-import { MessageInfo } from "./AccountManagement";
 import userIcon from "@assets/svgIcons/messageUser.svg";
-import calender from "@assets/svgIcons/calendar.svg";
-import error from "@assets/svgIcons/error.svg";
 
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import { formatDate, getAccountIdentifier } from "../../utils/helper-functions";

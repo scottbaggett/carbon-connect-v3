@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DownChevIcon from "@assets/svgIcons/down-chev-icon.svg";
 import AddCircleIcon from "@assets/svgIcons/add-circle-icon.svg";
 import UserIcon from "@assets/svgIcons/user-icon.svg";

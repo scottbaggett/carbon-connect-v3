@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import SettingsIcon from "@assets/svgIcons/settings-icon.svg";
 import DisconnectIcon from "@assets/svgIcons/disconnect-icon.svg";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";

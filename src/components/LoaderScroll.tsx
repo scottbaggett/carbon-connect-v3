@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ColorRing } from "react-loader-spinner";
 
 const LoaderScroll = ({ height = 50, width = 50 }) => {

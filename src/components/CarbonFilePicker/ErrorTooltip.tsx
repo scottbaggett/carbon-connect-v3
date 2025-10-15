@@ -1,5 +1,3 @@
-import React from "react";
-
 type PropsInfo = {
   leftPosTip: string;
   message: string | null;

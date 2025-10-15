@@ -1,4 +1,3 @@
-import React from "react";
 import { useDropzone, FileRejection } from "react-dropzone";
 import { images } from "@assets/index";
 import { getSupportedFileTypes } from "../../utils/files";

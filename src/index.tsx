@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import IntegrationModal from "./components/IntegrationModal";
 
 import "./styles.css";

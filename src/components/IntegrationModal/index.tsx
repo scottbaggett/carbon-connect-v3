@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent } from "@components/common/design-system/Dialog";
 import { findModifications, getBaseURL } from "@utils/helper-functions";
 import IntegrationList from "@components/IntegrationModal/IntegrationList";

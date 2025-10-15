@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Input } from './design-system/Input';
 import SearchIcon from "@assets/svgIcons/search-icon.svg";
 import { Button } from './design-system/Button';

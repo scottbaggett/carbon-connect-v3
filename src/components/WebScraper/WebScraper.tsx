@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { emptyFunction } from "@utils/helper-functions";
 import {
   DialogHeader,

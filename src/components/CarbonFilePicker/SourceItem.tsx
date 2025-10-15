@@ -1,10 +1,8 @@
-import React, { useState } from "react";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import FIleIcon from "@assets/svgIcons/file.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";
 import { IntegrationName, UserSourceItemApi } from "../../typing/shared";
 import { formatDate, getSourceItemType } from "../../utils/helper-functions";
-import { useCarbon } from "../../context/CarbonContext";
 import ErrorTooltip from "./ErrorTooltip";
 
 export default function SourceItem({

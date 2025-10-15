@@ -1,10 +1,4 @@
-import React, {
-  ReactText,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import RefreshIcon from "@assets/svgIcons/refresh-icon.svg";
 import { Input } from "@components/common/design-system/Input";
@@ -610,7 +604,7 @@ export default function SyncedFilesList({
             <Breadcrumb className="cc-text-nowrap cc-whitespace-nowrap cc-flex-nowrap">
               <BreadcrumbList className="cc-flex-nowrap">
                 {breadcrumbs.map((crumb, index) => (
-                  <React.Fragment key={index}>
+                  <Fragment key={index}>
                     <BreadcrumbItem
                       className="cc-shrink-0"
                       onClick={() => onBreadcrumbClick(index)}
@@ -627,7 +621,7 @@ export default function SyncedFilesList({
                     {breadcrumbs.length > index + 1 ? (
                       <BreadcrumbSeparator className="cc-shrink-0" />
                     ) : null}
-                  </React.Fragment>
+                  </Fragment>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>

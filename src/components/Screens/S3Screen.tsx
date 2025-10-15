@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { DialogFooter } from "@components/common/design-system/Dialog";
 import InfoFill from "@assets/svgIcons/info_fill.svg";
 import UserPlus from "@assets/svgIcons/user-plus.svg";

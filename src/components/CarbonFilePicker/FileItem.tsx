@@ -1,4 +1,3 @@
-import React from "react";
 import FolderIcon from "@assets/svgIcons/folder.svg";
 import FIleIcon from "@assets/svgIcons/file.svg";
 import { Checkbox } from "@components/common/design-system/Checkbox";

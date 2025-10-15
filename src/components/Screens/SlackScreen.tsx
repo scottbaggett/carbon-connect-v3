@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SlackLogo from "../../assets/logos/slack.svg";
 import { Button } from "@components/common/design-system/Button";
 import { useCarbon } from "src/context/CarbonContext";

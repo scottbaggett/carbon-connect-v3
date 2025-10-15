@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DialogHeader } from "@components/common/design-system/Dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import CarbonContext, { useCarbon } from "src/context/CarbonContext";

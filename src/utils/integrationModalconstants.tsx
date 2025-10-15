@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 import BoxLogo from "../assets/logos/box.svg";
 import ConfluenceLogo from "../assets/logos/confluence.svg";

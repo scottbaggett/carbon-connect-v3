@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActiveStep, ProcessedIntegration } from "../../typing/shared";
 import { IntegrationAPIResponse } from "../IntegrationModal";
 import GithubAuthScreen from "./GithubAuthScreen";

@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 
 import { cn } from "@components/common/design-system/utils";
 import { useCarbon } from "src/context/CarbonContext";
+import React from "react";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
